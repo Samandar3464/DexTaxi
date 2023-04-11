@@ -42,10 +42,12 @@ public class UserService {
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromDriver(driverRegisterDto, passwordEncoder, attachmentService, verificationCode);
-        userRepository.save(user);
-        return new ResponseEntity<>("User added", HttpStatus.CREATED);
+        User save = userRepository.save(user);
+        return new ResponseEntity<>(save.getId(), HttpStatus.CREATED);
 //        return new ResponseEntity<>(UserResponseDto.from(savedUser, attachmentService.attachDownloadUrl), HttpStatus.CREATED);
     }
+
+
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> registerPassenger(PassengerRegisterDto passengerRegisterDto) {
         Optional<User> byPhone = userRepository.findByPhone(passengerRegisterDto.getPhone());

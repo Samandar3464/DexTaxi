@@ -2,6 +2,8 @@ package uz.optimit.taxi.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
+import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -23,16 +25,42 @@ public class AnnouncementPassenger {
 
     @ManyToOne
     private User user;
+
     private double fromLatitude;
+
     private double fromLongitude;
+
     private double toLongitude;
+
     private double toLatitude;
+
     private double price;
+
     private boolean baggage;
+
     private boolean isActive;
+
     private boolean forFamiliar;
+
     private String info;
+
     private LocalDateTime createdTime;
 
+    public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
+        return AnnouncementPassenger.builder()
+                .user(user)
+                .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
+                .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
+                .fromLatitude(announcementRequestDto.getFromLatitude())
+                .fromLongitude(announcementRequestDto.getFromLongitude())
+                .toLatitude(announcementRequestDto.getToLatitude())
+                .toLongitude(announcementRequestDto.getToLongitude())
+                .price(announcementRequestDto.getPrice())
+                .forFamiliar(announcementRequestDto.isForFamiliar())
+                .info(announcementRequestDto.getInfo())
+                .createdTime(LocalDateTime.now())
+                .isActive(true)
+                .build();
 
+    }
 }

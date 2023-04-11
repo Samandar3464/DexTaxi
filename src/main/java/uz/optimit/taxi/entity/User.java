@@ -82,7 +82,7 @@ public class User implements UserDetails {
     private List<AnnouncementPassenger> announcementUser;
 
     @JsonIgnore
-    @ManyToMany
+    @OneToMany(mappedBy = "user")
     private List<AnnouncementDriver> announcementDrivers;
 
 

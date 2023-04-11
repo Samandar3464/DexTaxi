@@ -5,5 +5,5 @@ import uz.optimit.taxi.entity.AnnouncementPassenger;
 
 import java.util.UUID;
 
-public interface AnnouncementUserRepository extends JpaRepository<AnnouncementPassenger, UUID> {
+public interface AnnouncementPassengerRepository extends JpaRepository<AnnouncementPassenger, UUID> {
 }

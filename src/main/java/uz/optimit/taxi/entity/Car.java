@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.repository.AutoModelRepository;
+import uz.optimit.taxi.repository.UserRepository;
 import uz.optimit.taxi.service.AttachmentService;
 
 import java.util.List;
@@ -39,14 +40,15 @@ public class Car  {
     @ManyToOne
     private User user;
 
-    public static Car from(CarRegisterRequestDto carRegisterRequestDto, AutoModelRepository autoModelRepository, AttachmentService attachmentService){
+    public static Car from(CarRegisterRequestDto carRegisterRequestDto, AutoModelRepository autoModelRepository, AttachmentService attachmentService, UserRepository userRepository){
         return Car.builder()
-//                .autoModel(autoModelRepository.getByIdAndAutoCategoryId(carRegisterRequestDto.getAutoModelId(),carRegisterRequestDto.getAutoCategoryId()))
+                .autoModel(autoModelRepository.getByIdAndAutoCategoryId(carRegisterRequestDto.getAutoModelId(),carRegisterRequestDto.getAutoCategoryId()))
                 .color(carRegisterRequestDto.getColor())
                 .texPassport(carRegisterRequestDto.getTexPassport())
                 .carNumber(carRegisterRequestDto.getCarNumber())
                 .texPassportPhoto(attachmentService.saveToSystem(carRegisterRequestDto.getTexPassportPhoto()))
                 .autoPhotos(attachmentService.saveToSystemListFile(carRegisterRequestDto.getAutoPhotos()))
+                .user(userRepository.findById(carRegisterRequestDto.getUserId()).get())
                 .build();
     }
 }
