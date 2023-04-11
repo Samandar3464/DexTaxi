@@ -7,7 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +18,8 @@ import java.util.function.Function;
 public class JwtService {
     private static final String ACCESS_SECRET_KEY = "404E635266556A586E327235753878F413F4428472B4B6250645367566B5970";
     private static final String REFRESH_SECRET_KEY = "404E635266556A586E327235753878F413F4428472B4B6250645lll367566B5970";
-    private static final String REFRESH_SECRET_TIME = "1000*30";
-    private static final String ACCESS_SECRET_TIME = "1000*30";
+    private static final int REFRESH_SECRET_TIME = 10 * 60 * 1000;
+    private static final int ACCESS_SECRET_TIME = 1000 * 60 * 10 * 24;
 
 
     //GENERATE TOKENS
@@ -41,7 +41,7 @@ public class JwtService {
                 .setSubject(phoneNumber)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_SECRET_TIME))
-                .signWith(getSingInKeyAccess(), SignatureAlgorithm.ES256)
+                .signWith(getSingInKeyAccess(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -55,7 +55,7 @@ public class JwtService {
                 .setSubject(phoneNumber)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_SECRET_TIME))
-                .signWith(getSingInKeyRefresh(), SignatureAlgorithm.ES256)
+                .signWith(getSingInKeyRefresh(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -118,7 +118,6 @@ public class JwtService {
     }
 
 
-
     //refresh
     public String extraRefreshToken(String token) {
         return extraRefreshClaim(token, Claims::getSubject);
@@ -128,6 +127,7 @@ public class JwtService {
         final Claims claims = extraAllRefreshClaims(token);
         return claimsResolver.apply(claims);
     }
+
 
     private Claims extraAllRefreshClaims(String token) {
         try {
@@ -144,12 +144,12 @@ public class JwtService {
 
 
     //GENERATE KEYS
-    private Key getSingInKeyRefresh() {
+    private SecretKey getSingInKeyRefresh() {
         byte[] decode = Decoders.BASE64.decode(REFRESH_SECRET_KEY);
         return Keys.hmacShaKeyFor(decode);
     }
 
-    private Key getSingInKeyAccess() {
+    private SecretKey getSingInKeyAccess() {
         byte[] decode = Decoders.BASE64.decode(ACCESS_SECRET_KEY);
         return Keys.hmacShaKeyFor(decode);
     }

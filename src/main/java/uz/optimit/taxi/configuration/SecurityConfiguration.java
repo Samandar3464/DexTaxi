@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final String WHITE_LINE = "api/v1/auth/**";
+    private final String[] WHITE_LINE = new String[]{"/api/v1/user/**","/static/image/**"};
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 

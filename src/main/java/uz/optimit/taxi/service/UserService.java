@@ -10,12 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import uz.optimit.taxi.entity.Jwt;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.exception.TimeExceededException;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
-import uz.optimit.taxi.model.UserLoginRequestDto;
 import uz.optimit.taxi.model.DriverRegisterDto;
+import uz.optimit.taxi.model.UserLoginRequestDto;
 import uz.optimit.taxi.model.UserResponseDto;
 import uz.optimit.taxi.model.UserVerifyRequestDto;
 import uz.optimit.taxi.repository.UserRepository;
@@ -30,6 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AttachmentService attachmentService;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
@@ -51,13 +53,30 @@ public class UserService {
         try {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authentication);
-//            String accessToken = "Bearer " + JwtGenerate.generateAccessToken((User) authenticate.getPrincipal());
-//            String refreshToken = "RefreshToken " + JwtGenerate.generateRefreshToken((User) authenticate.getPrincipal());
-//            return ResponseEntity.ok(new TokenResponse(accessToken, refreshToken));
-            return new ResponseEntity<>("Login successfully", HttpStatus.OK);
+            Jwt jwt = null;
+            if (authenticate != null){
+                String access = jwtService.generateAccessToken(userLoginRequestDto.getPhone());
+                String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
+                jwt = new Jwt(access,refresh);
+            }
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
         } catch (BadCredentialsException e) {
             throw new UserNotFoundException("User not found");
         }
+    }
+
+    public String refreshToken(String token) {
+
+        String username = jwtService.extraRefreshToken(token);
+
+        if (username==null){
+            return "";
+        }
+
+
+        String jwtToken = jwtService.generateAccessToken(username);
+
+        return jwtToken;
     }
 
     private Integer verificationCodeGenerator() {
@@ -76,11 +95,6 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>("User verified successfully ", HttpStatus.OK);
     }
-
-
-
-
-
 
 
     private boolean verificationCodeLiveTime(LocalDateTime localDateTime) {
