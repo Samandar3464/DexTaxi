@@ -33,4 +33,15 @@ public class UserController {
     public ResponseEntity<?> verify(@RequestBody @Validated UserVerifyRequestDto userVerifyRequestDto){
         return userService.verify(userVerifyRequestDto);
     }
+
+    @PostMapping("user/refreshToken")
+    public String verifyl(@RequestBody Jwt token){
+        return userService.refreshToken(token.getRefreshToken());
+    }
+
+    @GetMapping("a")
+    public String verifyl(){
+        return "keldik";
+    }
+
 }

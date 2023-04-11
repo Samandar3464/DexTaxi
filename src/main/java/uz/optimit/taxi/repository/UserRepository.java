@@ -12,6 +12,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByPhone(@NotBlank @Size(min = 9, max = 9) String phone);
 
-    //    Optional<User> findByPhoneAndVerificationCode(@NotBlank @Size(min = 9 ,max = 9) String phone,@NotBlank @Size(min = 6 ,max = 6) Integer verificationCode);
-    Optional<User> findByPhoneAndVerificationCode(String phone, Integer verificationCode);
+        Optional<User> findByPhoneAndVerificationCode(@NotBlank @Size(min = 9 ,max = 9) String phone,@NotBlank @Size(min = 6 ,max = 6) Integer verificationCode);
 }

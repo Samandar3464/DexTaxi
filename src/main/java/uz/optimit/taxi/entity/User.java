@@ -9,6 +9,9 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.optimit.taxi.model.request.DriverRegisterDto;
 import uz.optimit.taxi.model.request.PassengerRegisterDto;
@@ -71,7 +74,7 @@ public class User implements UserDetails {
     private Attachment profilePhoto;
 
     @ManyToMany
-    private List<Role> roleList;
+    private List<Role> roles;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -85,23 +88,17 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<AnnouncementDriver> announcementDrivers;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> roles = new ArrayList<>();
-        roleList.forEach(role ->
-                roles.add(new SimpleGrantedAuthority("ROLE_" + role)));
-        return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.forEach(role ->
+                authorityList.add(new SimpleGrantedAuthority("ROLE_" + role)));
+        return authorityList;
     }
 
     @Override
     public String getUsername() {
-        return this.phone;
+        return phone;
     }
 
     @Override
@@ -121,9 +118,8 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isBlocked;
+        return true;
     }
-
     public static User fromDriver(DriverRegisterDto driverRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService , Integer verificationCode){
         return User.builder()
                 .name(driverRegisterDto.getName())
