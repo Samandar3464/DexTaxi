@@ -20,6 +20,7 @@ public class Car  {
     private UUID id;
 
     private String carNumber;
+    private String color;
 
     private String carPassport;
 
