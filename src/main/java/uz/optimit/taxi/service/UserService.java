@@ -54,7 +54,7 @@ public class UserService {
         }
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
-        User user = User.fromPassenger(passengerRegisterDto, passwordEncoder, verificationCode);
+        User user = User.fromPassenger(passengerRegisterDto, passwordEncoder,attachmentService, verificationCode);
         userRepository.save(user);
         return new ResponseEntity<>("User added", HttpStatus.CREATED);
     }

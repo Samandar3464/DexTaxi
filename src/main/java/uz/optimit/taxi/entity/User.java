@@ -142,7 +142,7 @@ public class User implements UserDetails {
                 .isBlocked(false)
                 .build();
     }
-    public static User fromPassenger(PassengerRegisterDto passengerRegisterDto, PasswordEncoder passwordEncoder , Integer verificationCode){
+    public static User fromPassenger(PassengerRegisterDto passengerRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode){
         return User.builder()
                 .name(passengerRegisterDto.getName())
                 .surname(passengerRegisterDto.getSurname())
@@ -152,6 +152,7 @@ public class User implements UserDetails {
                 .registeredDate(LocalDateTime.now())
                 .verificationCode(verificationCode)
                 .verificationCodeLiveTime(LocalDateTime.now())
+                .profilePhoto(attachmentService.saveToSystem(passengerRegisterDto.getMultipartFile()))
                 .password(passwordEncoder.encode(passengerRegisterDto.getPassword()))
 
                 .isBlocked(false)
