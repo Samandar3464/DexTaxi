@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.model.request.PassengerRegisterDto;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.DriverRegisterDto;
@@ -22,7 +23,7 @@ public class UserController {
         return userService.registerDriver(driverRegisterDto);
     }
     @PostMapping("/register/passenger")
-    public ResponseEntity<?> registerPassenger(@RequestBody PassengerRegisterDto passengerRegisterDto){
+    public ResponseEntity<?> registerPassenger(@ModelAttribute PassengerRegisterDto passengerRegisterDto){
         return userService.registerPassenger(passengerRegisterDto);
     }
     @PostMapping("/login")
@@ -34,14 +35,9 @@ public class UserController {
         return userService.verify(userVerifyRequestDto);
     }
 
-    @PostMapping("user/refreshToken")
-    public String verifyl(@RequestBody Jwt token){
-        return userService.refreshToken(token.getRefreshToken());
-    }
-
-    @GetMapping("a")
-    public String verifyl(){
-        return "keldik";
+    @PostMapping("get/token/refreshToken")
+    public String verifyl(@RequestBody TokenResponse token){
+        return userService.getToken(token.getRefreshToken());
     }
 
 }

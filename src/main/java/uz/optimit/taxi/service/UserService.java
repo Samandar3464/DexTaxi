@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.optimit.taxi.entity.Jwt;
+import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.exception.TimeExceededException;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
@@ -45,8 +45,7 @@ public class UserService {
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromDriver(driverRegisterDto, passwordEncoder, attachmentService, verificationCode);
         User save = userRepository.save(user);
-        return new ResponseEntity<>(save.getId(), HttpStatus.CREATED);
-//        return new ResponseEntity<>(UserResponseDto.from(savedUser, attachmentService.attachDownloadUrl), HttpStatus.CREATED);
+        return new ResponseEntity<>("Successfully userId "+save.getId(), HttpStatus.CREATED);
     }
 
 
@@ -68,31 +67,19 @@ public class UserService {
         try {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authentication);
-            Jwt jwt = null;
+            TokenResponse tokenResponse = null;
             if (authenticate != null){
                 String access = jwtService.generateAccessToken(userLoginRequestDto.getPhone());
                 String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
-                jwt = new Jwt(access,refresh);
+                tokenResponse = new TokenResponse(access,refresh);
             }
-            return new ResponseEntity<>(jwt, HttpStatus.OK);
+            return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
         } catch (BadCredentialsException e) {
             throw new UserNotFoundException("User not found");
         }
     }
 
-    public String refreshToken(String token) {
 
-        String username = jwtService.extraRefreshToken(token);
-
-        if (username==null){
-            return "";
-        }
-
-
-        String jwtToken = jwtService.generateAccessToken(username);
-
-        return jwtToken;
-    }
 
     private Integer verificationCodeGenerator() {
         return RandomGenerator.getDefault().nextInt(100000, 999999);
@@ -121,6 +108,10 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public String getToken(String refreshToken) {
+        return jwtService.getAccessTokenByRefresh(refreshToken);
     }
 }
 

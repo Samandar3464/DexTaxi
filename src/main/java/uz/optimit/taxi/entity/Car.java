@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Car  {
+public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,16 +39,18 @@ public class Car  {
 
     @ManyToOne
     private User user;
+    private boolean isActive;
 
-    public static Car from(CarRegisterRequestDto carRegisterRequestDto, AutoModelRepository autoModelRepository, AttachmentService attachmentService, UserRepository userRepository){
+    public static Car from(CarRegisterRequestDto carRegisterRequestDto, AutoModelRepository autoModelRepository, AttachmentService attachmentService, UserRepository userRepository) {
         return Car.builder()
-                .autoModel(autoModelRepository.getByIdAndAutoCategoryId(carRegisterRequestDto.getAutoModelId(),carRegisterRequestDto.getAutoCategoryId()))
+                .autoModel(autoModelRepository.getByIdAndAutoCategoryId(carRegisterRequestDto.getAutoModelId(), carRegisterRequestDto.getAutoCategoryId()))
                 .color(carRegisterRequestDto.getColor())
                 .texPassport(carRegisterRequestDto.getTexPassport())
                 .carNumber(carRegisterRequestDto.getCarNumber())
                 .texPassportPhoto(attachmentService.saveToSystem(carRegisterRequestDto.getTexPassportPhoto()))
                 .autoPhotos(attachmentService.saveToSystemListFile(carRegisterRequestDto.getAutoPhotos()))
                 .user(userRepository.findById(carRegisterRequestDto.getUserId()).get())
+                .isActive(false)
                 .build();
     }
 }

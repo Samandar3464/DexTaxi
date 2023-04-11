@@ -6,6 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
+import uz.optimit.taxi.exception.RefreshTokeNotFound;
+import uz.optimit.taxi.exception.TimeExceededException;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -75,6 +77,14 @@ public class JwtService {
         return extraAccessClaim(token, Claims::getExpiration);
     }
 
+
+    public String getAccessTokenByRefresh(String token) {
+        String username = extraRefreshToken(token);
+        if (username==null){
+            throw new TimeExceededException("Refresh token time out");
+        }
+        return generateAccessToken(username);
+    }
 
     // check for refresh token
 

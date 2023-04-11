@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserVerifyRequestDto {
 
-    @NotBlank
-    @Size(min = 9, max = 9)
+//    @NotBlank
+//    @Size(min = 9, max = 9)
     private String phone;
-    @NotBlank
-    @Size(min = 6, max = 6)
+//    @NotBlank
+//    @Size(min = 6, max = 6)
     private int verificationCode;
 }

@@ -27,8 +27,8 @@ public class AnnouncementDriverService {
         if (authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
             throw new UserNotFoundException("User not found");
         }
-        String userPhone = (String) authentication.getPrincipal();
-        User user = userRepository.findByPhone(userPhone).orElseThrow(() -> new UserNotFoundException("user not found"));
+        User  principal = (User) authentication.getPrincipal();
+        User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
         AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
         repository.save(announcementDriver);
         return new ResponseEntity<>("Successfully",HttpStatus.CREATED);
