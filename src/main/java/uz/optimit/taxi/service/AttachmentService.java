@@ -71,6 +71,13 @@ public class AttachmentService {
         }
 
     }
+    public List<Attachment> saveToSystemListFile(List<MultipartFile> fileList){
+        List<Attachment> attachments = new ArrayList<>();
+        fileList.forEach((file)->{
+            attachments.add(saveToSystem(file));
+        });
+        return attachments;
+    }
 
     private Attachment getAttachment(String fileName) {
         String newName = fileName.split("\\.")[0];

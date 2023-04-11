@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 public class Attachment  {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String originName;
     private long size;

@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import uz.optimit.taxi.model.PassengerRegisterDto;
-import uz.optimit.taxi.model.UserLoginRequestDto;
-import uz.optimit.taxi.model.DriverRegisterDto;
-import uz.optimit.taxi.model.UserVerifyRequestDto;
+import uz.optimit.taxi.model.request.PassengerRegisterDto;
+import uz.optimit.taxi.model.request.UserLoginRequestDto;
+import uz.optimit.taxi.model.request.DriverRegisterDto;
+import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.service.UserService;
 
 @RestController
@@ -19,12 +19,12 @@ public class UserController {
 
     @PostMapping("/register/driver")
     public ResponseEntity<?> registerDriver(@ModelAttribute @Validated DriverRegisterDto driverRegisterDto){
-        return userService.register(driverRegisterDto);
+        return userService.registerDriver(driverRegisterDto);
     }
-//    @PostMapping("/register/passenger")
-//    public ResponseEntity<?> registerPassenger(@ModelAttribute @Validated PassengerRegisterDto driverRegisterDto){
-//        return userService.register(driverRegisterDto);
-//    }
+    @PostMapping("/register/passenger")
+    public ResponseEntity<?> registerPassenger(@RequestBody PassengerRegisterDto passengerRegisterDto){
+        return userService.registerPassenger(passengerRegisterDto);
+    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated UserLoginRequestDto userLoginRequestDto){
         return userService.login(userLoginRequestDto);

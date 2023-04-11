@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 public class AnnouncementDriver {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne

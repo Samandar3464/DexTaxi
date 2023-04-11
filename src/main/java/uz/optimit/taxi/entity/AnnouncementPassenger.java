@@ -1,9 +1,6 @@
 package uz.optimit.taxi.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,9 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-public class AnnouncementUser  {
+public class AnnouncementPassenger {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @ManyToOne
     private Region fromRegion;

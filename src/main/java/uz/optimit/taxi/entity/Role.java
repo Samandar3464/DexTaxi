@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 public class Role {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
 

@@ -15,14 +15,14 @@ import java.util.UUID;
 @Entity
 public class Region {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
     @JsonIgnore
     @OneToMany(mappedBy = "fromRegion")
-    private List<AnnouncementUser> fromAnnouncementUser;
+    private List<AnnouncementPassenger> fromAnnouncementUser;
     @JsonIgnore
     @OneToMany(mappedBy = "toRegion")
-    private List<AnnouncementUser> toAnnouncementUser;
+    private List<AnnouncementPassenger> toAnnouncementUser;
 
 }

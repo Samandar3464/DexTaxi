@@ -14,10 +14,10 @@ import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.exception.TimeExceededException;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
-import uz.optimit.taxi.model.UserLoginRequestDto;
-import uz.optimit.taxi.model.DriverRegisterDto;
-import uz.optimit.taxi.model.UserResponseDto;
-import uz.optimit.taxi.model.UserVerifyRequestDto;
+import uz.optimit.taxi.model.request.DriverRegisterDto;
+import uz.optimit.taxi.model.request.PassengerRegisterDto;
+import uz.optimit.taxi.model.request.UserLoginRequestDto;
+import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> register(DriverRegisterDto driverRegisterDto) {
+    public ResponseEntity<?> registerDriver(DriverRegisterDto driverRegisterDto) {
         Optional<User> byPhone = userRepository.findByPhone(driverRegisterDto.getPhone());
         if (byPhone.isPresent()) {
             throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
@@ -42,8 +42,21 @@ public class UserService {
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromDriver(driverRegisterDto, passwordEncoder, attachmentService, verificationCode);
-        User savedUser = userRepository.save(user);
-        return new ResponseEntity<>(UserResponseDto.from(savedUser, attachmentService.attachDownloadUrl), HttpStatus.CREATED);
+        userRepository.save(user);
+        return new ResponseEntity<>("User added", HttpStatus.CREATED);
+//        return new ResponseEntity<>(UserResponseDto.from(savedUser, attachmentService.attachDownloadUrl), HttpStatus.CREATED);
+    }
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> registerPassenger(PassengerRegisterDto passengerRegisterDto) {
+        Optional<User> byPhone = userRepository.findByPhone(passengerRegisterDto.getPhone());
+        if (byPhone.isPresent()) {
+            throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
+        }
+        Integer verificationCode = verificationCodeGenerator();
+        System.out.println("verificationCode = " + verificationCode);
+        User user = User.fromPassenger(passengerRegisterDto, passwordEncoder, verificationCode);
+        userRepository.save(user);
+        return new ResponseEntity<>("User added", HttpStatus.CREATED);
     }
 
     @ResponseStatus(HttpStatus.OK)

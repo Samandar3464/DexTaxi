@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 public class AutoCategory {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
     @JsonIgnore

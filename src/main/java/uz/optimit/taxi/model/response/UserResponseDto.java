@@ -1,15 +1,12 @@
-package uz.optimit.taxi.model;
+package uz.optimit.taxi.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.*;
-import uz.optimit.taxi.service.AttachmentService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data

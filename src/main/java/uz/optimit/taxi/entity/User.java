@@ -10,7 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import uz.optimit.taxi.model.DriverRegisterDto;
+import uz.optimit.taxi.model.request.DriverRegisterDto;
+import uz.optimit.taxi.model.request.PassengerRegisterDto;
 import uz.optimit.taxi.service.AttachmentService;
 
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ import java.util.UUID;
 @Table(name = "Users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Pattern(regexp = "^[A-Za-z]*$")
@@ -78,7 +79,7 @@ public class User implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<AnnouncementUser> announcementUser;
+    private List<AnnouncementPassenger> announcementUser;
 
     @JsonIgnore
     @ManyToMany
@@ -137,6 +138,21 @@ public class User implements UserDetails {
                 .passportNumber(driverRegisterDto.getPassportNumber())
                 .passportPhoto(attachmentService.saveToSystem(driverRegisterDto.getPassportPhoto()))
                 .profilePhoto(attachmentService.saveToSystem(driverRegisterDto.getProfilePhoto()))
+
+                .isBlocked(false)
+                .build();
+    }
+    public static User fromPassenger(PassengerRegisterDto passengerRegisterDto, PasswordEncoder passwordEncoder , Integer verificationCode){
+        return User.builder()
+                .name(passengerRegisterDto.getName())
+                .surname(passengerRegisterDto.getSurname())
+                .phone(passengerRegisterDto.getPhone())
+                .birthDate(passengerRegisterDto.getBirthDate())
+                .gender(passengerRegisterDto.getGender())
+                .registeredDate(LocalDateTime.now())
+                .verificationCode(verificationCode)
+                .verificationCodeLiveTime(LocalDateTime.now())
+                .password(passwordEncoder.encode(passengerRegisterDto.getPassword()))
 
                 .isBlocked(false)
                 .build();

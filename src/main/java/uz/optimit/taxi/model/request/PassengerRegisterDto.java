@@ -1,4 +1,4 @@
-package uz.optimit.taxi.model;
+package uz.optimit.taxi.model.request;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import uz.optimit.taxi.entity.Gender;
 
 import java.time.LocalDate;
@@ -16,9 +15,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DriverRegisterDto {
-
-    private MultipartFile profilePhoto;
+public class PassengerRegisterDto {
 
     @Pattern(regexp = "^[A-Za-z]*$")
     private String name;
@@ -29,18 +26,13 @@ public class DriverRegisterDto {
     @NotBlank
     @Size(min = 9, max = 9)
     private String phone;
+    private LocalDate birthDate;
 
     @NotBlank
     @Size(min = 6)
     private String password;
 
-    private LocalDate birthDate;
-
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Size(min = 9 , max = 9)
-        private String passportNumber;
-
-    private MultipartFile passportPhoto;
 }
