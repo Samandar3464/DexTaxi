@@ -65,15 +65,15 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(ariError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleAccessTokenTimeExceededException(Exception e, HttpServletRequest request) {
-        ApiError ariError = new ApiError(
-                request.getRequestURI()
-                , e.getMessage()
-                , HttpStatus.BAD_GATEWAY.value()
-                , " Token time out");
-        return new ResponseEntity<>(ariError, HttpStatus.BAD_GATEWAY);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ApiError> handleAccessTokenTimeExceededException(Exception e, HttpServletRequest request) {
+//        ApiError ariError = new ApiError(
+//                request.getRequestURI()
+//                , e.getMessage()
+//                , HttpStatus.BAD_GATEWAY.value()
+//                , " Token time out");
+//        return new ResponseEntity<>(ariError, HttpStatus.BAD_GATEWAY);
+//    }
 
     @ExceptionHandler(SmsSendingFailException.class)
     public ResponseEntity<ApiError> handleSmsSendingFailException(SmsSendingFailException e, HttpServletRequest request) {

@@ -14,14 +14,14 @@ import java.util.UUID;
 @Entity
 public class Attachment  {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String originName;
     private long size;
     private String newName;
     private String type;
     private String contentType;
-    private double path;
+    private String path;
     @ManyToMany
     private List<Car> car;
 }

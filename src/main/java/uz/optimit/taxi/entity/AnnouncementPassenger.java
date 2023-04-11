@@ -2,10 +2,8 @@ package uz.optimit.taxi.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.repository.RegionRepository;
-import uz.optimit.taxi.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,14 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-public class AnnouncementDriver {
+public class AnnouncementPassenger {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
     @ManyToOne
     private Region fromRegion;
-
     @ManyToOne
     private Region toRegion;
 
@@ -38,21 +34,20 @@ public class AnnouncementDriver {
 
     private double toLatitude;
 
-    private double frontSeatPrice;
-
-    private double backSeatPrice;
+    private double price;
 
     private boolean baggage;
 
     private boolean isActive;
 
-    private byte emptySeat;
+    private boolean forFamiliar;
+
+    private String info;
 
     private LocalDateTime createdTime;
 
-    private String info;
-    public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
-        return AnnouncementDriver.builder()
+    public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
+        return AnnouncementPassenger.builder()
                 .user(user)
                 .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
                 .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
@@ -60,10 +55,8 @@ public class AnnouncementDriver {
                 .fromLongitude(announcementRequestDto.getFromLongitude())
                 .toLatitude(announcementRequestDto.getToLatitude())
                 .toLongitude(announcementRequestDto.getToLongitude())
-                .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())
-                .backSeatPrice(announcementRequestDto.getBackSeatPrice())
-                .baggage(announcementRequestDto.isBaggage())
-                .emptySeat(announcementRequestDto.getEmptySeat())
+                .price(announcementRequestDto.getPrice())
+                .forFamiliar(announcementRequestDto.isForFamiliar())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
                 .isActive(true)
