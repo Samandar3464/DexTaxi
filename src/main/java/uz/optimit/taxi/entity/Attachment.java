@@ -21,7 +21,7 @@ public class Attachment  {
     private String newName;
     private String type;
     private String contentType;
-    private double path;
+    private String path;
     @ManyToMany
     private List<Car> car;
 }
