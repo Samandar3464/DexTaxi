@@ -1,8 +1,8 @@
 package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementPassengerService;
 
@@ -14,17 +14,17 @@ public class AnnouncementPassengerController {
      private final AnnouncementPassengerService announcementPassengerService;
 
      @PostMapping("/add")
-     public ResponseEntity<?> addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
+     public ApiResponse addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
           return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
      }
 
      @GetMapping("/getList")
-     public ResponseEntity<?> getPassengerList() {
+     public ApiResponse getPassengerList() {
           return announcementPassengerService.getPassengerList();
      }
 
      @GetMapping("/getListForAnonymousUser")
-     public ResponseEntity<?> getPassengerListForAnonymousUser() {
+     public ApiResponse getPassengerListForAnonymousUser() {
           return announcementPassengerService.getPassengerListForAnonymousUser();
      }
 

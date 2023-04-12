@@ -110,8 +110,8 @@ public class UserService {
         return false;
     }
 
-    public String getToken(String refreshToken) {
-        return jwtService.getAccessTokenByRefresh(refreshToken);
+    public ApiResponse getToken(String refreshToken) {
+        return new ApiResponse(new TokenResponse(refreshToken),true);
     }
 }
 

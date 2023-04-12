@@ -39,7 +39,7 @@ public class UserController {
      }
 
      @PostMapping("get/token/refreshToken")
-     public String refreshToken(@RequestBody TokenResponse token) {
+     public ApiResponse refreshToken(@RequestBody TokenResponse token) {
           return userService.getToken(token.getRefreshToken());
      }
 
