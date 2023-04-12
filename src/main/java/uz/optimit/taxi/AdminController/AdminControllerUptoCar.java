@@ -23,13 +23,13 @@ public class AdminControllerUptoCar {
     }
 
 
-    @GetMapping("/getCar")
-    public ResponseEntity<?> getCarById(@PathVariable UUID id){
+    @GetMapping("/getCar/{id}")
+    public ResponseEntity<?> getCarById(@PathVariable("id") UUID id){
         return carService.getCarById(id);
     }
 
-    @GetMapping("/activateCar")
-    public ResponseEntity<?> activateCar(@PathVariable UUID id){
+    @GetMapping("/activateCar/{id}")
+    public ResponseEntity<?> activateCar(@PathVariable("id") UUID id){
         return carService.activateCar(id);
     }
 }
