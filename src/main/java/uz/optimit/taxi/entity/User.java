@@ -9,10 +9,9 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import uz.optimit.taxi.entity.Enum.Gender;
+import uz.optimit.taxi.entity.Enum.RoleEnum;
 import uz.optimit.taxi.model.request.DriverRegisterDto;
 import uz.optimit.taxi.model.request.PassengerRegisterDto;
 import uz.optimit.taxi.service.AttachmentService;
@@ -88,6 +87,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<AnnouncementDriver> announcementDrivers;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<ForFamiliar> forFamiliars;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -132,6 +134,7 @@ public class User implements UserDetails {
                 .verificationCodeLiveTime(LocalDateTime.now())
                 .password(passwordEncoder.encode(driverRegisterDto.getPassword()))
                 .passportNumber(driverRegisterDto.getPassportNumber())
+                .roles(List.of(new Role(RoleEnum.HAYDOVCHI)))
                 .passportPhoto(attachmentService.saveToSystem(driverRegisterDto.getPassportPhoto()))
                 .profilePhoto(attachmentService.saveToSystem(driverRegisterDto.getProfilePhoto()))
 
@@ -150,7 +153,7 @@ public class User implements UserDetails {
                 .verificationCodeLiveTime(LocalDateTime.now())
                 .profilePhoto(attachmentService.saveToSystem(passengerRegisterDto.getMultipartFile()))
                 .password(passwordEncoder.encode(passengerRegisterDto.getPassword()))
-
+                .roles(List.of(new Role(RoleEnum.YOLOVCHI)))
                 .isBlocked(false)
                 .build();
     }

@@ -45,21 +45,21 @@ public class UserService {
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromDriver(driverRegisterDto, passwordEncoder, attachmentService, verificationCode);
         User save = userRepository.save(user);
-        return new ResponseEntity<>("Successfully userId "+save.getId(), HttpStatus.CREATED);
+        return new ResponseEntity<>("Successfully userId "+save.getId()+" verification code :"+verificationCode , HttpStatus.CREATED);
     }
 
 
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> registerPassenger(PassengerRegisterDto passengerRegisterDto) {
         Optional<User> byPhone = userRepository.findByPhone(passengerRegisterDto.getPhone());
-        if (byPhone.isPresent()) {
-            throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
-        }
+//        if (byPhone.isPresent()) {
+//            throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
+//        }
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromPassenger(passengerRegisterDto, passwordEncoder,attachmentService, verificationCode);
         userRepository.save(user);
-        return new ResponseEntity<>("User added", HttpStatus.CREATED);
+        return new ResponseEntity<>("User added"+" verification code :"+verificationCode, HttpStatus.CREATED);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -89,9 +89,9 @@ public class UserService {
     public ResponseEntity<?> verify(UserVerifyRequestDto userVerifyRequestDto) {
         User user = userRepository.findByPhoneAndVerificationCode(userVerifyRequestDto.getPhone(), userVerifyRequestDto.getVerificationCode())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        if (!verificationCodeLiveTime(user.getVerificationCodeLiveTime())) {
-            throw new TimeExceededException("Verification code live time end");
-        }
+//        if (!verificationCodeLiveTime(user.getVerificationCodeLiveTime())) {
+//            throw new TimeExceededException("Verification code live time end");
+//        }
         user.setVerificationCode(0);
         user.setBlocked(true);
         userRepository.save(user);

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.*;
+import uz.optimit.taxi.entity.Enum.Gender;
 
 import java.time.LocalDate;
 import java.util.UUID;

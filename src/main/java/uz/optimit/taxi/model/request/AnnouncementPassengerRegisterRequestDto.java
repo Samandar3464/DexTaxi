@@ -25,7 +25,7 @@ public class AnnouncementPassengerRegisterRequestDto {
 
      private boolean baggage;
 
-     private boolean isActive;
+     private boolean active;
 
      private boolean forFamiliar;
 
