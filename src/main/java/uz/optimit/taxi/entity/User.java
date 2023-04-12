@@ -11,9 +11,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.optimit.taxi.entity.Enum.Gender;
-import uz.optimit.taxi.entity.Enum.RoleEnum;
 import uz.optimit.taxi.model.request.DriverRegisterDto;
 import uz.optimit.taxi.model.request.PassengerRegisterDto;
+import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.service.AttachmentService;
 
 import java.time.LocalDate;
@@ -122,7 +122,7 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    public static User fromDriver(DriverRegisterDto driverRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService , Integer verificationCode){
+    public static User fromDriver(DriverRegisterDto driverRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService , Integer verificationCode , RoleRepository roleRepository){
         return User.builder()
                 .name(driverRegisterDto.getName())
                 .surname(driverRegisterDto.getSurname())
@@ -134,14 +134,13 @@ public class User implements UserDetails {
                 .verificationCodeLiveTime(LocalDateTime.now())
                 .password(passwordEncoder.encode(driverRegisterDto.getPassword()))
                 .passportNumber(driverRegisterDto.getPassportNumber())
-                .roles(List.of(new Role(RoleEnum.HAYDOVCHI)))
+                .roles(List.of(roleRepository.findByName("HAYDOVCHI")))
                 .passportPhoto(attachmentService.saveToSystem(driverRegisterDto.getPassportPhoto()))
                 .profilePhoto(attachmentService.saveToSystem(driverRegisterDto.getProfilePhoto()))
-
                 .isBlocked(false)
                 .build();
     }
-    public static User fromPassenger(PassengerRegisterDto passengerRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode){
+    public static User fromPassenger(PassengerRegisterDto passengerRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode , RoleRepository roleRepository){
         return User.builder()
                 .name(passengerRegisterDto.getName())
                 .surname(passengerRegisterDto.getSurname())
@@ -153,7 +152,7 @@ public class User implements UserDetails {
                 .verificationCodeLiveTime(LocalDateTime.now())
                 .profilePhoto(attachmentService.saveToSystem(passengerRegisterDto.getMultipartFile()))
                 .password(passwordEncoder.encode(passengerRegisterDto.getPassword()))
-                .roles(List.of(new Role(RoleEnum.YOLOVCHI)))
+                .roles(List.of(roleRepository.findByName("YOLOVCHI")))
                 .isBlocked(false)
                 .build();
     }

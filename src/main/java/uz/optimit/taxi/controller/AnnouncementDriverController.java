@@ -1,11 +1,11 @@
 package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementDriverService;
 
@@ -17,7 +17,8 @@ public class AnnouncementDriverController {
     private final AnnouncementDriverService announcementDriverService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addDriverAnnouncement(@RequestBody AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto){
+    //    @PreAuthorize("hasRole('HAYDOVCHI')")
+    public ApiResponse addDriverAnnouncement(@RequestBody AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto){
         return announcementDriverService.add(announcementDriverRegisterRequestDto);
     }
 }

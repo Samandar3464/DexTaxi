@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.ForFamiliar;
 import uz.optimit.taxi.entity.User;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.ForFamiliarRegisterRequestDto;
 import uz.optimit.taxi.repository.ForFamiliarRepository;
@@ -21,10 +22,11 @@ import java.util.List;
 public class ForFamiliarService {
 
     private final ForFamiliarRepository forFamiliarRepository;
+
     private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addForFamiliar(List<ForFamiliarRegisterRequestDto> familiarRegisterRequestDtoList){
+    public ApiResponse addForFamiliar(List<ForFamiliarRegisterRequestDto> familiarRegisterRequestDtoList){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
             throw new UserNotFoundException("User not found");
@@ -34,6 +36,6 @@ public class ForFamiliarService {
 
        familiarRegisterRequestDtoList.forEach(family->
                forFamiliarRepository.save(ForFamiliar.from(family, user)));
-        return new ResponseEntity<>("Successfully", HttpStatus.CREATED);
+        return new ApiResponse("Successfully", true);
     }
 }

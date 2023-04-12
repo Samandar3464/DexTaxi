@@ -2,10 +2,10 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.Car;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.model.response.CarResponseDto;
@@ -30,33 +30,33 @@ public class CarService {
     private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> addCar(CarRegisterRequestDto carRegisterRequestDto) {
+    public ApiResponse addCar(CarRegisterRequestDto carRegisterRequestDto) {
         Car car = Car.from(carRegisterRequestDto, autoModelRepository, attachmentService, userRepository);
         carRepository.save(car);
-        return new ResponseEntity<>("Successfully ", HttpStatus.OK);
+        return new ApiResponse("Successfully ", true);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> disActiveCarList() {
+    public ApiResponse disActiveCarList() {
         List<Car> allByActive = carRepository.findAllByActive(false);
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
         allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
-        return new ResponseEntity<>(carResponseDtoList, HttpStatus.OK);
+        return new ApiResponse(carResponseDtoList, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getCarById(UUID carId) {
+    public ApiResponse getCarById(UUID carId) {
         Car car = carRepository.findById(carId).orElseThrow(()->new RecordNotFoundException("car not found"));
         CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
-        return new ResponseEntity<>(carResponseDto, HttpStatus.OK);
+        return new ApiResponse(carResponseDto, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> activateCar(UUID carId) {
+    public ApiResponse activateCar(UUID carId) {
         Car car = carRepository.findById(carId).orElseThrow(()->new RecordNotFoundException("car not found"));
         car.setActive(true);
         carRepository.save(car);
-        return new ResponseEntity<>("Car activated", HttpStatus.OK);
+        return new ApiResponse("Car activated", true);
     }
 
 }

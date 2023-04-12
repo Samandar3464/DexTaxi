@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uz.optimit.taxi.entity.Enum.RoleEnum;
-
-import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
@@ -17,10 +14,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    @Column(unique = true)
+    private String name;
 
-    public Role(RoleEnum role) {
-        this.role = role;
-    }
 }

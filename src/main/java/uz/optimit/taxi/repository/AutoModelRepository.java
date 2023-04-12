@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AutoModelRepository extends JpaRepository<AutoModel, Integer> {
-    AutoModel getByIdAndAutoCategoryId(UUID id, UUID autoCategory_id);
+    AutoModel getByIdAndAutoCategoryId(Integer id, Integer autoCategory_id);
 
     Optional<AutoModel> findByNameAndAutoCategoryId(String name, Integer autoCategory_id);
 }
