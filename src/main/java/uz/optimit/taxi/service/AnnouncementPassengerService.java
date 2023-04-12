@@ -2,7 +2,6 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -15,11 +14,13 @@ import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
 import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
+import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 import uz.optimit.taxi.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class AnnouncementPassengerService {
 
      private final AnnouncementPassengerRepository repository;
      private final RegionRepository regionRepository;
+     private final CityRepository cityRepository;
      private final UserRepository userRepository;
      private final AttachmentService attachmentService;
 
@@ -38,7 +40,7 @@ public class AnnouncementPassengerService {
           }
           User principal = (User) authentication.getPrincipal();
           User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
-          AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository);
+          AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository,cityRepository);
           repository.save(announcementPassenger);
           return new ApiResponse("Successfully", true);
      }
@@ -47,22 +49,20 @@ public class AnnouncementPassengerService {
      public ApiResponse getPassengerListForAnonymousUser() {
 
           List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-          List<AnnouncementPassenger> allByActive = repository.findAllByActive(true);
+          List<AnnouncementPassenger> allByActive = repository.findByActive(true);
           allByActive.forEach(a -> {
                passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
           });
-          return new ApiResponse(passengerResponses,true);
+          return new ApiResponse(passengerResponses, true);
      }
 
      @ResponseStatus(HttpStatus.FOUND)
-     public ApiResponse getPassengerList() {
+     public ApiResponse getPassengerList(UUID id) {
+          AnnouncementPassenger allByActive = repository.findByIdAndActive(id, true);
+          AnnouncementPassengerResponse passengerResponse =
+              AnnouncementPassengerResponse.from(allByActive, attachmentService.attachDownloadUrl);
 
-          List<AnnouncementPassengerResponse> passengerResponses = new ArrayList<>();
-          List<AnnouncementPassenger> allByActive = repository.findAllByActive(true);
-          allByActive.forEach(a -> {
-               passengerResponses.add(AnnouncementPassengerResponse.from(a, attachmentService.attachDownloadUrl));
-          });
-          return new ApiResponse(passengerResponses, true);
+          return new ApiResponse(passengerResponse, true);
      }
 
 }

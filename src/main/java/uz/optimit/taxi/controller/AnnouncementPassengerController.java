@@ -6,6 +6,8 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementPassengerService;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/passenger")
@@ -18,9 +20,9 @@ public class AnnouncementPassengerController {
           return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
      }
 
-     @GetMapping("/getList")
-     public ApiResponse getPassengerList() {
-          return announcementPassengerService.getPassengerList();
+     @GetMapping("/getList/{id}")
+     public ApiResponse getPassengerList(@PathVariable("id")UUID id) {
+          return announcementPassengerService.getPassengerList(id);
      }
 
      @GetMapping("/getListForAnonymousUser")

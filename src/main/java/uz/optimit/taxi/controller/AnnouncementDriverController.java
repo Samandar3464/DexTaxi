@@ -10,6 +10,8 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementDriverService;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/driver")
@@ -23,14 +25,14 @@ public class AnnouncementDriverController {
         return announcementDriverService.add(announcementDriverRegisterRequestDto);
     }
 
-    @GetMapping("/getList")
-    public ApiResponse getDriverList(){
-        return announcementDriverService.getDriverList();
+    @GetMapping("/getList/{id}")
+    public ApiResponse getDriverList(@PathVariable("id")UUID id){
+        return announcementDriverService.getDriverList(id);
     }
+
     @GetMapping("/getListForAnonymousUser")
     public ApiResponse getDriverListForAnonymousUser(){
         return announcementDriverService.getDriverListForAnonymousUser();
     }
-
 
 }

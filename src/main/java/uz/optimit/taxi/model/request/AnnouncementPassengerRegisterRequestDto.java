@@ -15,6 +15,10 @@ public class AnnouncementPassengerRegisterRequestDto {
 
      private Integer toRegionId;
 
+     private Integer fromCityId;
+
+     private Integer toCityId;
+
      private double fromLatitude;
 
      private double fromLongitude;

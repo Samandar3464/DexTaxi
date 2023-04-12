@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
+import uz.optimit.taxi.entity.City;
 import uz.optimit.taxi.entity.Region;
 
 import java.util.UUID;
@@ -17,6 +18,8 @@ public class AnnouncementPassengerResponse {
      private UUID id;
      private Region fromRegion;
      private Region toRegion;
+     private City fromCity;
+     private City toCity;
      private UserResponseDto userResponseDto;
      private double fromLatitude;
 

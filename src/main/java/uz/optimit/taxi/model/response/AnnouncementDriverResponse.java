@@ -17,29 +17,16 @@ import java.util.UUID;
 public class AnnouncementDriverResponse {
      private UUID id;
      private Region fromRegion;
-
      private Region toRegion;
      private UserResponseDto userResponseDto;
-     private double fromLatitude;
-
-     private double fromLongitude;
-
-     private double toLongitude;
-
-     private double toLatitude;
-
      private double frontSeatPrice;
-
      private double backSeatPrice;
      private byte emptySeat;
      private String info;
-
      private boolean baggage;
      private List<String> carPhotoPath;
      private String color;
-
      private String carNumber;
-
      private String autoModel;
 
 
@@ -58,10 +45,6 @@ public class AnnouncementDriverResponse {
               .fromRegion(announcementDriver.getFromRegion())
               .toRegion(announcementDriver.getToRegion())
               .userResponseDto(UserResponseDto.from(announcementDriver.getUser(),downloadUrl))
-              .fromLatitude(announcementDriver.getFromLatitude())
-              .fromLongitude(announcementDriver.getFromLongitude())
-              .toLatitude(announcementDriver.getToLatitude())
-              .toLongitude(announcementDriver.getToLongitude())
               .frontSeatPrice(announcementDriver.getFrontSeatPrice())
               .backSeatPrice(announcementDriver.getBackSeatPrice())
               .emptySeat(announcementDriver.getEmptySeat())
