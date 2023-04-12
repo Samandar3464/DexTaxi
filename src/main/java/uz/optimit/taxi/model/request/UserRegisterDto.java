@@ -3,7 +3,6 @@ package uz.optimit.taxi.model.request;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +19,8 @@ public class UserRegisterDto {
 
     private MultipartFile profilePhoto;
 
-    @Pattern(regexp = "^[A-Za-z]*$")
     private String name;
 
-    @Pattern(regexp = "^[A-Za-z]*$")
     private String surname;
 
     @NotBlank

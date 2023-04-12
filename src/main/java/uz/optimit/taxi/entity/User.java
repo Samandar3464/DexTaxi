@@ -3,7 +3,6 @@ package uz.optimit.taxi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,11 +33,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Pattern(regexp = "^[A-Za-z]*$")
     @NotBlank
     private String name;
 
-    @Pattern(regexp = "^[A-Za-z]*$")
     @NotBlank
     private String surname;
 
