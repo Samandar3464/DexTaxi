@@ -5,9 +5,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.exception.RefreshTokeNotFound;
 import uz.optimit.taxi.exception.TimeExceededException;
+import uz.optimit.taxi.exception.UserNotFoundException;
+import uz.optimit.taxi.repository.UserRepository;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -17,17 +21,18 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     private static final String ACCESS_SECRET_KEY = "404E635266556A586E327235753878F413F4428472B4B6250645367566B5970";
     private static final String REFRESH_SECRET_KEY = "404E635266556A586E327235753878F413F4428472B4B6250645lll367566B5970";
     private static final int REFRESH_SECRET_TIME = 10 * 60 * 1000;
     private static final int ACCESS_SECRET_TIME = 1000 * 60 * 10 * 24;
-
+    private final UserRepository userRepository;
 
     //GENERATE TOKENS
 
-    public String generateAccessToken(String phoneNumber) {
-        return generateAccessToken(new HashMap<>(), phoneNumber);
+    public String generateAccessToken(User user) {
+        return generateAccessToken(new HashMap<>(), user);
     }
 
     public String generateRefreshToken(String phoneNumber) {
@@ -36,14 +41,15 @@ public class JwtService {
 
     public String generateAccessToken(
             Map<String, Objects> extraClaims,
-            String phoneNumber) {
+            User user) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(phoneNumber)
+                .setSubject(user.getPhone())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_SECRET_TIME))
                 .signWith(getSingInKeyAccess(), SignatureAlgorithm.HS256)
+                .claim("authorities", user.getAuthorities())
                 .compact();
     }
 
@@ -83,7 +89,8 @@ public class JwtService {
         if (username==null){
             throw new TimeExceededException("Refresh token time out");
         }
-        return generateAccessToken(username);
+        User user = userRepository.findByPhone(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return generateAccessToken(user);
     }
 
     // check for refresh token
@@ -123,14 +130,19 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            return null;
+           throw e;
         }
     }
 
 
     //refresh
     public String extraRefreshToken(String token) {
-        return extraRefreshClaim(token, Claims::getSubject);
+        try {
+            return extraRefreshClaim(token, Claims::getSubject);
+        }catch (Exception e){
+            throw e;
+        }
+
     }
 
     public <T> T extraRefreshClaim(String token, Function<Claims, T> claimsResolver) {

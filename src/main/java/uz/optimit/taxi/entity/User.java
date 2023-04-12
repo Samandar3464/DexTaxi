@@ -6,14 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.optimit.taxi.entity.Enum.Gender;
-import uz.optimit.taxi.model.request.DriverRegisterDto;
-import uz.optimit.taxi.model.request.PassengerRegisterDto;
+import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.service.AttachmentService;
 
@@ -36,11 +34,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-//    @Pattern(regexp = "^[A-Za-z]*$")
+    @Pattern(regexp = "^[A-Za-z]*$")
     @NotBlank
     private String name;
 
-//    @Pattern(regexp = "^[A-Za-z]*$")
+    @Pattern(regexp = "^[A-Za-z]*$")
     @NotBlank
     private String surname;
 
@@ -125,37 +123,20 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    public static User fromDriver(DriverRegisterDto driverRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService , Integer verificationCode , RoleRepository roleRepository){
+
+    public static User fromPassenger(UserRegisterDto userRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode , RoleRepository roleRepository){
         return User.builder()
-                .name(driverRegisterDto.getName())
-                .surname(driverRegisterDto.getSurname())
-                .phone(driverRegisterDto.getPhone())
-                .birthDate(driverRegisterDto.getBirthDate())
-                .gender(driverRegisterDto.getGender())
+                .name(userRegisterDto.getName())
+                .surname(userRegisterDto.getSurname())
+                .phone(userRegisterDto.getPhone())
+                .birthDate(userRegisterDto.getBirthDate())
+                .gender(userRegisterDto.getGender())
                 .registeredDate(LocalDateTime.now())
                 .verificationCode(verificationCode)
                 .verificationCodeLiveTime(LocalDateTime.now())
-                .password(passwordEncoder.encode(driverRegisterDto.getPassword()))
-                .passportNumber(driverRegisterDto.getPassportNumber())
-                .roles(List.of(roleRepository.findByName("HAYDOVCHI")))
-                .passportPhoto(attachmentService.saveToSystem(driverRegisterDto.getPassportPhoto()))
-                .profilePhoto(attachmentService.saveToSystem(driverRegisterDto.getProfilePhoto()))
-                .isBlocked(false)
-                .build();
-    }
-    public static User fromPassenger(PassengerRegisterDto passengerRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode , RoleRepository roleRepository){
-        return User.builder()
-                .name(passengerRegisterDto.getName())
-                .surname(passengerRegisterDto.getSurname())
-                .phone(passengerRegisterDto.getPhone())
-                .birthDate(passengerRegisterDto.getBirthDate())
-                .gender(passengerRegisterDto.getGender())
-                .registeredDate(LocalDateTime.now())
-                .verificationCode(verificationCode)
-                .verificationCodeLiveTime(LocalDateTime.now())
-                .profilePhoto(attachmentService.saveToSystem(passengerRegisterDto.getMultipartFile()))
-                .password(passwordEncoder.encode(passengerRegisterDto.getPassword()))
-                .roles(List.of(roleRepository.findByName("YOLOVCHI")))
+                .profilePhoto(attachmentService.saveToSystem(userRegisterDto.getProfilePhoto()))
+                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
+                .roles(List.of(roleRepository.findByName("YOLOVCHI"), (roleRepository.findByName("HAYDOVCHI"))))
                 .isBlocked(false)
                 .build();
     }
