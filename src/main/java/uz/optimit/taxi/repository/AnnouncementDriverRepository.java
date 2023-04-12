@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface AnnouncementDriverRepository extends JpaRepository<AnnouncementDriver, UUID> {
      List<AnnouncementDriver> findAllByActive(boolean Active);
+     AnnouncementDriver findAllById(UUID id);
 }

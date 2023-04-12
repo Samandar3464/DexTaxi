@@ -20,6 +20,7 @@ import uz.optimit.taxi.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AnnouncementDriverService {
@@ -60,24 +61,22 @@ public class AnnouncementDriverService {
           all.forEach(announcementDriver -> {
                driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
           });
-          return new ApiResponse(driverResponses,true);
+          return new ApiResponse(driverResponses, true);
      }
 
      @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getDriverList() {
+     public ApiResponse getDriverList(UUID id) {
 
-          List<AnnouncementDriverResponse> driverResponses = new ArrayList<>();
-          List<AnnouncementDriver> driverList = repository.findAllByActive(true);
+          AnnouncementDriver driverList = repository.findAllById(id);
           List<Car> allByActive = carRepository.findAllByActive(true);
-
-          for (AnnouncementDriver announcementDriver : driverList) {
-               for (Car car : allByActive) {
-                    if (announcementDriver.getUser().getId() == car.getUser().getId()) {
-                         driverResponses.add(AnnouncementDriverResponse.from(announcementDriver, car, attachmentService.attachDownloadUrl));
-                    }
+          AnnouncementDriverResponse driverResponse = null;
+          for (Car car : allByActive) {
+               if (driverList.getUser().getId() == car.getUser().getId()) {
+                     driverResponse =
+                        AnnouncementDriverResponse.from(driverList, car, attachmentService.attachDownloadUrl);
                }
           }
-          return new ApiResponse(driverResponses,true);
+          return new ApiResponse(driverResponse, true);
      }
 
 
