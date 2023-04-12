@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.service.CarService;
 
@@ -14,7 +15,7 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCar(@ModelAttribute  @Validated  CarRegisterRequestDto carRegisterRequestDto) {
+    public ApiResponse addCar(@ModelAttribute  @Validated  CarRegisterRequestDto carRegisterRequestDto) {
         return carService.addCar(carRegisterRequestDto);
     }
 }

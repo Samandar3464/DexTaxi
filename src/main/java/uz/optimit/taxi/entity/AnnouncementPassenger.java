@@ -42,6 +42,8 @@ public class AnnouncementPassenger {
 
     private boolean forFamiliar;
 
+    private LocalDateTime timeToTravel;
+
     private String info;
 
     private LocalDateTime createdTime;
@@ -57,6 +59,7 @@ public class AnnouncementPassenger {
                 .toLongitude(announcementRequestDto.getToLongitude())
                 .price(announcementRequestDto.getPrice())
                 .forFamiliar(announcementRequestDto.isForFamiliar())
+                .timeToTravel(announcementRequestDto.getTimeToTravel())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
                 .active(true)

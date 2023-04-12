@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.service.CarService;
 
 import java.util.UUID;
@@ -18,18 +19,18 @@ public class AdminControllerUptoCar {
     private final CarService carService;
 
     @GetMapping("/dicActiveCars")
-    public ResponseEntity<?> disActiveCarsList(){
+    public ApiResponse disActiveCarsList(){
         return carService.disActiveCarList();
     }
 
 
     @GetMapping("/getCar/{id}")
-    public ResponseEntity<?> getCarById(@PathVariable("id") UUID id){
+    public ApiResponse getCarById(@PathVariable("id") UUID id){
         return carService.getCarById(id);
     }
 
     @GetMapping("/activateCar/{id}")
-    public ResponseEntity<?> activateCar(@PathVariable("id") UUID id){
+    public ApiResponse activateCar(@PathVariable("id") UUID id){
         return carService.activateCar(id);
     }
 }
