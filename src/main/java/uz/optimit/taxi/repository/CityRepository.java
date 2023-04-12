@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CityRepository extends JpaRepository<City, Integer> {
-     Optional<City> findByName(String name);
+     Optional<City> findByNameAndRegionId(String name, Integer region_id);
 }

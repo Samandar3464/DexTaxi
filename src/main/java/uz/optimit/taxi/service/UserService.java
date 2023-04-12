@@ -18,6 +18,7 @@ import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.UserRepository;
+import uz.optimit.taxi.utils.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package uz.optimit.taxi.service;
+package uz.optimit.taxi.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

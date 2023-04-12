@@ -14,16 +14,23 @@ import java.util.UUID;
 @Builder
 @Entity
 public class City {
-     @Id
-     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private Integer id;
-     @Column(unique = true)
-     private String name;
-     @JsonIgnore
-     @OneToMany(mappedBy = "fromCity")
-     private List<AnnouncementPassenger> fromAnnouncementUser;
-     @JsonIgnore
-     @OneToMany(mappedBy = "toCity")
-     private List<AnnouncementPassenger> toAnnouncementUser;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
+    private String name;
+
+    @JsonIgnore
+    @ManyToOne
+    private Region region;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "fromCity")
+    private List<AnnouncementPassenger> fromAnnouncementUser;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "toCity")
+    private List<AnnouncementPassenger> toAnnouncementUser;
 
 }
