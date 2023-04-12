@@ -1,6 +1,7 @@
 package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ public class AnnouncementPassengerController {
     private final AnnouncementPassengerService announcementPassengerService;
 
     @PostMapping("/add")
+//    @PreAuthorize("hasRole('YOLOVCHI')")
     public ApiResponse addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto){
         return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
     }

@@ -19,17 +19,20 @@ public class AdminControllerUptoCar {
     private final CarService carService;
 
     @GetMapping("/dicActiveCars")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse disActiveCarsList(){
         return carService.disActiveCarList();
     }
 
 
     @GetMapping("/getCar/{id}")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse getCarById(@PathVariable("id") UUID id){
         return carService.getCarById(id);
     }
 
     @GetMapping("/activateCar/{id}")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse activateCar(@PathVariable("id") UUID id){
         return carService.activateCar(id);
     }

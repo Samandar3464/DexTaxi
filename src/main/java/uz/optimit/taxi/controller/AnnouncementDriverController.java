@@ -17,6 +17,7 @@ public class AnnouncementDriverController {
     private final AnnouncementDriverService announcementDriverService;
 
     @PostMapping("/add")
+    //    @PreAuthorize("hasRole('HAYDOVCHI')")
     public ApiResponse addDriverAnnouncement(@RequestBody AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto){
         return announcementDriverService.add(announcementDriverRegisterRequestDto);
     }

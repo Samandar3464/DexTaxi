@@ -1,7 +1,6 @@
 package uz.optimit.taxi.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.TokenResponse;
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("get/token/refreshToken")
-    public String verifyl(@RequestBody TokenResponse token){
+    public String refreshToken(@RequestBody TokenResponse token){
         return userService.getToken(token.getRefreshToken());
     }
 

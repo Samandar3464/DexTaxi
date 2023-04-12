@@ -13,9 +13,11 @@ import uz.optimit.taxi.service.RegionService;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/region")
 public class RegionController {
+
     private final RegionService regionService;
 
     @PostMapping("/add")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse addRegion(@RequestBody RegionRegisterRequestDto regionRegisterRequestDto){
        return regionService.addRegion(regionRegisterRequestDto);
     }

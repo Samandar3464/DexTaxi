@@ -17,6 +17,7 @@ public class AutoCategoryController {
     private final AutoCategoryService autoCategoryService;
 
     @PostMapping("/add")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse addRegion(@RequestBody AutoCategoryRegisterRequestDto autoCategoryRegisterRequestDto){
         return autoCategoryService.addAutoCategory(autoCategoryRegisterRequestDto);
     }

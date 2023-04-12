@@ -13,9 +13,11 @@ import uz.optimit.taxi.service.AutoModelService;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/autoModel")
 public class AutoModelController {
+
     private final AutoModelService autoModelService;
 
     @PostMapping("/add")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse addAutoModel(@RequestBody AutoModelRegisterRequestDto autoModelRegisterRequestDto){
         return autoModelService.addAutoCategory(autoModelRegisterRequestDto);
     }
