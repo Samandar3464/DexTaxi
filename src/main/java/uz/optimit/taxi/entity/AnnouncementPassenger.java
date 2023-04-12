@@ -38,7 +38,7 @@ public class AnnouncementPassenger {
 
     private boolean baggage;
 
-    private boolean isActive;
+    private boolean active;
 
     private boolean forFamiliar;
 
@@ -59,7 +59,7 @@ public class AnnouncementPassenger {
                 .forFamiliar(announcementRequestDto.isForFamiliar())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
-                .isActive(true)
+                .active(true)
                 .build();
 
     }

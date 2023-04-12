@@ -51,7 +51,7 @@ public class CommonExceptionHandler {
                 request.getRequestURI()
                 , e.getMessage()
                 , HttpStatus.ALREADY_REPORTED.value()
-                , " Object already have");
+                , " Object already exist");
         return new ResponseEntity<>(ariError, HttpStatus.ALREADY_REPORTED);
     }
 

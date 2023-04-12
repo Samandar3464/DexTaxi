@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-import uz.optimit.taxi.entity.Gender;
+import uz.optimit.taxi.entity.Enum.Gender;
 
 import java.time.LocalDate;
 
