@@ -11,20 +11,21 @@ import uz.optimit.taxi.service.AnnouncementPassengerService;
 @RequestMapping("/api/v1/passenger")
 public class AnnouncementPassengerController {
 
-    private final AnnouncementPassengerService announcementPassengerService;
+     private final AnnouncementPassengerService announcementPassengerService;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto){
-        return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
-    }
+     @PostMapping("/add")
+     public ResponseEntity<?> addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
+          return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
+     }
 
-    @GetMapping("/getList")
-    public ResponseEntity<?> getPassengerList(){
-        return announcementPassengerService.getPassengerList();
-    }
-    @GetMapping("/getListForAnonymousUser")
-    public ResponseEntity<?> getPassengerListForAnonymousUser(){
-        return announcementPassengerService.getPassengerListForAnonymousUser();
-    }
+     @GetMapping("/getList")
+     public ResponseEntity<?> getPassengerList() {
+          return announcementPassengerService.getPassengerList();
+     }
+
+     @GetMapping("/getListForAnonymousUser")
+     public ResponseEntity<?> getPassengerListForAnonymousUser() {
+          return announcementPassengerService.getPassengerListForAnonymousUser();
+     }
 
 }

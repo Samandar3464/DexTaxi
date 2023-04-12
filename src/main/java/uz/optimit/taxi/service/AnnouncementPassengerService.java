@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
@@ -23,9 +24,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AnnouncementPassengerService {
+
      private final AnnouncementPassengerRepository repository;
      private final RegionRepository regionRepository;
      private final UserRepository userRepository;
+     private final AttachmentService attachmentService;
 
      @ResponseStatus(HttpStatus.CREATED)
      public ResponseEntity<?> add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
@@ -57,8 +60,9 @@ public class AnnouncementPassengerService {
           List<AnnouncementPassengerResponse> passengerResponses = new ArrayList<>();
           List<AnnouncementPassenger> allByActive = repository.findAllByActive(true);
           allByActive.forEach(a -> {
-               passengerResponses.add(AnnouncementPassengerResponse.from(a, "C:/Users/99890/IdeaProjects/DexTaxi/src/main/resources/static/image"));
+               passengerResponses.add(AnnouncementPassengerResponse.from(a, attachmentService.attachDownloadUrl));
           });
           return new ResponseEntity<>(passengerResponses, HttpStatus.FOUND);
      }
+
 }

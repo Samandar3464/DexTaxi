@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AutoModel;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordAlreadyExistException;
 import uz.optimit.taxi.model.request.AutoModelRegisterRequestDto;
 import uz.optimit.taxi.repository.AutoCategoryRepository;
@@ -21,8 +22,8 @@ public class AutoModelService {
     private final AutoCategoryRepository autoCategoryRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addAutoCategory(AutoModelRegisterRequestDto autoModelRegisterRequestDto) {
-        Optional<AutoModel> byName = autoModelRepository.findByNameAndAutoCategoryId(autoModelRegisterRequestDto.getName(),autoModelRegisterRequestDto.getCategoryId());
+    public ApiResponse addAutoCategory(AutoModelRegisterRequestDto autoModelRegisterRequestDto) {
+        Optional<AutoModel> byName = autoModelRepository.findByNameAndAutoCategoryId(autoModelRegisterRequestDto.getName(), autoModelRegisterRequestDto.getCategoryId());
         if (byName.isPresent()) {
             throw new RecordAlreadyExistException("Auto model  already exist");
         }
@@ -30,6 +31,6 @@ public class AutoModelService {
                 .name(autoModelRegisterRequestDto.getName())
                 .autoCategory(autoCategoryRepository.getById(autoModelRegisterRequestDto.getCategoryId())).build();
         autoModelRepository.save(autoModel);
-        return new ResponseEntity<>("Successfully" , HttpStatus.CREATED);
+        return new ApiResponse("Successfully", true);
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final String[] WHITE_LINE = new String[]{
+            "/**",
             "/api/v1/user/**",
             "/static/image/**",
             "/swagger-ui/**",

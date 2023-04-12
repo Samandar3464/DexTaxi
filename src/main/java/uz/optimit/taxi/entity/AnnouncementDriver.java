@@ -48,9 +48,12 @@ public class AnnouncementDriver {
 
     private byte emptySeat;
 
+    private LocalDateTime timeToDrive;
+
     private LocalDateTime createdTime;
 
     private String info;
+
     public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
         return AnnouncementDriver.builder()
                 .user(user)
@@ -64,6 +67,7 @@ public class AnnouncementDriver {
                 .backSeatPrice(announcementRequestDto.getBackSeatPrice())
                 .baggage(announcementRequestDto.isBaggage())
                 .emptySeat(announcementRequestDto.getEmptySeat())
+                .timeToDrive(announcementRequestDto.getTimeToDrive())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
                 .active(true)
