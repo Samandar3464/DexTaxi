@@ -29,6 +29,7 @@ public class UserRegisterDto {
     @NotBlank
     @Size(min = 9, max = 9)
     private String phone;
+
     private LocalDate birthDate;
 
     @NotBlank

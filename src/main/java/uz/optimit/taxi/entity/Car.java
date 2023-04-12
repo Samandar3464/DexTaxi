@@ -30,7 +30,7 @@ public class Car {
     @ManyToOne
     private AutoModel autoModel;
 
-    @ManyToMany(mappedBy = "car")
+    @OneToMany
     private List<Attachment> autoPhotos;
 
     @OneToOne
@@ -41,6 +41,7 @@ public class Car {
 
     @ManyToOne
     private User user;
+
     private boolean active;
 
     public static Car from(CarRegisterRequestDto carRegisterRequestDto, AutoModelRepository autoModelRepository, AttachmentService attachmentService, User user) {

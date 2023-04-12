@@ -17,7 +17,7 @@ public class UserController {
 
      private UserService userService;
      @PostMapping("/register")
-     public ApiResponse registerPassenger(@ModelAttribute UserRegisterDto userRegisterDto) {
+     public ApiResponse registerUser(@ModelAttribute UserRegisterDto userRegisterDto) {
           return userService.registerUser(userRegisterDto);
      }
 

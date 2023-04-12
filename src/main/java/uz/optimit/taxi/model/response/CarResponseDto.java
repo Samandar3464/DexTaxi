@@ -32,6 +32,8 @@ public class CarResponseDto {
 
      private String texPassportPhotoPath;
 
+     private String photoDriverLicense;
+
      private UserResponseDto user;
 
      private boolean active;
@@ -40,10 +42,14 @@ public class CarResponseDto {
      public static CarResponseDto from(Car car, String downloadUrl){
          Attachment texPassportPhoto1 = car.getTexPassportPhoto();
          String texPasswordPhotoLink = downloadUrl + texPassportPhoto1.getPath() + "/" + texPassportPhoto1.getNewName() + "." + texPassportPhoto1.getType();
+         Attachment photoDriverLicense1 = car.getPhotoDriverLicense();
+         String photoDriverLicense2 = downloadUrl + photoDriverLicense1.getPath() + "/" + photoDriverLicense1.getNewName() + "." + photoDriverLicense1.getType();
+
          List<Attachment> autoPhotos1 = car.getAutoPhotos();
          List<String> carPhotoList = new ArrayList<>();
-         autoPhotos1.forEach(attachment->
-                 carPhotoList.add(downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType()));
+         for (Attachment attachment : autoPhotos1) {
+             carPhotoList.add(downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType());
+         }
 
          return    CarResponseDto.builder()
                  .id(car.getId())
@@ -53,6 +59,7 @@ public class CarResponseDto {
                  .autoModel(car.getAutoModel().getName())
                  .active(car.isActive())
                  .texPassportPhotoPath(texPasswordPhotoLink)
+                 .photoDriverLicense(photoDriverLicense2)
                  .autoPhotosPath(carPhotoList)
                  .build();
      }

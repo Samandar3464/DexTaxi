@@ -52,11 +52,6 @@ public class User implements UserDetails {
 
     private LocalDate birthDate;
 
-    @Size(min = 9 , max = 9)
-    private String passportNumber;
-    @OneToOne
-    private Attachment passportPhoto;
-
     private LocalDateTime registeredDate;
 
     private boolean isBlocked;
