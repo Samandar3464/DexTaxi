@@ -30,14 +30,6 @@ public class AnnouncementDriver {
     @ManyToOne
     private User user;
 
-    private double fromLatitude;
-
-    private double fromLongitude;
-
-    private double toLongitude;
-
-    private double toLatitude;
-
     private double frontSeatPrice;
 
     private double backSeatPrice;
@@ -59,10 +51,6 @@ public class AnnouncementDriver {
                 .user(user)
                 .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
                 .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
-                .fromLatitude(announcementRequestDto.getFromLatitude())
-                .fromLongitude(announcementRequestDto.getFromLongitude())
-                .toLatitude(announcementRequestDto.getToLatitude())
-                .toLongitude(announcementRequestDto.getToLongitude())
                 .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())
                 .backSeatPrice(announcementRequestDto.getBackSeatPrice())
                 .baggage(announcementRequestDto.isBaggage())
@@ -72,6 +60,5 @@ public class AnnouncementDriver {
                 .createdTime(LocalDateTime.now())
                 .active(true)
                 .build();
-
     }
 }

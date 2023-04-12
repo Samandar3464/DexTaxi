@@ -14,6 +14,7 @@ import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
 import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
+import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 import uz.optimit.taxi.repository.UserRepository;
 
@@ -27,6 +28,7 @@ public class AnnouncementPassengerService {
 
      private final AnnouncementPassengerRepository repository;
      private final RegionRepository regionRepository;
+     private final CityRepository cityRepository;
      private final UserRepository userRepository;
      private final AttachmentService attachmentService;
 
@@ -38,7 +40,7 @@ public class AnnouncementPassengerService {
           }
           User principal = (User) authentication.getPrincipal();
           User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
-          AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository);
+          AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository,cityRepository);
           repository.save(announcementPassenger);
           return new ApiResponse("Successfully", true);
      }
