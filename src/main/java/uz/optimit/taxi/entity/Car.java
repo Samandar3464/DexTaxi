@@ -39,7 +39,7 @@ public class Car {
 
     @ManyToOne
     private User user;
-    private boolean isActive;
+    private boolean active;
 
     public static Car from(CarRegisterRequestDto carRegisterRequestDto, AutoModelRepository autoModelRepository, AttachmentService attachmentService, UserRepository userRepository) {
         return Car.builder()
@@ -50,7 +50,7 @@ public class Car {
                 .texPassportPhoto(attachmentService.saveToSystem(carRegisterRequestDto.getTexPassportPhoto()))
                 .autoPhotos(attachmentService.saveToSystemListFile(carRegisterRequestDto.getAutoPhotos()))
                 .user(userRepository.findById(carRegisterRequestDto.getUserId()).get())
-                .isActive(false)
+                .active(false)
                 .build();
     }
 }

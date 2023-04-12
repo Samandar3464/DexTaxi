@@ -15,9 +15,9 @@ public class CarRegisterRequestDto {
 
 
     private UUID userId;
-    private UUID autoCategoryId;
+    private Integer autoCategoryId;
 
-    private UUID autoModelId;
+    private Integer autoModelId;
 
     private String color;
 

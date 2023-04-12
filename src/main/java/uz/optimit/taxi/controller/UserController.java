@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("get/token/refreshToken")
-    public String verifyl(@RequestBody TokenResponse token){
+    public String refreshToken(@RequestBody TokenResponse token){
         return userService.getToken(token.getRefreshToken());
     }
 

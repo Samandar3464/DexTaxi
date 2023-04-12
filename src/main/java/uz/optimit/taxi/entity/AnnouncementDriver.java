@@ -44,7 +44,7 @@ public class AnnouncementDriver {
 
     private boolean baggage;
 
-    private boolean isActive;
+    private boolean active;
 
     private byte emptySeat;
 
@@ -66,7 +66,7 @@ public class AnnouncementDriver {
                 .emptySeat(announcementRequestDto.getEmptySeat())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
-                .isActive(true)
+                .active(true)
                 .build();
 
     }

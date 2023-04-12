@@ -2,10 +2,7 @@ package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementDriverService;
 
@@ -20,4 +17,15 @@ public class AnnouncementDriverController {
     public ResponseEntity<?> addDriverAnnouncement(@RequestBody AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto){
         return announcementDriverService.add(announcementDriverRegisterRequestDto);
     }
+
+    @GetMapping("/getList")
+    public ResponseEntity<?> getDriverList(){
+        return announcementDriverService.getDriverList();
+    }
+    @GetMapping("/getListForAnonymousUser")
+    public ResponseEntity<?> getDriverListForAnonymousUser(){
+        return announcementDriverService.getDriverListForAnonymousUser();
+    }
+
+
 }
