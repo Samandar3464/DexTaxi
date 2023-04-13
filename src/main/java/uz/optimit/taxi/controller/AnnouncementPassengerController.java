@@ -1,26 +1,33 @@
 package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementPassengerService;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/passenger")
 public class AnnouncementPassengerController {
 
-    private final AnnouncementPassengerService announcementPassengerService;
+     private final AnnouncementPassengerService announcementPassengerService;
 
-    @PostMapping("/add")
-//    @PreAuthorize("hasRole('YOLOVCHI')")
-    public ApiResponse addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto){
-        return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
-    }
+     @PostMapping("/add")
+     public ApiResponse addPassengerAnnouncement(@RequestBody AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
+          return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
+     }
+
+     @GetMapping("/getById/{id}")
+     public ApiResponse getPassengerById(@PathVariable("id")UUID id) {
+          return announcementPassengerService.getAnnouncementById(id);
+     }
+
+     @GetMapping("/getListForAnonymousUser")
+     public ApiResponse getPassengerListForAnonymousUser() {
+          return announcementPassengerService.getPassengerListForAnonymousUser();
+     }
 
 }

@@ -3,7 +3,6 @@ package uz.optimit.taxi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,6 +21,6 @@ public class Attachment  {
     private String type;
     private String contentType;
     private String path;
-    @ManyToMany
-    private List<Car> car;
+    @ManyToOne
+    private Car car;
 }

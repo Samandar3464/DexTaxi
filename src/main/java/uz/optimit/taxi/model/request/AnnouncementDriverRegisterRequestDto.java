@@ -15,14 +15,6 @@ public class AnnouncementDriverRegisterRequestDto {
 
      private Integer toRegionId;
 
-     private double fromLatitude;
-
-     private double fromLongitude;
-
-     private double toLongitude;
-
-     private double toLatitude;
-
      private double frontSeatPrice;
 
      private double backSeatPrice;

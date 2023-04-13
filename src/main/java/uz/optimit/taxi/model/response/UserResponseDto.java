@@ -32,7 +32,6 @@ public class UserResponseDto {
                 .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
-                .passportNumber(user.getPassportNumber())
                 .phone(user.getPhone())
                 .age(LocalDate.now().getYear() - user.getBirthDate().getYear())
                 .gender(user.getGender())

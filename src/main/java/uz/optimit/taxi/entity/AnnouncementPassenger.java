@@ -3,6 +3,7 @@ package uz.optimit.taxi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
+import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
@@ -15,55 +16,61 @@ import java.util.UUID;
 @Builder
 @Entity
 public class AnnouncementPassenger {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-    @ManyToOne
-    private Region fromRegion;
-    @ManyToOne
-    private Region toRegion;
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+     private UUID id;
+     @ManyToOne
+     private Region fromRegion;
+     @ManyToOne
+     private Region toRegion;
 
-    @ManyToOne
-    private User user;
+     @ManyToOne
+     private City fromCity;
+     @ManyToOne
+     private City toCity;
 
-    private double fromLatitude;
+     @ManyToOne
+     private User user;
 
-    private double fromLongitude;
+     private double fromLatitude;
 
-    private double toLongitude;
+     private double fromLongitude;
 
-    private double toLatitude;
+     private double toLongitude;
 
-    private double price;
+     private double toLatitude;
 
-    private boolean baggage;
+     private double price;
 
-    private boolean active;
+     private boolean baggage;
 
-    private boolean forFamiliar;
+     private boolean active;
 
-    private LocalDateTime timeToTravel;
+     private boolean forFamiliar;
 
-    private String info;
+     private LocalDateTime timeToTravel;
 
-    private LocalDateTime createdTime;
+     private String info;
 
-    public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
-        return AnnouncementPassenger.builder()
-                .user(user)
-                .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
-                .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
-                .fromLatitude(announcementRequestDto.getFromLatitude())
-                .fromLongitude(announcementRequestDto.getFromLongitude())
-                .toLatitude(announcementRequestDto.getToLatitude())
-                .toLongitude(announcementRequestDto.getToLongitude())
-                .price(announcementRequestDto.getPrice())
-                .forFamiliar(announcementRequestDto.isForFamiliar())
-                .timeToTravel(announcementRequestDto.getTimeToTravel())
-                .info(announcementRequestDto.getInfo())
-                .createdTime(LocalDateTime.now())
-                .active(true)
-                .build();
+     private LocalDateTime createdTime;
 
-    }
+     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository) {
+          return AnnouncementPassenger.builder()
+              .user(user)
+              .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
+              .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
+              .fromCity(cityRepository.getById(announcementRequestDto.getFromCityId()))
+              .toCity(cityRepository.getById(announcementRequestDto.getToCityId()))
+              .fromLatitude(announcementRequestDto.getFromLatitude())
+              .fromLongitude(announcementRequestDto.getFromLongitude())
+              .toLatitude(announcementRequestDto.getToLatitude())
+              .toLongitude(announcementRequestDto.getToLongitude())
+              .price(announcementRequestDto.getPrice())
+              .forFamiliar(announcementRequestDto.isForFamiliar())
+              .timeToTravel(announcementRequestDto.getTimeToTravel())
+              .info(announcementRequestDto.getInfo())
+              .createdTime(LocalDateTime.now())
+              .active(true)
+              .build();
+     }
 }

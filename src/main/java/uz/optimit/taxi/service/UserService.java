@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
-import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
-import uz.optimit.taxi.model.request.DriverRegisterDto;
-import uz.optimit.taxi.model.request.PassengerRegisterDto;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
+import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.UserRepository;
+import uz.optimit.taxi.utils.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -36,29 +35,16 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse registerDriver(DriverRegisterDto driverRegisterDto) {
-        Optional<User> byPhone = userRepository.findByPhone(driverRegisterDto.getPhone());
-        if (byPhone.isPresent()) {
-            throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
-        }
-        Integer verificationCode = verificationCodeGenerator();
-        System.out.println("verificationCode = " + verificationCode);
-        User user = User.fromDriver(driverRegisterDto, passwordEncoder, attachmentService, verificationCode,roleRepository );
-        User save = userRepository.save(user);
-        return new ApiResponse("Successfully userId " + save.getId() + " verification code :" + verificationCode, true);
-    }
-
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse registerPassenger(PassengerRegisterDto passengerRegisterDto) {
-        Optional<User> byPhone = userRepository.findByPhone(passengerRegisterDto.getPhone());
+    public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
+        Optional<User> byPhone = userRepository.findByPhone(userRegisterDto.getPhone());
 //        if (byPhone.isPresent()) {
 //            throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
 //        }
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
-        User user = User.fromPassenger(passengerRegisterDto, passwordEncoder, attachmentService, verificationCode ,roleRepository);
+        User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository);
         userRepository.save(user);
         return new ApiResponse("User added" + " verification code :" + verificationCode, true);
     }
@@ -68,22 +54,17 @@ public class UserService {
         try {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authentication);
-            TokenResponse tokenResponse = null;
-            if (authenticate != null) {
-                String access = jwtService.generateAccessToken(userLoginRequestDto.getPhone());
-                String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
-                tokenResponse = new TokenResponse(access, refresh);
-            }
-            return new ApiResponse(tokenResponse, true);
+            User user = (User) authenticate.getPrincipal();
+            String access = jwtService.generateAccessToken(user);
+            String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
+            return new ApiResponse(new TokenResponse(access, refresh), true);
         } catch (BadCredentialsException e) {
             throw new UserNotFoundException("User not found");
         }
     }
 
 
-    private Integer verificationCodeGenerator() {
-        return RandomGenerator.getDefault().nextInt(100000, 999999);
-    }
+
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse verify(UserVerifyRequestDto userVerifyRequestDto) {
@@ -98,7 +79,11 @@ public class UserService {
         return new ApiResponse("User verified successfully ", true);
     }
 
-
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getToken(String refreshToken) {
+        String accessTokenByRefresh = jwtService.getAccessTokenByRefresh(refreshToken);
+        return new ApiResponse(new TokenResponse(accessTokenByRefresh), true);
+    }
     private boolean verificationCodeLiveTime(LocalDateTime localDateTime) {
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth() - localDateTime.getDayOfMonth();
@@ -110,8 +95,8 @@ public class UserService {
         return false;
     }
 
-    public String getToken(String refreshToken) {
-        return jwtService.getAccessTokenByRefresh(refreshToken);
+    private Integer verificationCodeGenerator() {
+        return RandomGenerator.getDefault().nextInt(100000, 999999);
     }
 }
 

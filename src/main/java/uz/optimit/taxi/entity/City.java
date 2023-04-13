@@ -9,11 +9,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-public class Region {
+public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,15 +21,15 @@ public class Region {
     @Column(unique = true)
     private String name;
 
+    @ManyToOne
+    private Region region;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "region")
-    private List<City> city;
-    @JsonIgnore
-    @OneToMany(mappedBy = "fromRegion")
+    @OneToMany(mappedBy = "fromCity")
     private List<AnnouncementPassenger> fromAnnouncementUser;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "toRegion")
+    @OneToMany(mappedBy = "toCity")
     private List<AnnouncementPassenger> toAnnouncementUser;
 
 }

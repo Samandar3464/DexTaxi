@@ -173,7 +173,6 @@ public class AttachmentService {
             throw new RecordNotFoundException("File not found");
         }
         return attachUploadFolder + optional.get().getId() + "." + optional.get().getType();
-
     }
 
 
