@@ -21,6 +21,7 @@ public class Region {
     @Column(unique = true)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "region")
     private List<City> city;
     @JsonIgnore

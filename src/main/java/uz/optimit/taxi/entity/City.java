@@ -21,7 +21,6 @@ public class City {
     @Column(unique = true)
     private String name;
 
-    @JsonIgnore
     @ManyToOne
     private Region region;
 

@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uz.optimit.taxi.entity.User;
-import uz.optimit.taxi.exception.RefreshTokeNotFound;
 import uz.optimit.taxi.exception.TimeExceededException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.repository.UserRepository;

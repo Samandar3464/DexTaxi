@@ -57,11 +57,10 @@ public class AnnouncementPassengerService {
      }
 
      @ResponseStatus(HttpStatus.FOUND)
-     public ApiResponse getPassengerList(UUID id) {
-          AnnouncementPassenger allByActive = repository.findByIdAndActive(id, true);
+     public ApiResponse getAnnouncementById(UUID id) {
+          AnnouncementPassenger active = repository.findByIdAndActive(id, true);
           AnnouncementPassengerResponse passengerResponse =
-              AnnouncementPassengerResponse.from(allByActive, attachmentService.attachDownloadUrl);
-
+              AnnouncementPassengerResponse.from(active, attachmentService.attachDownloadUrl);
           return new ApiResponse(passengerResponse, true);
      }
 
