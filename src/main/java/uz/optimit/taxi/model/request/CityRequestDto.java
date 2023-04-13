@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CityRequestDto {
      private String name;
+     private Integer regionId;
 }

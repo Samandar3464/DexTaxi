@@ -2,6 +2,7 @@ package uz.optimit.taxi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import lombok.*;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public class Region {
     private Integer id;
     @Column(unique = true)
     private String name;
+
+    @OneToMany
+    private List<City> cities;
     @JsonIgnore
     @OneToMany(mappedBy = "fromRegion")
     private List<AnnouncementPassenger> fromAnnouncementUser;

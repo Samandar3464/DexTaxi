@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,8 +16,9 @@ public class City {
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      private Integer id;
-     @Column(unique = true)
      private String name;
+     @ManyToOne
+     private Region region;
      @JsonIgnore
      @OneToMany(mappedBy = "fromCity")
      private List<AnnouncementPassenger> fromAnnouncementUser;
