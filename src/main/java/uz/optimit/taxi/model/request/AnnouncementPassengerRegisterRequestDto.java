@@ -31,8 +31,6 @@ public class AnnouncementPassengerRegisterRequestDto {
 
      private boolean baggage;
 
-     private boolean active;
-
      private boolean forFamiliar;
 
      private LocalDateTime timeToTravel;

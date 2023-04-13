@@ -36,20 +36,20 @@ public class AnnouncementPassengerResponse {
 
      private String info;
 
-     public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementRequestDto,String url) {
+     public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger, String url) {
           return AnnouncementPassengerResponse.builder()
-              .id(announcementRequestDto.getId())
-              .userResponseDto(UserResponseDto.from(announcementRequestDto.getUser(),url))
-              .fromRegion(announcementRequestDto.getFromRegion())
-              .toRegion(announcementRequestDto.getToRegion())
-              .fromLatitude(announcementRequestDto.getFromLatitude())
-              .fromLongitude(announcementRequestDto.getFromLongitude())
-              .toLatitude(announcementRequestDto.getToLatitude())
-              .toLongitude(announcementRequestDto.getToLongitude())
-              .baggage(announcementRequestDto.isBaggage())
-              .price(announcementRequestDto.getPrice())
-              .forFamiliar(announcementRequestDto.isForFamiliar())
-              .info(announcementRequestDto.getInfo())
+              .id(announcementPassenger.getId())
+              .userResponseDto(UserResponseDto.from(announcementPassenger.getUser(),url))
+              .fromRegion(announcementPassenger.getFromRegion())
+              .toRegion(announcementPassenger.getToRegion())
+              .fromLatitude(announcementPassenger.getFromLatitude())
+              .fromLongitude(announcementPassenger.getFromLongitude())
+              .toLatitude(announcementPassenger.getToLatitude())
+              .toLongitude(announcementPassenger.getToLongitude())
+              .baggage(announcementPassenger.isBaggage())
+              .price(announcementPassenger.getPrice())
+              .forFamiliar(announcementPassenger.isForFamiliar())
+              .info(announcementPassenger.getInfo())
               .build();
      }
 }

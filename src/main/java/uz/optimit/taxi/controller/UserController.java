@@ -5,9 +5,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.api.ApiResponse;
-import uz.optimit.taxi.model.request.DriverRegisterDto;
-import uz.optimit.taxi.model.request.PassengerRegisterDto;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
+import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.service.UserService;
 
@@ -17,15 +16,9 @@ import uz.optimit.taxi.service.UserService;
 public class UserController {
 
      private UserService userService;
-
-     @PostMapping("/register/driver")
-     public ApiResponse registerDriver(@ModelAttribute @Validated DriverRegisterDto driverRegisterDto) {
-          return userService.registerDriver(driverRegisterDto);
-     }
-
-     @PostMapping("/register/passenger")
-     public ApiResponse registerPassenger(@ModelAttribute PassengerRegisterDto passengerRegisterDto) {
-          return userService.registerPassenger(passengerRegisterDto);
+     @PostMapping("/register")
+     public ApiResponse registerUser(@ModelAttribute UserRegisterDto userRegisterDto) {
+          return userService.registerUser(userRegisterDto);
      }
 
      @PostMapping("/login")

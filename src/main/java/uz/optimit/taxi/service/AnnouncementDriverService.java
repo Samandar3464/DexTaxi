@@ -20,6 +20,7 @@ import uz.optimit.taxi.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -65,18 +66,11 @@ public class AnnouncementDriverService {
      }
 
      @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getDriverList(UUID id) {
-
-          AnnouncementDriver driverList = repository.findAllById(id);
-          List<Car> allByActive = carRepository.findAllByActive(true);
-          AnnouncementDriverResponse driverResponse = null;
-          for (Car car : allByActive) {
-               if (driverList.getUser().getId() == car.getUser().getId()) {
-                     driverResponse =
-                        AnnouncementDriverResponse.from(driverList, car, attachmentService.attachDownloadUrl);
-               }
-          }
-          return new ApiResponse(driverResponse, true);
+     public ApiResponse getById(UUID id) {
+          Optional<AnnouncementDriver> driver = repository.findById(id);
+          Car car = carRepository.findByActiveAndUserId(true,driver.get().getUser().getId());
+          AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(driver.get(), car, attachmentService.attachDownloadUrl);
+          return new ApiResponse(announcementDriverResponse, true);
      }
 
 

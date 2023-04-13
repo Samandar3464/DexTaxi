@@ -20,9 +20,9 @@ public class AnnouncementPassengerController {
           return announcementPassengerService.add(announcementPassengerRegisterRequestDto);
      }
 
-     @GetMapping("/getList/{id}")
-     public ApiResponse getPassengerList(@PathVariable("id")UUID id) {
-          return announcementPassengerService.getPassengerList(id);
+     @GetMapping("/getById/{id}")
+     public ApiResponse getPassengerById(@PathVariable("id")UUID id) {
+          return announcementPassengerService.getAnnouncementById(id);
      }
 
      @GetMapping("/getListForAnonymousUser")

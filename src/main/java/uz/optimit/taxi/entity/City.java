@@ -25,5 +25,4 @@ public class City {
      @JsonIgnore
      @OneToMany(mappedBy = "toCity")
      private List<AnnouncementPassenger> toAnnouncementUser;
-
 }

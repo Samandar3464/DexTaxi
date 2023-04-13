@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface AnnouncementPassengerRepository extends JpaRepository<AnnouncementPassenger, UUID> {
      AnnouncementPassenger findByIdAndActive(UUID id,boolean Active);
-     List<AnnouncementPassenger> findByActive(boolean Active);
+     List<AnnouncementPassenger> findAllByActive(boolean Active);
 }

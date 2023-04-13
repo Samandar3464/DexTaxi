@@ -56,6 +56,14 @@ public class CommonExceptionHandler {
                 , false
                 , " User not found");
     }
+    @ExceptionHandler(UserAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse handleUserNotFoundException(UserAlreadyExistException e) {
+        return new ApiResponse(
+            e.getMessage()
+            , false
+            , " User already exist ");
+    }
 
 //    @ExceptionHandler(Exception.class)
 //    @ResponseStatus(HttpStatus.BAD_GATEWAY)

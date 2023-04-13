@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,8 +12,6 @@ import java.util.UUID;
 @Builder
 public class CarRegisterRequestDto {
 
-
-    private UUID userId;
     private Integer autoCategoryId;
 
     private Integer autoModelId;
@@ -25,8 +22,10 @@ public class CarRegisterRequestDto {
 
     private String texPassport;
 
-    private List<MultipartFile> autoPhotos;
+    private MultipartFile photoDriverLicense;
 
     private MultipartFile texPassportPhoto;
+
+    private List<MultipartFile> autoPhotos;
 
 }

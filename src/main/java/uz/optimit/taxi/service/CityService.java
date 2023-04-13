@@ -16,6 +16,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CityService {
+
      private final CityRepository cityRepository;
      private final RegionRepository repository;
 
@@ -31,4 +32,5 @@ public class CityService {
           City save = cityRepository.save(city);
           return new ApiResponse("saved successfully", true,save);
      }
+
 }

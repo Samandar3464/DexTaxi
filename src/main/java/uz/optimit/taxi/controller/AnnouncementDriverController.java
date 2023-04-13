@@ -25,9 +25,9 @@ public class AnnouncementDriverController {
         return announcementDriverService.add(announcementDriverRegisterRequestDto);
     }
 
-    @GetMapping("/getList/{id}")
-    public ApiResponse getDriverList(@PathVariable("id")UUID id){
-        return announcementDriverService.getDriverList(id);
+    @GetMapping("/getById/{id}")
+    public ApiResponse getById(@PathVariable("id")UUID id){
+        return announcementDriverService.getById(id);
     }
 
     @GetMapping("/getListForAnonymousUser")

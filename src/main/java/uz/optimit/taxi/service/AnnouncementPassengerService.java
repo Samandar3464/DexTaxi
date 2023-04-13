@@ -49,7 +49,7 @@ public class AnnouncementPassengerService {
      public ApiResponse getPassengerListForAnonymousUser() {
 
           List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-          List<AnnouncementPassenger> allByActive = repository.findByActive(true);
+          List<AnnouncementPassenger> allByActive = repository.findAllByActive(true);
           allByActive.forEach(a -> {
                passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
           });
@@ -57,12 +57,16 @@ public class AnnouncementPassengerService {
      }
 
      @ResponseStatus(HttpStatus.FOUND)
-     public ApiResponse getPassengerList(UUID id) {
-          AnnouncementPassenger allByActive = repository.findByIdAndActive(id, true);
+     public ApiResponse getAnnouncementById(UUID id) {
+          AnnouncementPassenger active = repository.findByIdAndActive(id, true);
           AnnouncementPassengerResponse passengerResponse =
-              AnnouncementPassengerResponse.from(allByActive, attachmentService.attachDownloadUrl);
-
+              AnnouncementPassengerResponse.from(active, attachmentService.attachDownloadUrl);
           return new ApiResponse(passengerResponse, true);
      }
+
+//     @ResponseStatus(HttpStatus.OK)
+//     public ApiResponse unActiveAnnouncement(UUID uuid){
+//
+//     }
 
 }

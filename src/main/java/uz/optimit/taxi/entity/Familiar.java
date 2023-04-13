@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import uz.optimit.taxi.entity.Enum.Gender;
-import uz.optimit.taxi.model.request.ForFamiliarRegisterRequestDto;
+import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 
 import java.util.UUID;
 
@@ -16,16 +16,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity
-public class ForFamiliar {
+public class Familiar {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Pattern(regexp = "^[A-Za-z]*$")
+    @NotBlank
     private String name;
 
-    @NotBlank
-    @Size(min = 9)
+
+    @Size(min = 9,max = 9)
     private String phone;
 
     @Enumerated(EnumType.STRING)
@@ -38,8 +38,8 @@ public class ForFamiliar {
     @ManyToOne
     private User user;
 
-    public static ForFamiliar from(ForFamiliarRegisterRequestDto registerRequestDto, User user){
-        return ForFamiliar.builder()
+    public static Familiar from(FamiliarRegisterRequestDto registerRequestDto, User user){
+        return Familiar.builder()
                 .name(registerRequestDto.getName())
                 .phone(registerRequestDto.getPhone())
                 .gender(registerRequestDto.getGender())

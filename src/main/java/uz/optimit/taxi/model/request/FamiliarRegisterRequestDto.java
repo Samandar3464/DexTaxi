@@ -11,7 +11,7 @@ import uz.optimit.taxi.entity.Enum.Gender;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForFamiliarRegisterRequestDto {
+public class FamiliarRegisterRequestDto {
      private String name;
      private String phone;
      @Enumerated(EnumType.STRING)
