@@ -11,6 +11,7 @@ import uz.optimit.taxi.exception.RecordAlreadyExistException;
 import uz.optimit.taxi.model.request.RegionRegisterRequestDto;
 import uz.optimit.taxi.repository.RegionRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,5 +28,17 @@ public class RegionService {
         Region region = Region.builder().name(regionRegisterRequestDto.getName()).build();
         regionRepository.save(region);
         return new ApiResponse("Successfully" , true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getRegionList(){
+        List<Region> all = regionRepository.findAll();
+        return new ApiResponse(all,true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getRegionById(Integer id){
+        Optional<Region> all = regionRepository.findById(id);
+        return new ApiResponse(all.get(),true);
     }
 }

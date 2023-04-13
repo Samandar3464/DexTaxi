@@ -32,5 +32,13 @@ public class CityService {
           City save = cityRepository.save(city);
           return new ApiResponse("saved successfully", true,save);
      }
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse getCityList() {
+          return new ApiResponse(cityRepository.findAll(),true);
+     }
 
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse getCityById(Integer id) {
+          return new ApiResponse(cityRepository.findById(id).get(),true);
+     }
 }

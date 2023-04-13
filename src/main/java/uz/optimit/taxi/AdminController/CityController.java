@@ -1,10 +1,7 @@
 package uz.optimit.taxi.AdminController;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.CityRequestDto;
 import uz.optimit.taxi.service.CityService;
@@ -19,5 +16,15 @@ public class CityController {
      //    @PreAuthorize("hasRole('ADMIN')")
      public ApiResponse addRegion(@RequestBody CityRequestDto cityRequestDto) {
           return cityService.saveCity(cityRequestDto);
+     }
+
+     @GetMapping("/getList")
+     public ApiResponse getCityList(){
+          return cityService.getCityList();
+     }
+
+     @GetMapping("/getCityById")
+     public ApiResponse getCityById(@PathVariable Integer id){
+          return cityService.getCityById(id);
      }
 }
