@@ -64,9 +64,5 @@ public class AnnouncementPassengerService {
           return new ApiResponse(passengerResponse, true);
      }
 
-//     @ResponseStatus(HttpStatus.OK)
-//     public ApiResponse unActiveAnnouncement(UUID uuid){
-//
-//     }
 
 }

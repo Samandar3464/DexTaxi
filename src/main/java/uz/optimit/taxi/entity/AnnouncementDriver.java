@@ -3,12 +3,11 @@ package uz.optimit.taxi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
-import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.repository.RegionRepository;
-import uz.optimit.taxi.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,48 +16,42 @@ import java.util.UUID;
 @Builder
 @Entity
 public class AnnouncementDriver {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+     private UUID id;
 
-    @ManyToOne
-    private Region fromRegion;
+     @ManyToOne
+     private Region fromRegion;
 
-    @ManyToOne
-    private Region toRegion;
+     @ManyToOne
+     private Region toRegion;
 
-    @ManyToOne
-    private User user;
+     @ManyToOne
+     private User user;
+     @OneToMany(mappedBy = "announcementDriver")
+     private List<Seat> seatList;
 
-    private double frontSeatPrice;
+     private boolean baggage;
 
-    private double backSeatPrice;
+     private boolean active;
 
-    private boolean baggage;
+     private LocalDateTime timeToDrive;
 
-    private boolean active;
+     private LocalDateTime createdTime;
 
-    private byte emptySeat;
+     private String info;
 
-    private LocalDateTime timeToDrive;
-
-    private LocalDateTime createdTime;
-
-    private String info;
-
-    public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
-        return AnnouncementDriver.builder()
-                .user(user)
-                .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
-                .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
-                .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())
-                .backSeatPrice(announcementRequestDto.getBackSeatPrice())
-                .baggage(announcementRequestDto.isBaggage())
-                .emptySeat(announcementRequestDto.getEmptySeat())
-                .timeToDrive(announcementRequestDto.getTimeToDrive())
-                .info(announcementRequestDto.getInfo())
-                .createdTime(LocalDateTime.now())
-                .active(true)
-                .build();
-    }
+     public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
+          return AnnouncementDriver.builder()
+              .user(user)
+              .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
+              .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
+              .seatList(announcementRequestDto.getSeatList())
+              .baggage(announcementRequestDto.isBaggage())
+              .timeToDrive(announcementRequestDto.getTimeToDrive())
+              .info(announcementRequestDto.getInfo())
+              .createdTime(LocalDateTime.now())
+              .active(true)
+              .build();
+     }
 }

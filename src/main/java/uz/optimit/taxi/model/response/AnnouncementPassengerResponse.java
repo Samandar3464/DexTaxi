@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.City;
 import uz.optimit.taxi.entity.Region;
+import uz.optimit.taxi.entity.Seat;
 
 import java.util.UUID;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,17 +31,15 @@ public class AnnouncementPassengerResponse {
 
      private double toLatitude;
 
-     private double price;
-
+     private List<Seat> seatList;
      private boolean baggage;
-     private int forFamiliar;
 
      private String info;
 
      public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger, String url) {
           return AnnouncementPassengerResponse.builder()
               .id(announcementPassenger.getId())
-              .userResponseDto(UserResponseDto.from(announcementPassenger.getUser(),url))
+              .userResponseDto(UserResponseDto.from(announcementPassenger.getUser(), url))
               .fromRegion(announcementPassenger.getFromRegion())
               .toRegion(announcementPassenger.getToRegion())
               .fromLatitude(announcementPassenger.getFromLatitude())
@@ -47,8 +47,7 @@ public class AnnouncementPassengerResponse {
               .toLatitude(announcementPassenger.getToLatitude())
               .toLongitude(announcementPassenger.getToLongitude())
               .baggage(announcementPassenger.isBaggage())
-              .price(announcementPassenger.getPrice())
-              .forFamiliar(announcementPassenger.getForFamily())
+              .seatList(announcementPassenger.getSeatList())
               .info(announcementPassenger.getInfo())
               .build();
      }

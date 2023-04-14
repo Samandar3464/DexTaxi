@@ -8,6 +8,7 @@ import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,14 +40,11 @@ public class AnnouncementPassenger {
      private double toLongitude;
 
      private double toLatitude;
-
-     private double price;
-
+     @OneToMany(mappedBy = "announcementPassenger")
+     private List<Seat> seatList;
      private boolean baggage;
 
      private boolean active;
-
-     private int forFamily;
 
      private LocalDateTime timeToTravel;
 
@@ -65,8 +63,7 @@ public class AnnouncementPassenger {
               .fromLongitude(announcementRequestDto.getFromLongitude())
               .toLatitude(announcementRequestDto.getToLatitude())
               .toLongitude(announcementRequestDto.getToLongitude())
-              .price(announcementRequestDto.getPrice())
-              .forFamily(announcementRequestDto.getForFamiliar())
+              .seatList(announcementRequestDto.getSeatList())
               .timeToTravel(announcementRequestDto.getTimeToTravel())
               .info(announcementRequestDto.getInfo())
               .createdTime(LocalDateTime.now())

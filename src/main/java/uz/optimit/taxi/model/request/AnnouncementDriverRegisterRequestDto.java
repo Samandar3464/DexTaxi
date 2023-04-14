@@ -3,8 +3,10 @@ package uz.optimit.taxi.model.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.optimit.taxi.entity.Seat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,15 +17,11 @@ public class AnnouncementDriverRegisterRequestDto {
 
      private Integer toRegionId;
 
-     private double frontSeatPrice;
-
-     private double backSeatPrice;
-
      private LocalDateTime timeToDrive;
 
      private boolean baggage;
 
-     private byte emptySeat;
+     private List<Seat> seatList;
 
      private String info;
 }
