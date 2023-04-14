@@ -10,6 +10,8 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static uz.optimit.taxi.entity.Enum.Constants.TOKEN_TIME_OUT;
+
 @RestControllerAdvice
 public class CommonExceptionHandler {
     @ExceptionHandler(BindException.class)
@@ -36,7 +38,7 @@ public class CommonExceptionHandler {
         return new ApiResponse(
                 e.getMessage()
                 , false
-                , " Object not found");
+                , null);
     }
 
     @ExceptionHandler(RecordAlreadyExistException.class)
@@ -45,7 +47,7 @@ public class CommonExceptionHandler {
         return new ApiResponse(
                 e.getMessage()
                 , false
-                , " Object already exist");
+                , null);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -54,24 +56,41 @@ public class CommonExceptionHandler {
         return new ApiResponse(
                 e.getMessage()
                 , false
-                , " User not found");
+                , null);
+    }
+    @ExceptionHandler(UserAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse handleUserNotFoundException(UserAlreadyExistException e) {
+        return new ApiResponse(
+            e.getMessage()
+            , false
+            , " User already exist ");
     }
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-//    public ApiResponse handleAccessTokenTimeExceededException(Exception e) {
-//        return new ApiResponse(
-//                 e.getMessage()
-//                , false
-//                , " Token time out");
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ApiResponse handleAccessTokenTimeExceededException(Exception e) {
+        return new ApiResponse(
+                TOKEN_TIME_OUT
+                , false
+                , null);
+    }
 
     @ExceptionHandler(SmsSendingFailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiResponse handleSmsSendingFailException(SmsSendingFailException e) {
         return new ApiResponse(
                 e.getMessage()
-                ,false
-                ,"Can not send sms to your phone number ");
+                , false
+                , null);
+    }
+
+    @ExceptionHandler(NotEnoughSeat.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse notEnoughNotException(NotEnoughSeat e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
     }
 }

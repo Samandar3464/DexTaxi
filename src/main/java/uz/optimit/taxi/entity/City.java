@@ -18,9 +18,8 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
     private String name;
-
+    @JsonIgnore
     @ManyToOne
     private Region region;
 
