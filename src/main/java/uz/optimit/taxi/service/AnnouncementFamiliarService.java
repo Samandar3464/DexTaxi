@@ -29,31 +29,21 @@ public class AnnouncementFamiliarService {
      private final UserRepository userRepository;
 
      @ResponseStatus(HttpStatus.CREATED)
-     public ApiResponse addForFamiliar(FamiliarRegisterRequestDto[] familiarRegisterRequestDtoList) {
+     public ApiResponse addForFamiliar(FamiliarRegisterRequestDto familiarRegisterRequestDto) {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
           if (!authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
                throw new UserNotFoundException("User not found");
           }
           User principal = (User) authentication.getPrincipal();
-          User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
-          List<Familiar> familiarList = familiarRepository.findAllByUserId(user.getId());
-
-          saveFamiliarByCheckUnique(familiarRegisterRequestDtoList, user, familiarList);
+          User user = userRepository.findByPhone(principal.getPhone())
+              .orElseThrow(() -> new UserNotFoundException("user not found"));
+          if (familiarRepository.existsByPhoneAndUserId(familiarRegisterRequestDto.getPhone(),user.getId())){
+               throw new UserAlreadyExistException("familiar already exist");
+          }
+          familiarRepository.save(Familiar.from(familiarRegisterRequestDto, user));
           return new ApiResponse("Successfully", true);
      }
-
-     private void saveFamiliarByCheckUnique(FamiliarRegisterRequestDto[] familiarRegisterRequestDtoList, User user, List<Familiar> familiarList) {
-          for (FamiliarRegisterRequestDto family : familiarRegisterRequestDtoList) {
-               for (Familiar familiar : familiarList) {
-                    if (familiar.getPhone().equals(family.getPhone())) {
-                       throw new UserAlreadyExistException("familiar already exist");
-                    }
-               }
-               familiarRepository.save(Familiar.from(family, user));
-          }
-     }
-
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUser() {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,7 +51,8 @@ public class AnnouncementFamiliarService {
                throw new UserNotFoundException("User not found");
           }
           User principal = (User) authentication.getPrincipal();
-          User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
+          User user = userRepository.findByPhone(principal.getPhone())
+              .orElseThrow(() -> new UserNotFoundException("user not found"));
           List<Familiar> familiarList = familiarRepository.findAllByUserId(user.getId());
 
           return new ApiResponse("SuccessFully", true, getFamiliars(familiarList));

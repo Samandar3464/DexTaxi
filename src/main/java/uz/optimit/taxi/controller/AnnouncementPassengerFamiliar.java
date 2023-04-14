@@ -16,7 +16,7 @@ public class AnnouncementPassengerFamiliar {
      private final AnnouncementFamiliarService announcementFamiliarService;
 
      @PostMapping("/add")
-     public ApiResponse add(@RequestBody FamiliarRegisterRequestDto[]  familiarRegisterRequestDto) {
+     public ApiResponse add(@RequestBody FamiliarRegisterRequestDto  familiarRegisterRequestDto) {
          return announcementFamiliarService.addForFamiliar(familiarRegisterRequestDto);
 
      }
