@@ -143,7 +143,6 @@ public class NotificationService {
         User user = (User) authentication.getPrincipal();
         User driver = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        List<Notification> notifications = user.getNotifications();
         Notification fromDriverToUser = notificationRepository.findBySenderIdAndReceiverIdAndActiveAndReceivered(driver.getId(), user.getId(), true, false)
                 .orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_NOT_FOUND));
 
@@ -185,7 +184,7 @@ public class NotificationService {
         AnnouncementDriver announcementDriver = announcementDriverRepository.findByIdAndActive(fromUserToDriver.getAnnouncementId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
-        AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findByActiveAndUserId(true, driver.getId())
+        AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findByUserIdAndActive( passenger.getId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
         announcementPassenger.setActive(false);
