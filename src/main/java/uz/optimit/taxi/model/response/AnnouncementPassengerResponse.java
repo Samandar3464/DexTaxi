@@ -32,7 +32,7 @@ public class AnnouncementPassengerResponse {
      private double price;
 
      private boolean baggage;
-     private boolean forFamiliar;
+     private int forFamiliar;
 
      private String info;
 
@@ -48,7 +48,7 @@ public class AnnouncementPassengerResponse {
               .toLongitude(announcementPassenger.getToLongitude())
               .baggage(announcementPassenger.isBaggage())
               .price(announcementPassenger.getPrice())
-              .forFamiliar(announcementPassenger.isForFamiliar())
+              .forFamiliar(announcementPassenger.getForFamiliar())
               .info(announcementPassenger.getInfo())
               .build();
      }

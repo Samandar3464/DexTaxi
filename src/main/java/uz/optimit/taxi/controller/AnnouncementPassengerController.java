@@ -30,4 +30,13 @@ public class AnnouncementPassengerController {
           return announcementPassengerService.getPassengerListForAnonymousUser();
      }
 
+     @GetMapping("/getPassengerAnnouncements")
+     public ApiResponse getPassengerAnnouncements(){
+          return announcementPassengerService.getPassengerAnnouncements();
+     }
+
+     @DeleteMapping("/deleteDriverAnnouncements/{id}")
+     public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id){
+          return announcementPassengerService.deletePassengerAnnouncement(id);
+     }
 }

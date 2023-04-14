@@ -13,6 +13,8 @@ import uz.optimit.taxi.repository.RegionRepository;
 
 import java.util.Optional;
 
+import static uz.optimit.taxi.entity.Enum.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class CityService {
@@ -23,13 +25,13 @@ public class CityService {
     public ApiResponse saveCity(CityRequestDto cityRequestDto) {
         Optional<City> byName = cityRepository.findByNameAndRegionId(cityRequestDto.getName(), cityRequestDto.getRegionId());
         if (byName.isPresent()) {
-            throw new RecordAlreadyExistException("Region already have");
+            throw new RecordAlreadyExistException(CITY_ALREADY_EXIST);
         }
         City city = City.builder()
                 .name(cityRequestDto.getName())
                 .region(regionRepository.getById(cityRequestDto.getRegionId()))
                 .build();
         cityRepository.save(city);
-        return new ApiResponse("Successfully", true);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 }

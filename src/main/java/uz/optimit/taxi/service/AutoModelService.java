@@ -14,6 +14,9 @@ import uz.optimit.taxi.repository.AutoModelRepository;
 
 import java.util.Optional;
 
+import static uz.optimit.taxi.entity.Enum.Constants.AUTO_MODEL_ALREADY_EXIST;
+import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+
 @Service
 @RequiredArgsConstructor
 public class AutoModelService {
@@ -25,12 +28,12 @@ public class AutoModelService {
     public ApiResponse addAutoCategory(AutoModelRegisterRequestDto autoModelRegisterRequestDto) {
         Optional<AutoModel> byName = autoModelRepository.findByNameAndAutoCategoryId(autoModelRegisterRequestDto.getName(), autoModelRegisterRequestDto.getCategoryId());
         if (byName.isPresent()) {
-            throw new RecordAlreadyExistException("Auto model  already exist");
+            throw new RecordAlreadyExistException(AUTO_MODEL_ALREADY_EXIST);
         }
         AutoModel autoModel = AutoModel.builder()
                 .name(autoModelRegisterRequestDto.getName())
                 .autoCategory(autoCategoryRepository.getById(autoModelRegisterRequestDto.getCategoryId())).build();
         autoModelRepository.save(autoModel);
-        return new ApiResponse("Successfully", true);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 }

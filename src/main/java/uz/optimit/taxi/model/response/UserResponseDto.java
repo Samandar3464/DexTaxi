@@ -18,7 +18,6 @@ public class UserResponseDto {
     private UUID id;
     private String name;
     private String surname;
-    private String passportNumber;
     private String phone;
     private int age;
     private double status;

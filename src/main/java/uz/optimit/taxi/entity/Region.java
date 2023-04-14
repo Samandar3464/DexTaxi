@@ -23,7 +23,7 @@ public class Region {
 
     @JsonIgnore
     @OneToMany(mappedBy = "region")
-    private List<City> city;
+    private List<City> cities;
     @JsonIgnore
     @OneToMany(mappedBy = "fromRegion")
     private List<AnnouncementPassenger> fromAnnouncementUser;

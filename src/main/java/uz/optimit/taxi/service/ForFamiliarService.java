@@ -3,6 +3,7 @@ package uz.optimit.taxi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ import uz.optimit.taxi.repository.UserRepository;
 
 import java.util.List;
 
+import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+import static uz.optimit.taxi.entity.Enum.Constants.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class ForFamiliarService {
@@ -28,14 +32,14 @@ public class ForFamiliarService {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse addForFamiliar(List<ForFamiliarRegisterRequestDto> familiarRegisterRequestDtoList){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
-            throw new UserNotFoundException("User not found");
+        if (authentication instanceof AnonymousAuthenticationToken){
+            throw new UserNotFoundException(USER_NOT_FOUND);
         }
         User principal = (User) authentication.getPrincipal();
         User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
 
        familiarRegisterRequestDtoList.forEach(family->
                forFamiliarRepository.save(ForFamiliar.from(family, user)));
-        return new ApiResponse("Successfully", true);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 }

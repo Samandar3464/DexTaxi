@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.repository.UserRepository;
 
+import static uz.optimit.taxi.entity.Enum.Constants.USER_NOT_FOUND;
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
@@ -22,7 +24,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByPhone(username)
-                .orElseThrow(() -> new UserNotFoundException(" User Not found exception "));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
     @Bean

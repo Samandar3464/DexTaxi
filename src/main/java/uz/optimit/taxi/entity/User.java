@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -83,6 +84,9 @@ public class User implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<ForFamiliar> forFamiliars;
+
+    @OneToMany(mappedBy = "user" ,fetch = FetchType.EAGER)
+    private List<Notification> notifications;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -129,7 +133,7 @@ public class User implements UserDetails {
                 .profilePhoto(attachmentService.saveToSystem(userRegisterDto.getProfilePhoto()))
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .roles(List.of(roleRepository.findByName("YOLOVCHI"), (roleRepository.findByName("HAYDOVCHI"))))
-                .isBlocked(false)
+                .isBlocked(true)
                 .build();
     }
 }
