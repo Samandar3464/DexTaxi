@@ -12,6 +12,7 @@ import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.Notification;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.exception.NotEnoughSeat;
 import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.exception.UserNotFoundException;
@@ -153,7 +154,7 @@ public class NotificationService {
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
         announcementPassenger.setActive(false);
-        if (announcementDriver.getEmptySeat() < announcementPassenger.getForFamiliar()){
+        if (announcementDriver.getEmptySeat() < announcementPassenger.getForFamiliar()) {
             throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
         }
         int emptySeat = announcementDriver.getEmptySeat() - announcementPassenger.getForFamiliar();
@@ -178,13 +179,13 @@ public class NotificationService {
         User driver = (User) authentication.getPrincipal();
         User passenger = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        Notification fromUserToDriver = notificationRepository.findBySenderIdAndReceiverIdAndActiveAndReceivered( passenger.getId(), driver.getId(),true, false)
+        Notification fromUserToDriver = notificationRepository.findBySenderIdAndReceiverIdAndActiveAndReceivered(passenger.getId(), driver.getId(), true, false)
                 .orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_NOT_FOUND));
 
         AnnouncementDriver announcementDriver = announcementDriverRepository.findByIdAndActive(fromUserToDriver.getAnnouncementId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
-        AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findByUserIdAndActive( passenger.getId(), true)
+        AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findByUserIdAndActive(passenger.getId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
         announcementPassenger.setActive(false);
@@ -200,4 +201,17 @@ public class NotificationService {
         announcementPassengerRepository.save(announcementPassenger);
         return new ApiResponse(YOU_ARE_ACCEPTED_REQUEST, true);
     }
+
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponse getAcceptedNotification() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication instanceof AnonymousAuthenticationToken) {
+//            throw new UserNotFoundException(USER_NOT_FOUND);
+//        }
+//        User receiver = (User) authentication.getPrincipal();
+//        Notification notification = notificationRepository.findByReceiverIdAndReceivered(receiver.getId(), true)
+//                .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+//        User sender = userRepository.findById(notification.getSenderId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+//        return new ApiResponse(UserResponseDto.from(sender,AttachmentService.attachDownloadUrl ), true);
+//    }
 }

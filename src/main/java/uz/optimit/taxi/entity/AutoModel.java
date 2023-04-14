@@ -20,6 +20,8 @@ public class AutoModel {
     @ManyToOne
     private AutoCategory autoCategory;
 
+    private byte countSeat;
+
     @OneToMany(mappedBy = "autoModel")
     private List<Car> car;
 }

@@ -32,6 +32,7 @@ public class AutoModelService {
         }
         AutoModel autoModel = AutoModel.builder()
                 .name(autoModelRegisterRequestDto.getName())
+                .countSeat(autoModelRegisterRequestDto.getCountSeat())
                 .autoCategory(autoCategoryRepository.getById(autoModelRegisterRequestDto.getCategoryId())).build();
         autoModelRepository.save(autoModel);
         return new ApiResponse(SUCCESSFULLY, true);

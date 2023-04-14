@@ -11,6 +11,7 @@ import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
@@ -63,7 +64,7 @@ public class AnnouncementPassengerService {
 
      @ResponseStatus(HttpStatus.FOUND)
      public ApiResponse getAnnouncementById(UUID id) {
-          AnnouncementPassenger active = repository.findByIdAndActive(id, true).orElseThrow(()-> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+          AnnouncementPassenger active = repository.findByIdAndActive(id, true).orElseThrow(()-> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
           AnnouncementPassengerResponse passengerResponse =
               AnnouncementPassengerResponse.from(active, attachmentService.attachDownloadUrl);
           return new ApiResponse(passengerResponse, true);
@@ -83,7 +84,7 @@ public class AnnouncementPassengerService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse deletePassengerAnnouncement(UUID id){
-          AnnouncementPassenger announcementPassenger = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+          AnnouncementPassenger announcementPassenger = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
           announcementPassenger.setActive(false);
           repository.save(announcementPassenger);
           return new ApiResponse(DELETED ,true);

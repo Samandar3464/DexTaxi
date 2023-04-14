@@ -10,6 +10,7 @@ import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.Car;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
@@ -90,7 +91,7 @@ public class AnnouncementDriverService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse deleteDriverAnnouncement(UUID id){
-          AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+          AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
           announcementDriver.setActive(false);
           repository.save(announcementDriver);
           return new ApiResponse(DELETED ,true);
