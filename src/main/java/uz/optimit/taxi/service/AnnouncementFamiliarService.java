@@ -32,6 +32,7 @@ public class AnnouncementFamiliarService {
      public ApiResponse addForFamiliar(FamiliarRegisterRequestDto familiarRegisterRequestDto) {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+
           if (!authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
                throw new UserNotFoundException("User not found");
           }
