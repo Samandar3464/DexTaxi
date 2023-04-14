@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +40,7 @@ public class User implements UserDetails {
     private String surname;
 
     @NotBlank
-    @Size(min = 9)
+    @Size(min = 9,max = 9)
     private String phone;
 
     @NotBlank
@@ -83,9 +82,9 @@ public class User implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<ForFamiliar> forFamiliars;
+    private List<Familiar> familiars;
 
-    @OneToMany(mappedBy = "user" ,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private List<Notification> notifications;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,6 +23,7 @@ public class Region {
     @JsonIgnore
     @OneToMany(mappedBy = "region")
     private List<City> cities;
+
     @JsonIgnore
     @OneToMany(mappedBy = "fromRegion")
     private List<AnnouncementPassenger> fromAnnouncementUser;

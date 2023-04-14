@@ -54,7 +54,7 @@ public class AnnouncementPassengerService {
      public ApiResponse getPassengerListForAnonymousUser() {
 
           List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-          List<AnnouncementPassenger> allByActive = repository.findByActive(true);
+          List<AnnouncementPassenger> allByActive = repository.findAllByActive(true);
           allByActive.forEach(a -> {
                passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
           });
