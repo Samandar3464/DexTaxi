@@ -14,6 +14,9 @@ import uz.optimit.taxi.repository.RegionRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static uz.optimit.taxi.entity.Enum.Constants.REGION_ALREADY_EXIST;
+import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+
 @Service
 @RequiredArgsConstructor
 public class RegionService {
@@ -23,11 +26,11 @@ public class RegionService {
     public ApiResponse addRegion(RegionRegisterRequestDto regionRegisterRequestDto) {
         Optional<Region> byName = regionRepository.findByName(regionRegisterRequestDto.getName());
         if (byName.isPresent()) {
-            throw new RecordAlreadyExistException("Region already have");
+            throw new RecordAlreadyExistException(REGION_ALREADY_EXIST);
         }
         Region region = Region.builder().name(regionRegisterRequestDto.getName()).build();
         regionRepository.save(region);
-        return new ApiResponse("Successfully" , true);
+        return new ApiResponse(SUCCESSFULLY , true);
     }
 
     @ResponseStatus(HttpStatus.OK)

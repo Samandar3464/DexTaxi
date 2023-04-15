@@ -2,6 +2,7 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static uz.optimit.taxi.entity.Enum.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class CarService {
@@ -36,14 +39,14 @@ public class CarService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse addCar(CarRegisterRequestDto carRegisterRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
-            throw new UserNotFoundException("User not found");
+        if (authentication instanceof AnonymousAuthenticationToken){
+            throw new UserNotFoundException(USER_NOT_FOUND);
         }
         User principal = (User) authentication.getPrincipal();
-        User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
+        User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         Car car = Car.from(carRegisterRequestDto, autoModelRepository, attachmentService, user);
         carRepository.save(car);
-        return new ApiResponse("Successfully ", true);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -56,17 +59,17 @@ public class CarService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getCarById(UUID carId) {
-        Car car = carRepository.findById(carId).orElseThrow(()->new RecordNotFoundException("car not found"));
+        Car car = carRepository.findById(carId).orElseThrow(()->new RecordNotFoundException(CAR_NOT_FOUND));
         CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse activateCar(UUID carId) {
-        Car car = carRepository.findById(carId).orElseThrow(()->new RecordNotFoundException("car not found"));
+        Car car = carRepository.findById(carId).orElseThrow(()->new RecordNotFoundException(CAR_NOT_FOUND));
         car.setActive(true);
         carRepository.save(car);
-        return new ApiResponse("Car activated", true);
+        return new ApiResponse(CAR_ACTIVATED, true);
     }
 
 }

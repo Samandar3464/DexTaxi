@@ -31,7 +31,7 @@ public class AnnouncementPassengerResponse {
 
      private double toLatitude;
 
-     private List<Seat> seatList;
+     private int forFamiliar;
      private boolean baggage;
 
      private String info;
@@ -47,7 +47,7 @@ public class AnnouncementPassengerResponse {
               .toLatitude(announcementPassenger.getToLatitude())
               .toLongitude(announcementPassenger.getToLongitude())
               .baggage(announcementPassenger.isBaggage())
-              .seatList(announcementPassenger.getSeatList())
+              .forFamiliar(announcementPassenger.getForFamiliar())
               .info(announcementPassenger.getInfo())
               .build();
      }

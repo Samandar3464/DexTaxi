@@ -40,8 +40,7 @@ public class AnnouncementPassenger {
      private double toLongitude;
 
      private double toLatitude;
-     @OneToMany(mappedBy = "announcementPassenger")
-     private List<Seat> seatList;
+     private int forFamiliar;
      private boolean baggage;
 
      private boolean active;
@@ -63,7 +62,7 @@ public class AnnouncementPassenger {
               .fromLongitude(announcementRequestDto.getFromLongitude())
               .toLatitude(announcementRequestDto.getToLatitude())
               .toLongitude(announcementRequestDto.getToLongitude())
-              .seatList(announcementRequestDto.getSeatList())
+              .forFamiliar(announcementRequestDto.getForFamiliar())
               .timeToTravel(announcementRequestDto.getTimeToTravel())
               .info(announcementRequestDto.getInfo())
               .createdTime(LocalDateTime.now())

@@ -83,6 +83,9 @@ public class User implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Familiar> familiars;
+
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -129,7 +132,7 @@ public class User implements UserDetails {
                 .profilePhoto(attachmentService.saveToSystem(userRegisterDto.getProfilePhoto()))
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .roles(List.of(roleRepository.findByName("YOLOVCHI"), (roleRepository.findByName("HAYDOVCHI"))))
-                .isBlocked(false)
+                .isBlocked(true)
                 .build();
     }
 }

@@ -12,6 +12,9 @@ import uz.optimit.taxi.repository.AutoCategoryRepository;
 
 import java.util.Optional;
 
+import static uz.optimit.taxi.entity.Enum.Constants.AUTO_CATEGORY_ALREADY_EXIST;
+import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+
 @Service
 @RequiredArgsConstructor
 public class AutoCategoryService {
@@ -22,10 +25,10 @@ public class AutoCategoryService {
     public ApiResponse addAutoCategory(AutoCategoryRegisterRequestDto autoCategoryRegisterRequestDto) {
         Optional<AutoCategory> byName = autoCategoryRepository.findByName(autoCategoryRegisterRequestDto.getName());
         if (byName.isPresent()) {
-            throw new RecordAlreadyExistException("Auto category  already exist");
+            throw new RecordAlreadyExistException(AUTO_CATEGORY_ALREADY_EXIST);
         }
        AutoCategory autoCategory = AutoCategory.builder().name(autoCategoryRegisterRequestDto.getName()).build();
         autoCategoryRepository.save(autoCategory);
-        return new  ApiResponse("Successfully" , true);
+        return new  ApiResponse(SUCCESSFULLY , true);
     }
 }

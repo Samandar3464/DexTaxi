@@ -25,7 +25,7 @@ public class AnnouncementPassengerRegisterRequestDto {
      private double toLongitude;
      private double toLatitude;
      private boolean baggage;
-     private List<Seat> seatList;
+     private int forFamiliar;
      private LocalDateTime timeToTravel;
      private String info;
 }

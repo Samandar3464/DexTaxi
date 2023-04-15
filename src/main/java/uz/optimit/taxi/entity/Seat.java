@@ -17,12 +17,6 @@ public class Seat {
      private int id;
      private int seatNumber;
      private double price;
-     private UUID passengerId;
-     private UUID carId;
-     @ManyToOne
-     private AnnouncementDriver announcementDriver;
-     @ManyToOne
-     private AnnouncementPassenger announcementPassenger;
-
+     private boolean isBooked;
 
 }

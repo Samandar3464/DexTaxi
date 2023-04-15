@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
+import static uz.optimit.taxi.entity.Enum.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class AttachmentService {
@@ -39,7 +41,7 @@ public class AttachmentService {
 
     public String getExtension(String fileName) {
         if (fileName == null) {
-            throw new OriginalFileNameNullException("File name null");
+            throw new OriginalFileNameNullException(FILE_NAME_NULL);
         }
         int lastIndex = fileName.lastIndexOf(".");
         return fileName.substring(lastIndex + 1);
@@ -67,7 +69,7 @@ public class AttachmentService {
 
             return attachmentRepository.save(entity);
         } catch (IOException e) {
-            throw new FileUploadException("File could not upload");
+            throw new FileUploadException(FILE_COULD_NOT_UPLOADED);
         }
 
     }
@@ -83,7 +85,7 @@ public class AttachmentService {
         String newName = fileName.split("\\.")[0];
         Optional<Attachment> optional = attachmentRepository.findByNewName(newName);
         if (optional.isEmpty()) {
-            throw new RecordNotFoundException("File Not Found");
+            throw new RecordNotFoundException(FILE_NOT_FOUND);
         }
         return optional.get();
     }

@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.random.RandomGenerator;
 
+import static uz.optimit.taxi.entity.Enum.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -41,13 +43,13 @@ public class UserService {
     public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
         Optional<User> byPhone = userRepository.findByPhone(userRegisterDto.getPhone());
         if (byPhone.isPresent()) {
-            throw new UserAlreadyExistException("Bu telefon raqam allaqachon ro'yhatdan o'tgan");
+            throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository);
         userRepository.save(user);
-        return new ApiResponse("User added" + " verification code :" + verificationCode, true);
+        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -60,7 +62,7 @@ public class UserService {
             String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
             return new ApiResponse(new TokenResponse(access, refresh), true);
         } catch (BadCredentialsException e) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(USER_NOT_FOUND);
         }
     }
 
@@ -70,14 +72,14 @@ public class UserService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse verify(UserVerifyRequestDto userVerifyRequestDto) {
         User user = userRepository.findByPhoneAndVerificationCode(userVerifyRequestDto.getPhone(), userVerifyRequestDto.getVerificationCode())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 //        if (!verificationCodeLiveTime(user.getVerificationCodeLiveTime())) {
 //            throw new TimeExceededException("Verification code live time end");
 //        }
         user.setVerificationCode(0);
         user.setBlocked(true);
         userRepository.save(user);
-        return new ApiResponse("User verified successfully ", true);
+        return new ApiResponse(USER_VERIFIED_SUCCESSFULLY, true);
     }
 
     @ResponseStatus(HttpStatus.OK)

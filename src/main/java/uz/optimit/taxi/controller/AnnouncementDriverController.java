@@ -35,4 +35,13 @@ public class AnnouncementDriverController {
         return announcementDriverService.getDriverListForAnonymousUser();
     }
 
+    @GetMapping("/getDriverAnnouncements")
+    public ApiResponse getDriverAnnouncements(){
+        return announcementDriverService.getDriverAnnouncements();
+    }
+
+    @DeleteMapping("/deleteDriverAnnouncements/{id}")
+    public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id){
+        return announcementDriverService.deleteDriverAnnouncement(id);
+    }
 }

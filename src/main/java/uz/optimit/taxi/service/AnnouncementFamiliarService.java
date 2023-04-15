@@ -2,6 +2,7 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+import static uz.optimit.taxi.entity.Enum.Constants.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class AnnouncementFamiliarService {
@@ -32,9 +36,9 @@ public class AnnouncementFamiliarService {
      public ApiResponse addForFamiliar(FamiliarRegisterRequestDto familiarRegisterRequestDto) {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+          if (authentication instanceof AnonymousAuthenticationToken){
+               throw new UserNotFoundException(USER_NOT_FOUND);
 
-          if (!authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
-               throw new UserNotFoundException("User not found");
           }
           User principal = (User) authentication.getPrincipal();
           User user = userRepository.findByPhone(principal.getPhone())
@@ -43,20 +47,20 @@ public class AnnouncementFamiliarService {
                throw new UserAlreadyExistException("familiar already exist");
           }
           familiarRepository.save(Familiar.from(familiarRegisterRequestDto, user));
-          return new ApiResponse("Successfully", true);
+          return new ApiResponse(SUCCESSFULLY, true);
      }
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUser() {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-          if (!authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
-               throw new UserNotFoundException("User not found");
+          if (authentication instanceof AnonymousAuthenticationToken){
+               throw new UserNotFoundException(USER_NOT_FOUND);
           }
           User principal = (User) authentication.getPrincipal();
           User user = userRepository.findByPhone(principal.getPhone())
-              .orElseThrow(() -> new UserNotFoundException("user not found"));
+              .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
           List<Familiar> familiarList = familiarRepository.findAllByUserId(user.getId());
 
-          return new ApiResponse("SuccessFully", true, getFamiliars(familiarList));
+          return new ApiResponse(SUCCESSFULLY, true, getFamiliars(familiarList));
      }
 
      @ResponseStatus(HttpStatus.OK)
@@ -66,7 +70,7 @@ public class AnnouncementFamiliarService {
                Optional<Familiar> byId = familiarRepository.findById(uuid);
                byId.ifPresent(familiarList::add);
           }
-          return new ApiResponse("SuccessFully", true, getFamiliars(familiarList));
+          return new ApiResponse(SUCCESSFULLY, true, getFamiliars(familiarList));
      }
 
      private List<Familiar> getFamiliars(List<Familiar> familiarList) {

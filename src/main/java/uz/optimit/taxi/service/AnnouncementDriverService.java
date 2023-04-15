@@ -1,6 +1,7 @@
 package uz.optimit.taxi.service;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.Car;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponse;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static uz.optimit.taxi.entity.Enum.Constants.*;
 
 @Service
 public class AnnouncementDriverService {
@@ -44,14 +48,14 @@ public class AnnouncementDriverService {
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-          if (authentication.isAuthenticated() && authentication.getPrincipal().equals("anonymousUser")) {
-               throw new UserNotFoundException("User not found");
+          if (authentication instanceof AnonymousAuthenticationToken){
+               throw new UserNotFoundException(USER_NOT_FOUND);
           }
           User principal = (User) authentication.getPrincipal();
-          User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException("user not found"));
+          User user = userRepository.findByPhone(principal.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
           AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
           repository.save(announcementDriver);
-          return new ApiResponse("Successfully", true);
+          return new ApiResponse(SUCCESSFULLY, true);
      }
 
 
@@ -73,5 +77,23 @@ public class AnnouncementDriverService {
           return new ApiResponse(announcementDriverResponse, true);
      }
 
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse getDriverAnnouncements() {
+          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+          if (authentication instanceof AnonymousAuthenticationToken){
+               throw new UserNotFoundException(USER_NOT_FOUND);
+          }
+          User user = (User) authentication.getPrincipal();
+          List<AnnouncementDriver> announcementDrivers = repository.findAllByActiveAndUserId(true,user.getId());
+          return new ApiResponse(announcementDrivers, true);
+     }
 
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse deleteDriverAnnouncement(UUID id){
+          AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+          announcementDriver.setActive(false);
+          repository.save(announcementDriver);
+          return new ApiResponse(DELETED ,true);
+
+     }
 }
