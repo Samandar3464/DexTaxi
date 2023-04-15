@@ -120,15 +120,15 @@ public class NotificationService {
 
         AnnouncementDriver announcementDriver = getAnnouncementDriver(driver);
 
-        announcementPassenger.setActive(false);
-        if (announcementDriver.getEmptySeat() < announcementPassenger.getForFamiliar()) {
-            throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
-        }
-        int emptySeat = announcementDriver.getEmptySeat() - announcementPassenger.getForFamiliar();
-        announcementDriver.setEmptySeat((byte) emptySeat);
-        if (emptySeat == 0) {
-            announcementDriver.setActive(false);
-        }
+//        announcementPassenger.setActive(false);
+//        if (announcementDriver.getEmptySeat() < announcementPassenger.getForFamiliar()) {
+//            throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
+//        }
+//        int emptySeat = announcementDriver.getEmptySeat() - announcementPassenger.getForFamiliar();
+//        announcementDriver.setEmptySeat((byte) emptySeat);
+//        if (emptySeat == 0) {
+//            announcementDriver.setActive(false);
+//        }
         fromDriverToUser.setReceived(true);
         fromDriverToUser.setActive(false);
         notificationRepository.save(fromDriverToUser);
@@ -152,12 +152,12 @@ public class NotificationService {
 
         AnnouncementPassenger announcementPassenger = getAnnouncementPassenger(passenger);
 
-        announcementPassenger.setActive(false);
-        int emptySeat = announcementDriver.getEmptySeat() - 1;
-        announcementDriver.setEmptySeat((byte) emptySeat);
-        if (emptySeat == 0) {
-            announcementDriver.setActive(false);
-        }
+//        announcementPassenger.setActive(false);
+//        int emptySeat = announcementDriver.getEmptySeat() - 1;
+//        announcementDriver.setEmptySeat((byte) emptySeat);
+//        if (emptySeat == 0) {
+//            announcementDriver.setActive(false);
+//        }
         fromUserToDriver.setReceived(true);
         fromUserToDriver.setActive(false);
         notificationRepository.save(fromUserToDriver);

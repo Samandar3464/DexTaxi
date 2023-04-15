@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
      List<Car> findAllByActive(boolean Active);
-     Car findByActiveAndUserId(boolean active, UUID user_id);
+     Car findByUserIdAndActive(UUID user_id, boolean active);
 
      Optional<Car> findByUserId(UUID userId);
 }

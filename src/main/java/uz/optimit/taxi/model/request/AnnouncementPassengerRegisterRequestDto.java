@@ -14,11 +14,8 @@ import java.util.List;
 public class AnnouncementPassengerRegisterRequestDto {
 
      private Integer fromRegionId;
-
      private Integer toRegionId;
-
      private Integer fromCityId;
-
      private Integer toCityId;
      private double fromLatitude;
      private double fromLongitude;

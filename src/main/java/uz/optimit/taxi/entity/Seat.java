@@ -21,7 +21,6 @@ public class Seat {
     private int seatNumber;
 
     private boolean active;
-
     @JsonIgnore
     @ManyToOne
     private Car car;

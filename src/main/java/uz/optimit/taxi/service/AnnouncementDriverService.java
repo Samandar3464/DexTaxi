@@ -36,10 +36,11 @@ public class AnnouncementDriverService {
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
           User user = userService.checkUserExistByContext();
-          AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
+          AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository,carRepository);
           repository.save(announcementDriver);
           return new ApiResponse(SUCCESSFULLY, true);
      }
+
 
 
      @ResponseStatus(HttpStatus.OK)
@@ -55,7 +56,7 @@ public class AnnouncementDriverService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getById(UUID id) {
           Optional<AnnouncementDriver> driver = repository.findById(id);
-          Car car = carRepository.findByActiveAndUserId(true,driver.get().getUser().getId());
+          Car car = carRepository.findByUserIdAndActive(driver.get().getUser().getId(), true);
           AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(driver.get(), car, AttachmentService.attachDownloadUrl);
           return new ApiResponse(announcementDriverResponse, true);
      }
