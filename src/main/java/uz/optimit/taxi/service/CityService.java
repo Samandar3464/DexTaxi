@@ -20,6 +20,7 @@ import static uz.optimit.taxi.entity.Enum.Constants.*;
 public class CityService {
 
      private final CityRepository cityRepository;
+
      private final RegionRepository repository;
 
      @ResponseStatus(HttpStatus.CREATED)

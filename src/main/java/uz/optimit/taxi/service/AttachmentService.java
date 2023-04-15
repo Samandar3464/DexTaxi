@@ -26,10 +26,10 @@ public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
 
     @Value("${attach.upload.folder}")
-    public String attachUploadFolder;
+    public static String attachUploadFolder;
 
     @Value("${attach.download.url}")
-    public String attachDownloadUrl;
+    public static String attachDownloadUrl;
 
 
     public String getYearMonthDay() {

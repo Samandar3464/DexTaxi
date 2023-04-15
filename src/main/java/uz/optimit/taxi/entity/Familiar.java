@@ -1,5 +1,6 @@
 package uz.optimit.taxi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -36,6 +37,7 @@ public class Familiar {
     private double status;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     public static Familiar from(FamiliarRegisterRequestDto registerRequestDto, User user){
@@ -47,4 +49,6 @@ public class Familiar {
                 .user(user)
                 .build();
     }
+
+
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface AnnouncementPassengerRepository extends JpaRepository<AnnouncementPassenger, UUID> {
      Optional<AnnouncementPassenger> findByIdAndActive(UUID id,boolean Active);
 
-     Optional<AnnouncementPassenger> findByActiveAndUserId(boolean active, UUID user_id);
+     Optional<AnnouncementPassenger> findByUserIdAndActive(UUID user_id, boolean active);
 
      List<AnnouncementPassenger> findAllByActive(boolean Active);
 

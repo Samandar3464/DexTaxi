@@ -34,8 +34,6 @@ public class CarResponseDto {
 
      private String photoDriverLicense;
 
-     private UserResponseDto user;
-
      private boolean active;
 
 

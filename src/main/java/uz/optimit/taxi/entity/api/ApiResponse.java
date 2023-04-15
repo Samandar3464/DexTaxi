@@ -13,15 +13,15 @@ public class ApiResponse {
 
     private boolean status;
 
-    private Object date;
+    private Object data;
 
     public ApiResponse(String massage, boolean status) {
         this.massage = massage;
         this.status = status;
     }
 
-    public ApiResponse( Object date,boolean status) {
+    public ApiResponse(Object data, boolean status) {
         this.status = status;
-        this.date = date;
+        this.data = data;
     }
 }
