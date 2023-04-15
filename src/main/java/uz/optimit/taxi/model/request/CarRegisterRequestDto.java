@@ -22,6 +22,8 @@ public class CarRegisterRequestDto {
 
     private String texPassport;
 
+    private byte countSeat;
+
     private MultipartFile photoDriverLicense;
 
     private MultipartFile texPassportPhoto;

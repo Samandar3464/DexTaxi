@@ -1,5 +1,5 @@
 insert into auto_category(name) values ('Chevrolet');
-insert into auto_model(name ,auto_category_id) values ('NEXIA' ,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('NEXIA' ,4,1);
 insert into region ( name) values ('Toshkent');
 insert into region ( name) values ('Samarqand');
 insert into city ( name ,region_id) values ('Toshkent sh' ,1);

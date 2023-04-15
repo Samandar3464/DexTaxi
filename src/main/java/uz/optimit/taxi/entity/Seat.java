@@ -1,22 +1,29 @@
 package uz.optimit.taxi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class Seat {
-     @Id
-     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private int id;
-     private int seatNumber;
-     private double price;
-     private boolean isBooked;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    private int seatNumber;
+
+    private boolean active;
+
+    @JsonIgnore
+    @ManyToOne
+    private Car car;
 
 }
