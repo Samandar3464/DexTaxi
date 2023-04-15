@@ -16,6 +16,7 @@ import java.util.UUID;
 @Entity
 @Builder
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -28,7 +29,7 @@ public class Notification {
 
     private boolean active;
 
-    private boolean receivered;
+    private boolean received;
 
     private LocalDateTime createdTime;
 
@@ -43,7 +44,7 @@ public class Notification {
                 .receiverId(notificationRequestDto.getReceiverId())
                 .announcementId(notificationRequestDto.getAnnouncementId())
                 .createdTime(LocalDateTime.now())
-                .receivered(false)
+                .received(false)
                 .active(true)
                 .build();
 

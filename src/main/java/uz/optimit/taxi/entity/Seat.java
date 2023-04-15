@@ -13,6 +13,7 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Seat {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

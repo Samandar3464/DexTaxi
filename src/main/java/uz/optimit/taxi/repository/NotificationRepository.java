@@ -12,10 +12,12 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
 
     Optional<Notification> findByIdAndActive(UUID id, boolean active);
 
-    List<Notification> findAllBySenderIdAndActiveAndReceivered(UUID senderId, boolean active, boolean receivered);
+    List<Notification> findAllBySenderIdAndActiveAndReceived(UUID senderId, boolean active, boolean received);
 
-    List<Notification> findAllByReceiverIdAndActiveAndReceivered(UUID receiverId, boolean active, boolean receivered);
+    List<Notification> findAllByReceiverIdAndActiveAndReceived(UUID receiverId, boolean active, boolean received);
 
-    Optional<Notification> findBySenderIdAndReceiverIdAndActiveAndReceivered(UUID senderId, UUID receiverId, boolean active, boolean receivered);
+    Optional<Notification> findBySenderIdAndReceiverIdAndActiveAndReceived(UUID senderId, UUID receiverId, boolean active, boolean received);
+
+    Optional<Notification> findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(UUID receiverId);
 
 }

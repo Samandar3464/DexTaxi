@@ -2,10 +2,12 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,6 +25,7 @@ import uz.optimit.taxi.utils.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.random.RandomGenerator;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -87,6 +90,21 @@ public class UserService {
         String accessTokenByRefresh = jwtService.getAccessTokenByRefresh(refreshToken);
         return new ApiResponse(new TokenResponse(accessTokenByRefresh), true);
     }
+
+    public  User checkUserExistByContext(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            throw new UserNotFoundException(USER_NOT_FOUND);
+        }
+        User user = (User) authentication.getPrincipal();
+        return userRepository.findByPhone(user.getPhone()).orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
+    }
+
+
+    public  User checkUserExistById(UUID id){
+        return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
+    }
+
     private boolean verificationCodeLiveTime(LocalDateTime localDateTime) {
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth() - localDateTime.getDayOfMonth();
