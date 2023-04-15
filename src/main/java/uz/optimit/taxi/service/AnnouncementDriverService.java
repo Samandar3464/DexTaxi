@@ -64,6 +64,7 @@ public class AnnouncementDriverService {
      public ApiResponse getDriverAnnouncements() {
           User user = userService.checkUserExistByContext();
           List<AnnouncementDriver> announcementDrivers = repository.findAllByActiveAndUserId(true,user.getId());
+
           return new ApiResponse(announcementDrivers, true);
      }
 

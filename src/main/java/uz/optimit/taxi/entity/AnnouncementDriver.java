@@ -1,5 +1,6 @@
 package uz.optimit.taxi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
@@ -28,6 +29,7 @@ public class AnnouncementDriver {
     private Region toRegion;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     private double frontSeatPrice;
