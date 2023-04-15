@@ -31,4 +31,12 @@ public class AutoCategoryService {
         autoCategoryRepository.save(autoCategory);
         return new  ApiResponse(SUCCESSFULLY , true);
     }
+
+    public ApiResponse getCategoryById(int id) {
+        return new ApiResponse(autoCategoryRepository.findById(id).get(),true);
+    }
+
+    public ApiResponse getCategoryList() {
+        return  new ApiResponse(autoCategoryRepository.findAll(),true);
+    }
 }

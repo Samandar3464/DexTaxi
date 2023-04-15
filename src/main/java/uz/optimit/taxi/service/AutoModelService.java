@@ -36,4 +36,12 @@ public class AutoModelService {
         autoModelRepository.save(autoModel);
         return new ApiResponse(SUCCESSFULLY, true);
     }
+
+    public ApiResponse getModelById(int id) {
+        return new ApiResponse(autoModelRepository.findById(id).get(), true);
+    }
+
+    public ApiResponse getModelList() {
+        return new ApiResponse(autoModelRepository.findAll(), true);
+    }
 }

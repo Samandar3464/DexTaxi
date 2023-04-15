@@ -1,4 +1,4 @@
-package uz.optimit.taxi.AdminController;
+package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +8,7 @@ import uz.optimit.taxi.service.CityService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/city")
+@RequestMapping("/api/v1/city")
 public class CityController {
      private final CityService cityService;
 
@@ -23,7 +23,7 @@ public class CityController {
           return cityService.getCityList();
      }
 
-     @GetMapping("/getCityById")
+     @GetMapping("/getCityById/{id}")
      public ApiResponse getCityById(@PathVariable Integer id){
           return cityService.getCityById(id);
      }

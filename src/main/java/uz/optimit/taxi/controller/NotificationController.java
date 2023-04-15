@@ -44,14 +44,18 @@ public class NotificationController {
         return notificationService.deleteNotification(id);
     }
 
-    @GetMapping("/joinDiverRequest/{id}")
+    @GetMapping("/acceptDiverRequest/{id}")
     public ApiResponse joinDiverRequest(@PathVariable UUID id){
         return notificationService.acceptDiverRequest(id);
     }
 
-    @GetMapping("/joinPassengerRequest/{id}")
+    @GetMapping("/acceptPassengerRequest/{id}")
     public ApiResponse joinPassengerRequest(@PathVariable UUID id){
         return notificationService.acceptPassengerRequest(id);
+    }
+    @GetMapping("/getAcceptedNotifications/")
+    public ApiResponse getAcceptedNotifications(){
+        return notificationService.getAcceptedNotification();
     }
 
 }

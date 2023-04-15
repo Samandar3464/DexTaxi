@@ -1,4 +1,4 @@
-package uz.optimit.taxi.AdminController;
+package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +8,7 @@ import uz.optimit.taxi.service.RegionService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/region")
+@RequestMapping("/api/v1/region")
 public class RegionController {
 
      private final RegionService regionService;
@@ -24,7 +24,7 @@ public class RegionController {
           return regionService.getRegionList();
      }
 
-     @GetMapping("/regionById{id}")
+     @GetMapping("/regionById/{id}")
      public ApiResponse getRegionById(@PathVariable Integer id){
           return regionService.getRegionById(id);
      }
