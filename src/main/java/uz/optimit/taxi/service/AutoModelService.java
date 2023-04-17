@@ -11,6 +11,7 @@ import uz.optimit.taxi.model.request.AutoModelRegisterRequestDto;
 import uz.optimit.taxi.repository.AutoCategoryRepository;
 import uz.optimit.taxi.repository.AutoModelRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static uz.optimit.taxi.entity.Enum.Constants.AUTO_MODEL_ALREADY_EXIST;
@@ -41,7 +42,8 @@ public class AutoModelService {
         return new ApiResponse(autoModelRepository.findById(id).get(), true);
     }
 
-    public ApiResponse getModelList() {
-        return new ApiResponse(autoModelRepository.findAll(), true);
+    public ApiResponse getModelList(int categoryId) {
+        List<AutoModel> allByAutoCategoryId = autoModelRepository.findAllByAutoCategoryId(categoryId);
+        return new ApiResponse(allByAutoCategoryId, true);
     }
 }

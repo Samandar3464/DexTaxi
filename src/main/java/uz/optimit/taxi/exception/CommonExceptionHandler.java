@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static uz.optimit.taxi.entity.Enum.Constants.TOKEN_TIME_OUT;
+import static uz.optimit.taxi.entity.Enum.Constants.USER_NOT_FOUND;
 
 @RestControllerAdvice
 public class CommonExceptionHandler {
@@ -54,7 +55,7 @@ public class CommonExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse handleUserNotFoundException(UserNotFoundException e) {
         return new ApiResponse(
-                e.getMessage()
+                USER_NOT_FOUND
                 , false
                 , null);
     }

@@ -120,6 +120,12 @@ public class User implements UserDetails {
     }
 
     public static User fromPassenger(UserRegisterDto userRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode , RoleRepository roleRepository){
+       Attachment attachment= new Attachment();
+        if (userRegisterDto.getProfilePhoto()==null){
+            attachment=null;
+        }else {
+            attachment= attachmentService.saveToSystem(userRegisterDto.getProfilePhoto());
+        }
         return User.builder()
                 .name(userRegisterDto.getName())
                 .surname(userRegisterDto.getSurname())
@@ -129,7 +135,7 @@ public class User implements UserDetails {
                 .registeredDate(LocalDateTime.now())
                 .verificationCode(verificationCode)
                 .verificationCodeLiveTime(LocalDateTime.now())
-                .profilePhoto(attachmentService.saveToSystem(userRegisterDto.getProfilePhoto()))
+                .profilePhoto(attachment)
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .roles(List.of(roleRepository.findByName("YOLOVCHI"), (roleRepository.findByName("HAYDOVCHI"))))
                 .isBlocked(true)

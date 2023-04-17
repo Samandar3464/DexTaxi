@@ -19,6 +19,7 @@ import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
+import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.UserRepository;
 import uz.optimit.taxi.utils.JwtService;
@@ -120,6 +121,11 @@ public class UserService {
 
     private Integer verificationCodeGenerator() {
         return RandomGenerator.getDefault().nextInt(100000, 999999);
+    }
+
+    public ApiResponse getByUserId(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        return new ApiResponse(UserResponseDto.from(user,attachmentService.attachDownloadUrl),true);
     }
 }
 
