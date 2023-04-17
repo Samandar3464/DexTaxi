@@ -29,6 +29,7 @@ public class AnnouncementPassengerResponse {
      private double toLatitude;
 
      private List<Familiar> passengersList;
+     
      private boolean baggage;
 
      private String info;

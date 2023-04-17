@@ -9,14 +9,14 @@ import lombok.*;
 @Builder
 public class ApiResponse {
 
-    private String massage;
+    private String message;
 
     private boolean status;
 
     private Object data;
 
-    public ApiResponse(String massage, boolean status) {
-        this.massage = massage;
+    public ApiResponse(String message, boolean status) {
+        this.message = message;
         this.status = status;
     }
 

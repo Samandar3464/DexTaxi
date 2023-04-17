@@ -125,6 +125,11 @@ public class UserService {
     private Integer verificationCodeGenerator() {
         return RandomGenerator.getDefault().nextInt(100000, 999999);
     }
+
+    public ApiResponse getByUserId(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        return new ApiResponse(UserResponseDto.from(user,attachmentService.attachDownloadUrl),true);
+    }
 }
 
 
