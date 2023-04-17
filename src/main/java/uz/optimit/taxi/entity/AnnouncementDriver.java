@@ -3,12 +3,10 @@ package uz.optimit.taxi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
-import uz.optimit.taxi.repository.CarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.List;
 
 @Getter
 @Setter
@@ -42,10 +40,9 @@ public class AnnouncementDriver {
 
      private String info;
 
-     public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CarRepository carRepository) {
+     public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
           return AnnouncementDriver.builder()
               .user(user)
-              .car(carRepository.findByUserIdAndActive(user.getId(),true))
               .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
               .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
               .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())

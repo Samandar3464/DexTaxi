@@ -24,10 +24,6 @@ public class SeatController {
           return seatService.ofActive(uuidList);
      }
 
-     @GetMapping("getSeatListByCarId/{id}")
-     public ApiResponse getSeatListByCarId(@PathVariable UUID id){
-          return seatService.getSeatListByCarId(id);
-     }
 
      @GetMapping("getActiveSeatListByCarId/{id}")
      public ApiResponse getActiveSeatListByCarId(@PathVariable UUID id){

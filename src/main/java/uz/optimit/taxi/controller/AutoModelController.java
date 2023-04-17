@@ -1,4 +1,4 @@
-package uz.optimit.taxi.controller.AdminController;
+package uz.optimit.taxi.controller;
 
 import io.github.classgraph.PackageInfo;
 import lombok.RequiredArgsConstructor;

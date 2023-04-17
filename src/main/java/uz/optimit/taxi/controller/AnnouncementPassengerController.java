@@ -35,7 +35,7 @@ public class AnnouncementPassengerController {
           return announcementPassengerService.getPassengerAnnouncements();
      }
 
-     @DeleteMapping("/deleteDriverAnnouncements/{id}")
+     @DeleteMapping("/deletePassengerAnnouncements/{id}")
      public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id){
           return announcementPassengerService.deletePassengerAnnouncement(id);
      }
