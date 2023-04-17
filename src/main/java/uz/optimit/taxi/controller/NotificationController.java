@@ -3,6 +3,7 @@ package uz.optimit.taxi.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.model.request.AcceptDriverRequestDto;
 import uz.optimit.taxi.model.request.NotificationRequestDto;
 import uz.optimit.taxi.service.NotificationService;
 
@@ -44,9 +45,9 @@ public class NotificationController {
         return notificationService.deleteNotification(id);
     }
 
-    @GetMapping("/acceptDiverRequest/{id}")
-    public ApiResponse joinDiverRequest(@PathVariable UUID id){
-        return notificationService.acceptDiverRequest(id);
+    @PostMapping("/acceptDiverRequest")
+    public ApiResponse joinDiverRequest(@RequestBody AcceptDriverRequestDto acceptDriverRequestDto){
+        return notificationService.acceptDiverRequest(acceptDriverRequestDto);
     }
 
     @GetMapping("/acceptPassengerRequest/{id}")

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -12,5 +13,5 @@ import java.util.UUID;
 public class NotificationRequestDto {
     private UUID receiverId;
     private UUID announcementId;
-
+    private List<UUID> seatIdList;
 }

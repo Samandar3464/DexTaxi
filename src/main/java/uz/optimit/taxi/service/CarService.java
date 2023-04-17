@@ -2,9 +2,6 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AutoModel;
@@ -13,13 +10,11 @@ import uz.optimit.taxi.entity.Seat;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
-import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.model.request.SeatService;
 import uz.optimit.taxi.model.response.CarResponseDto;
 import uz.optimit.taxi.repository.AutoModelRepository;
 import uz.optimit.taxi.repository.CarRepository;
-import uz.optimit.taxi.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,21 +48,21 @@ public class CarService {
     public ApiResponse disActiveCarList() {
         List<Car> allByActive = carRepository.findAllByActive(false);
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
-        allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, AttachmentService.attachDownloadUrl)));
+        allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(carResponseDtoList, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getCarById(UUID carId) {
         Car car = carRepository.findById(carId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
-        CarResponseDto carResponseDto = CarResponseDto.from(car, AttachmentService.attachDownloadUrl);
+        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(UUID userId) {
         Car car = carRepository.findByUserId(userId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
-        CarResponseDto carResponseDto = CarResponseDto.from(car, AttachmentService.attachDownloadUrl);
+        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
 

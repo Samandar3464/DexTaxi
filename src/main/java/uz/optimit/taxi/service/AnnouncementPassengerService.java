@@ -30,6 +30,8 @@ public class AnnouncementPassengerService {
     private final RegionRepository regionRepository;
     private final CityRepository cityRepository;
     private final UserService userService;
+    private  final  AttachmentService attachmentService;
+
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
@@ -54,7 +56,7 @@ public class AnnouncementPassengerService {
     public ApiResponse getAnnouncementById(UUID id) {
         AnnouncementPassenger active = repository.findByIdAndActive(id, true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         AnnouncementPassengerResponse passengerResponse =
-                AnnouncementPassengerResponse.from(active, AttachmentService.attachDownloadUrl);
+                AnnouncementPassengerResponse.from(active, attachmentService.attachDownloadUrl);
         return new ApiResponse(passengerResponse, true);
     }
 

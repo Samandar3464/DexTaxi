@@ -20,7 +20,7 @@ public class Constants {
     public static final String CAR_ACTIVATED="CAR ACTIVATED";
     public static final String USER_VERIFIED_SUCCESSFULLY="USER VERIFIED SUCCESSFULLY";
     public static final String YOU_ARE_ACCEPTED_REQUEST="YOU ARE ACCEPTED REQUEST";
-    public static final String NOT_ENOUGH_SEAT="YOU ARE ACCEPTED REQUEST";
+    public static final String NOT_ENOUGH_SEAT="NOT ENOUGH SEAT";
     public static final String FAMILIAR_ALREADY_EXIST="FAMILIAR_ALREADY_EXIST";
 
 

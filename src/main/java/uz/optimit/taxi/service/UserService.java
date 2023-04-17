@@ -54,7 +54,6 @@ public class UserService {
         User save = userRepository.save(user);
         String access = jwtService.generateAccessToken(user);
         String refresh = jwtService.generateRefreshToken(save.getPhone());
-
         return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true,new TokenResponse(access, refresh));
     }
 

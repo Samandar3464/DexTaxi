@@ -47,7 +47,6 @@ public class AnnouncementDriverResponse {
               .userResponseDto(UserResponseDto.from(announcementDriver.getUser(),downloadUrl))
               .frontSeatPrice(announcementDriver.getFrontSeatPrice())
               .backSeatPrice(announcementDriver.getBackSeatPrice())
-              .emptySeat(announcementDriver.getEmptySeat())
               .info(announcementDriver.getInfo())
               .baggage(announcementDriver.isBaggage())
               .carPhotoPath(photos)
