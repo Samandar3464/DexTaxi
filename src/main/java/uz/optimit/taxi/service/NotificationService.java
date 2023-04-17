@@ -126,7 +126,7 @@ public class NotificationService {
                 countActiveSeat++;
             }
         }
-        if (countActiveSeat < announcementPassenger.getForFamiliar()) {
+        if (countActiveSeat < announcementPassenger.getPassengersList().size()) {
             throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
         }
         for (Seat seat : driverCarSeatList) {
@@ -164,7 +164,7 @@ public class NotificationService {
         List<Seat> driverCarSeatList = seatRepository.findAllByCarIdAndActive(car.getId(), true);
         int countActiveSeat = driverCarSeatList.size();
 
-        if (countActiveSeat < announcementPassenger.getForFamiliar()) {
+        if (countActiveSeat < announcementPassenger.getPassengersList().size()) {
             throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
         }
         for (Seat seat : fromUserToDriver.getCarSeats()) {

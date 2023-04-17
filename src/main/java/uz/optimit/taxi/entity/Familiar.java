@@ -3,12 +3,12 @@ package uz.optimit.taxi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import uz.optimit.taxi.entity.Enum.Gender;
 import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -18,37 +18,50 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Familiar {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+     private UUID id;
 
-    @NotBlank
-    private String name;
+     @NotBlank
+     private String name;
 
 
-    @Size(min = 9,max = 9)
-    private String phone;
+     @Size(min = 9, max = 9)
+     private String phone;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+     @Enumerated(EnumType.STRING)
+     private Gender gender;
 
-    private short age;
+     private short age;
 
-    private double status;
+     private double status;
 
-    @ManyToOne
-    @JsonIgnore
-    private User user;
+     @ManyToOne
+     @JsonIgnore
+     private User user;
 
-    public static Familiar from(FamiliarRegisterRequestDto registerRequestDto, User user){
-        return Familiar.builder()
-                .name(registerRequestDto.getName())
-                .phone(registerRequestDto.getPhone())
-                .gender(registerRequestDto.getGender())
-                .age(registerRequestDto.getAge())
-                .user(user)
-                .build();
-    }
+     @ManyToOne
+     @JsonIgnore
+     private AnnouncementPassenger announcementPassenger;
 
+     public static Familiar from(FamiliarRegisterRequestDto registerRequestDto, User user) {
+          return Familiar.builder()
+              .name(registerRequestDto.getName())
+              .phone(registerRequestDto.getPhone())
+              .gender(registerRequestDto.getGender())
+              .age(registerRequestDto.getAge())
+              .user(user)
+              .build();
+     }
+
+     public static Familiar fromUser(User user) {
+          return Familiar.builder()
+              .name(user.getName())
+              .phone(user.getPhone())
+              .gender(user.getGender())
+              .age((short) (LocalDateTime.now().getYear() - user.getBirthDate().getYear()))
+              .user(user)
+              .build();
+     }
 
 }

@@ -80,9 +80,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<AnnouncementDriver> announcementDrivers;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "user")
-    private List<Familiar> familiars;
+    private List<Familiar> passengersList;
 
     @OneToMany(mappedBy = "user")
     private List<Notification> notifications;

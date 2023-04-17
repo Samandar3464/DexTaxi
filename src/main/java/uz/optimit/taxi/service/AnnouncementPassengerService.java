@@ -14,6 +14,7 @@ import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
 import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
 import uz.optimit.taxi.repository.CityRepository;
+import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.util.ArrayList;
@@ -31,12 +32,13 @@ public class AnnouncementPassengerService {
     private final CityRepository cityRepository;
     private final UserService userService;
     private  final  AttachmentService attachmentService;
+    private final FamiliarRepository familiarRepository;
 
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
         User user = userService.checkUserExistByContext();
-        AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository, cityRepository);
+        AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository, cityRepository,familiarRepository);
         repository.save(announcementPassenger);
         return new ApiResponse(SUCCESSFULLY, true);
     }

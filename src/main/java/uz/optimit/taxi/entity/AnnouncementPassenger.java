@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.repository.CityRepository;
+import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,14 +41,11 @@ public class AnnouncementPassenger {
      private double toLongitude;
 
      private double toLatitude;
-
-     private double price;
-
+     @OneToMany(mappedBy = "announcementPassenger")
+     private List<Familiar> passengersList;
      private boolean baggage;
 
      private boolean active;
-
-     private int forFamiliar;
 
      private LocalDateTime timeToTravel;
 
@@ -54,7 +53,7 @@ public class AnnouncementPassenger {
 
      private LocalDateTime createdTime;
 
-     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository) {
+     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, FamiliarRepository familiarRepository) {
           return AnnouncementPassenger.builder()
               .user(user)
               .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
@@ -65,8 +64,7 @@ public class AnnouncementPassenger {
               .fromLongitude(announcementRequestDto.getFromLongitude())
               .toLatitude(announcementRequestDto.getToLatitude())
               .toLongitude(announcementRequestDto.getToLongitude())
-              .price(announcementRequestDto.getPrice())
-              .forFamiliar(announcementRequestDto.getForFamiliar())
+              .passengersList(familiarRepository.findByIdIn(announcementRequestDto.getPassengersList()))
               .timeToTravel(announcementRequestDto.getTimeToTravel())
               .info(announcementRequestDto.getInfo())
               .createdTime(LocalDateTime.now())

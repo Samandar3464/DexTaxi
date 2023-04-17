@@ -45,6 +45,7 @@ public class AnnouncementDriverService {
      }
 
 
+
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getDriverListForAnonymousUser() {
           List<AnnouncementDriver> all = repository.findAllByActive(true);
@@ -58,7 +59,8 @@ public class AnnouncementDriverService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getById(UUID id) {
           Optional<AnnouncementDriver> driver = repository.findById(id);
-          Car car = carRepository.findByUserIdAndActive(driver.get().getUser().getId(),true).orElseThrow(()->new CarNotFound(CAR_NOT_FOUND));
+          Car car = carRepository.findByUserIdAndActive(driver.get().getUser().getId(), true).orElseThrow(()->
+               new CarNotFound(CAR_NOT_FOUND));
           AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(driver.get(), car, attachmentService.attachDownloadUrl);
           return new ApiResponse(announcementDriverResponse, true);
      }

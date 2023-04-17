@@ -11,7 +11,6 @@ import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
-import uz.optimit.taxi.model.request.SeatService;
 import uz.optimit.taxi.model.response.CarResponseDto;
 import uz.optimit.taxi.repository.AutoModelRepository;
 import uz.optimit.taxi.repository.CarRepository;

@@ -12,6 +12,4 @@ public interface CarRepository extends JpaRepository<Car, UUID> {
      List<Car> findAllByActive(boolean Active);
      Optional<Car> findByUserIdAndActive(UUID user_id,boolean active);
      Optional<Car> findByUserId(UUID userId);
-
-
 }
