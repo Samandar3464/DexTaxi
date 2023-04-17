@@ -40,8 +40,6 @@ public class AnnouncementDriver {
 
     private boolean active;
 
-    private byte emptySeat;
-
     private LocalDateTime timeToDrive;
 
     private LocalDateTime createdTime;
@@ -56,7 +54,6 @@ public class AnnouncementDriver {
                 .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())
                 .backSeatPrice(announcementRequestDto.getBackSeatPrice())
                 .baggage(announcementRequestDto.isBaggage())
-                .emptySeat(announcementRequestDto.getEmptySeat())
                 .timeToDrive(announcementRequestDto.getTimeToDrive())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())

@@ -3,22 +3,20 @@ package uz.optimit.taxi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.optimit.taxi.entity.AnnouncementDriver;
-import uz.optimit.taxi.entity.AnnouncementPassenger;
-import uz.optimit.taxi.entity.Notification;
-import uz.optimit.taxi.entity.User;
+import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
+import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.exception.NotEnoughSeat;
 import uz.optimit.taxi.exception.RecordNotFoundException;
+import uz.optimit.taxi.model.request.AcceptDriverRequestDto;
 import uz.optimit.taxi.model.request.NotificationRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponseAnonymous;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
 import uz.optimit.taxi.model.response.UserResponseDto;
-import uz.optimit.taxi.repository.AnnouncementDriverRepository;
-import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
-import uz.optimit.taxi.repository.NotificationRepository;
+import uz.optimit.taxi.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,24 +33,26 @@ public class NotificationService {
     private final AnnouncementPassengerRepository announcementPassengerRepository;
     private final AnnouncementDriverRepository announcementDriverRepository;
     private final UserService userService;
+    private final CarRepository carRepository;
+    private final SeatRepository seatRepository;
+    private  final  AttachmentService attachmentService;
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse createNotificationForDriver(NotificationRequestDto notificationRequestDto) {
         User user = userService.checkUserExistByContext();
         announcementDriverRepository.findByIdAndActive(notificationRequestDto.getAnnouncementId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
-        Notification notification = Notification.from(notificationRequestDto, user);
-        notificationRepository.save(notification);
+        from(notificationRequestDto, user);
         return new ApiResponse(SUCCESSFULLY, true);
     }
+
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse createNotificationForPassenger(NotificationRequestDto notificationRequestDto) {
         User user = userService.checkUserExistByContext();
         announcementPassengerRepository.findByIdAndActive(notificationRequestDto.getAnnouncementId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
-        Notification notification = Notification.from(notificationRequestDto, user);
-        notificationRepository.save(notification);
+        from(notificationRequestDto, user);
         return new ApiResponse(SUCCESSFULLY, true);
     }
 
@@ -96,7 +96,7 @@ public class NotificationService {
 
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         notifications.forEach(obj -> userResponseDtoList.add(
-                UserResponseDto.from(userService.checkUserExistById(obj.getSenderId()), AttachmentService.attachDownloadUrl)));
+                UserResponseDto.from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
 
         return new ApiResponse(userResponseDtoList, true);
     }
@@ -110,57 +110,76 @@ public class NotificationService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse acceptDiverRequest(UUID userId) throws NotEnoughSeat {
+    @Transactional(rollbackFor = {NotEnoughSeat.class,CarNotFound.class})
+    public ApiResponse acceptDiverRequest(AcceptDriverRequestDto acceptDriverRequestDto) throws NotEnoughSeat {
         User user = userService.checkUserExistByContext();
-        User driver = userService.checkUserExistById(userId);
-
-//        Notification fromDriverToUser = notificationRepository.findBySenderIdAndReceiverIdAndActiveAndReceived(driver.getId(), user.getId(), true, false)
-//                .orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_NOT_FOUND));
-
-        Notification fromDriverToUser = getNotification(user,driver);
-
+        User driver = userService.checkUserExistById(acceptDriverRequestDto.getSenderId());
+        Notification fromDriverToUser = getNotification(user, driver);
         AnnouncementPassenger announcementPassenger = getAnnouncementPassenger(fromDriverToUser);
-
         AnnouncementDriver announcementDriver = getAnnouncementDriver(driver);
-
-        announcementPassenger.setActive(false);
-        if (announcementDriver.getEmptySeat() < announcementPassenger.getForFamiliar()) {
+        List<Car> activeCars = new ArrayList<>();
+        driver.getCars().forEach(car -> activeCars.add(carRepository.findByUserIdAndActive(driver.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND))));
+        List<Seat> driverCarSeatList = activeCars.get(0).getSeatList();
+        int countActiveSeat = 0;
+        for (Seat seat : driverCarSeatList) {
+            if (seat.isActive()) {
+                countActiveSeat++;
+            }
+        }
+        if (countActiveSeat < announcementPassenger.getForFamiliar()) {
             throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
         }
-        int emptySeat = announcementDriver.getEmptySeat() - announcementPassenger.getForFamiliar();
-        announcementDriver.setEmptySeat((byte) emptySeat);
-        if (emptySeat == 0) {
+        for (Seat seat : driverCarSeatList) {
+            if (acceptDriverRequestDto.getSeatIdList().contains(seat.getId())) {
+                seat.setActive(false);
+                seatRepository.save(seat);
+                countActiveSeat--;
+            }
+        }
+        if (countActiveSeat == 0) {
             announcementDriver.setActive(false);
         }
+
+        announcementPassenger.setActive(false);
         fromDriverToUser.setReceived(true);
         fromDriverToUser.setActive(false);
         notificationRepository.save(fromDriverToUser);
-        announcementDriverRepository.save(announcementDriver);
         announcementPassengerRepository.save(announcementPassenger);
         return new ApiResponse(YOU_ARE_ACCEPTED_REQUEST, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Transactional(rollbackFor = {NotEnoughSeat.class})
     public ApiResponse acceptPassengerRequest(UUID userId) {
         User driver = userService.checkUserExistByContext();
         User passenger = userService.checkUserExistById(userId);
-
-
         Notification fromUserToDriver = getNotification(driver, passenger);
-
-//        Notification fromUserToDriver = notificationRepository.findBySenderIdAndReceiverIdAndActiveAndReceived(passenger.getId(), driver.getId(), true, false)
-//                .orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_NOT_FOUND));
-
         AnnouncementDriver announcementDriver = getAnnouncementDriver(fromUserToDriver);
-
         AnnouncementPassenger announcementPassenger = getAnnouncementPassenger(passenger);
 
-        announcementPassenger.setActive(false);
-        int emptySeat = announcementDriver.getEmptySeat() - 1;
-        announcementDriver.setEmptySeat((byte) emptySeat);
-        if (emptySeat == 0) {
+        List<Car> activeCars = new ArrayList<>();
+        driver.getCars().forEach(car -> activeCars.add(carRepository.findByUserIdAndActive(driver.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND))));
+        Car car = activeCars.get(0);
+
+        List<Seat> driverCarSeatList = seatRepository.findAllByCarIdAndActive(car.getId(), true);
+        int countActiveSeat = driverCarSeatList.size();
+
+        if (countActiveSeat < announcementPassenger.getForFamiliar()) {
+            throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
+        }
+        for (Seat seat : fromUserToDriver.getCarSeats()) {
+            if (driverCarSeatList.contains(seat)) {
+                seat.setActive(false);
+                seatRepository.save(seat);
+                countActiveSeat--;
+            }else {
+                throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
+            }
+        }
+        if (countActiveSeat == 0) {
             announcementDriver.setActive(false);
         }
+        announcementPassenger.setActive(false);
         fromUserToDriver.setReceived(true);
         fromUserToDriver.setActive(false);
         notificationRepository.save(fromUserToDriver);
@@ -172,12 +191,12 @@ public class NotificationService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getAcceptedNotification() {
         User receiver = userService.checkUserExistByContext();
-        
+
         Notification notification = notificationRepository.findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(receiver.getId())
                 .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
-        
-        User sender =userService.checkUserExistById(notification.getSenderId());
-        return new ApiResponse(UserResponseDto.from(sender, AttachmentService.attachDownloadUrl), true);
+
+        User sender = userService.checkUserExistById(notification.getSenderId());
+        return new ApiResponse(UserResponseDto.from(sender, attachmentService.attachDownloadUrl), true);
     }
 
     private Notification getNotification(User user1, User user2) {
@@ -190,18 +209,32 @@ public class NotificationService {
                 .findByIdAndActive(fromUserToDriver.getAnnouncementId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
     }
+
     private AnnouncementDriver getAnnouncementDriver(User driver) {
-        return announcementDriverRepository.findByUserIdAndActive( driver.getId(),true)
+        return announcementDriverRepository.findByUserIdAndActive(driver.getId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
     }
+
     private AnnouncementPassenger getAnnouncementPassenger(Notification fromDriverToUser) {
         return announcementPassengerRepository.findByIdAndActive(fromDriverToUser.getAnnouncementId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
     }
+
     private AnnouncementPassenger getAnnouncementPassenger(User passenger) {
         return announcementPassengerRepository
                 .findByUserIdAndActive(passenger.getId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
     }
-    
+
+    private Notification from(NotificationRequestDto notificationRequestDto, User user) {
+        Notification notification = Notification.from(notificationRequestDto);
+        notification.setSenderId(user.getId());
+        notification.setUser(user);
+        if (notificationRequestDto.getSeatIdList() != null) {
+            List<Seat> selectedSeats = seatRepository.findAllByIdIn(notificationRequestDto.getSeatIdList());
+            notification.setCarSeats(selectedSeats);
+        }
+        return notificationRepository.save(notification);
+    }
+
 }
