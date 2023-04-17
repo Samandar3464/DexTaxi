@@ -33,14 +33,15 @@ public class Notification {
 
     private LocalDateTime createdTime;
 
+    @ManyToMany
+    private List<Seat> carSeats;
+
     @ManyToOne
     @JsonIgnore
     private User user;
 
-    public static Notification from(NotificationRequestDto notificationRequestDto , User user){
+    public static Notification from(NotificationRequestDto notificationRequestDto ){
         return Notification.builder()
-                .senderId(user.getId())
-                .user(user)
                 .receiverId(notificationRequestDto.getReceiverId())
                 .announcementId(notificationRequestDto.getAnnouncementId())
                 .createdTime(LocalDateTime.now())

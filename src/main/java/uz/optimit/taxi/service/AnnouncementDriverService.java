@@ -9,6 +9,7 @@ import uz.optimit.taxi.entity.Car;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
+import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponse;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponseAnonymous;
@@ -31,16 +32,17 @@ public class AnnouncementDriverService {
      private final CarRepository carRepository;
      private final RegionRepository regionRepository;
      private final UserService userService;
+     private  final  AttachmentService attachmentService;
+
 
 
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
           User user = userService.checkUserExistByContext();
-          AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository,carRepository);
+          AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
           repository.save(announcementDriver);
           return new ApiResponse(SUCCESSFULLY, true);
      }
-
 
 
      @ResponseStatus(HttpStatus.OK)
@@ -56,8 +58,9 @@ public class AnnouncementDriverService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getById(UUID id) {
           Optional<AnnouncementDriver> driver = repository.findById(id);
-          Car car = carRepository.findByUserIdAndActive(driver.get().getUser().getId(), true);
-          AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(driver.get(), car, AttachmentService.attachDownloadUrl);
+          Car car = carRepository.findByUserIdAndActive(driver.get().getUser().getId(), true).orElseThrow(()->
+               new CarNotFound(CAR_NOT_FOUND));
+          AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(driver.get(), car, attachmentService.attachDownloadUrl);
           return new ApiResponse(announcementDriverResponse, true);
      }
 

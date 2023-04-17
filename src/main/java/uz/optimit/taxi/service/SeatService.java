@@ -34,7 +34,7 @@ public class SeatService {
 
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse onActive(List<UUID> seatIdList) {
-          List<Seat> byIdIn = seatRepository.findByIdIn(seatIdList);
+          List<Seat> byIdIn = seatRepository.findAllByIdIn(seatIdList);
           byIdIn.forEach(seat -> {
                seat.setActive(true);
           });
@@ -44,7 +44,7 @@ public class SeatService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse ofActive(List<UUID> seatIdList) {
-          List<Seat> byIdIn = seatRepository.findByIdIn(seatIdList);
+          List<Seat> byIdIn = seatRepository.findAllByIdIn(seatIdList);
           byIdIn.forEach(seat -> {
                seat.setActive(false);
           });
@@ -54,13 +54,13 @@ public class SeatService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getSeatListByCarId(UUID carID){
-          List<Seat> allByCarId = seatRepository.findAllByCar_Id(carID);
+          List<Seat> allByCarId = seatRepository.findAllByCarIdAndActive(carID,true);
           return new ApiResponse(getSeatResponses(allByCarId),true);
      }
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getActiveSeatListByCarId(UUID carID){
-          List<Seat> allByCarId = seatRepository.findAllByCar_IdAndActive(carID,true);
+          List<Seat> allByCarId = seatRepository.findAllByCarIdAndActive(carID,true);
           return new ApiResponse(getSeatResponses(allByCarId),true);
      }
 

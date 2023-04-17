@@ -47,21 +47,21 @@ public class CarService {
     public ApiResponse disActiveCarList() {
         List<Car> allByActive = carRepository.findAllByActive(false);
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
-        allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, AttachmentService.attachDownloadUrl)));
+        allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(carResponseDtoList, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getCarById(UUID carId) {
         Car car = carRepository.findById(carId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
-        CarResponseDto carResponseDto = CarResponseDto.from(car, AttachmentService.attachDownloadUrl);
+        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(UUID userId) {
         Car car = carRepository.findByUserId(userId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
-        CarResponseDto carResponseDto = CarResponseDto.from(car, AttachmentService.attachDownloadUrl);
+        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
 

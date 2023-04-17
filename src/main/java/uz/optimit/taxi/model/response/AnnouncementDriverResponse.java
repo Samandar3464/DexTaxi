@@ -19,6 +19,8 @@ public class AnnouncementDriverResponse {
      private Region fromRegion;
      private Region toRegion;
      private UserResponseDto userResponseDto;
+     private double frontSeatPrice;
+     private double backSeatPrice;
      private String info;
      private boolean baggage;
      private List<String> carPhotoPath;
@@ -42,6 +44,8 @@ public class AnnouncementDriverResponse {
               .fromRegion(announcementDriver.getFromRegion())
               .toRegion(announcementDriver.getToRegion())
               .userResponseDto(UserResponseDto.from(announcementDriver.getUser(),downloadUrl))
+              .frontSeatPrice(announcementDriver.getFrontSeatPrice())
+              .backSeatPrice(announcementDriver.getBackSeatPrice())
               .info(announcementDriver.getInfo())
               .baggage(announcementDriver.isBaggage())
               .carPhotoPath(photos)

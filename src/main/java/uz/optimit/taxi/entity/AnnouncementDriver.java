@@ -30,8 +30,10 @@ public class AnnouncementDriver {
 
      @ManyToOne
      private User user;
+
      @ManyToOne
      private Car car;
+
      private boolean baggage;
 
      private boolean active;
@@ -42,10 +44,9 @@ public class AnnouncementDriver {
 
      private String info;
 
-     public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CarRepository carRepository) {
+     public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository) {
           return AnnouncementDriver.builder()
               .user(user)
-              .car(carRepository.findByUserIdAndActive(user.getId(),true))
               .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
               .toRegion(regionRepository.getById(announcementRequestDto.getToRegionId()))
               .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())

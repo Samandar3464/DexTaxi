@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -24,5 +25,7 @@ public class Seat {
     @JsonIgnore
     @ManyToOne
     private Car car;
-
+    @JsonIgnore
+    @ManyToMany(mappedBy = "carSeats")
+    private List<Notification> notifications;
 }
