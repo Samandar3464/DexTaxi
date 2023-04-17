@@ -41,8 +41,10 @@ public class AnnouncementPassenger {
      private double toLongitude;
 
      private double toLatitude;
+
      @OneToMany(mappedBy = "announcementPassenger")
      private List<Familiar> passengersList;
+
      private boolean baggage;
 
      private boolean active;

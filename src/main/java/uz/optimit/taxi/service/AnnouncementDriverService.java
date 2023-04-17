@@ -39,6 +39,9 @@ public class AnnouncementDriverService {
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
           User user = userService.checkUserExistByContext();
+          if (user.getCars().isEmpty()){
+               throw new CarNotFound(CAR_NOT_FOUND);
+          }
           AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
           repository.save(announcementDriver);
           return new ApiResponse(SUCCESSFULLY, true);

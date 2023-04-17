@@ -15,15 +15,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AnnouncementDriverResponseAnonymous {
      private UUID id;
-     private Region fromRegion;
-     private Region toRegion;
+     private RegionResponseDto fromRegion;
+     private RegionResponseDto toRegion;
 
      public  static AnnouncementDriverResponseAnonymous from(AnnouncementDriver announcementDriver) {
           return AnnouncementDriverResponseAnonymous
               .builder()
               .id(announcementDriver.getId())
-              .fromRegion(announcementDriver.getFromRegion())
-              .toRegion(announcementDriver.getToRegion())
+              .fromRegion(RegionResponseDto.from(announcementDriver.getFromRegion()))
+              .toRegion(RegionResponseDto.from(announcementDriver.getToRegion()))
               .build();
      }
 }
