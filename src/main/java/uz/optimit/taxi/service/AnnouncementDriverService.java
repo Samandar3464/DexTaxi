@@ -45,6 +45,7 @@ public class AnnouncementDriverService {
      }
 
 
+
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getDriverListForAnonymousUser() {
           List<AnnouncementDriver> all = repository.findAllByActive(true);
@@ -68,6 +69,7 @@ public class AnnouncementDriverService {
      public ApiResponse getDriverAnnouncements() {
           User user = userService.checkUserExistByContext();
           List<AnnouncementDriver> announcementDrivers = repository.findAllByActiveAndUserId(true,user.getId());
+
           return new ApiResponse(announcementDrivers, true);
      }
 

@@ -3,12 +3,10 @@ package uz.optimit.taxi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
-import uz.optimit.taxi.repository.CarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.List;
 
 @Getter
 @Setter
