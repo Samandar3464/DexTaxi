@@ -21,7 +21,6 @@ public class AnnouncementDriverResponse {
      private UserResponseDto userResponseDto;
      private double frontSeatPrice;
      private double backSeatPrice;
-     private byte emptySeat;
      private String info;
      private boolean baggage;
      private List<String> carPhotoPath;

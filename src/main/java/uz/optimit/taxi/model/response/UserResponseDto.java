@@ -24,9 +24,14 @@ public class UserResponseDto {
     private Gender gender;
     private String profilePhotoUrl;
 
-    public static UserResponseDto from(User user,String downloadUrl) {
-        Attachment attachment = user.getProfilePhoto();
-        String photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+    public static UserResponseDto from(User user, String downloadUrl) {
+        String photoLink = null;
+        if (user.getProfilePhoto() != null) {
+            Attachment attachment = user.getProfilePhoto();
+            photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+        }else {
+            photoLink = downloadUrl + "avatar.png";
+        }
         return UserResponseDto.builder()
                 .id(user.getId())
                 .name(user.getName())

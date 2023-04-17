@@ -1,6 +1,7 @@
 package uz.optimit.taxi.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.TokenResponse;
@@ -9,6 +10,8 @@ import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.service.UserService;
+
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -36,4 +39,8 @@ public class UserController {
           return userService.getToken(token.getRefreshToken());
      }
 
+     @GetMapping("/getById/{id}")
+     public ApiResponse getUserById(@PathVariable UUID id){
+         return userService.getByUserId(id);
+     }
 }

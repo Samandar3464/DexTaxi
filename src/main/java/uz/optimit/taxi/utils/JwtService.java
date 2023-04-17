@@ -159,7 +159,7 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 

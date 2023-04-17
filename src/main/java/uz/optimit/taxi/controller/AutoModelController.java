@@ -1,6 +1,5 @@
 package uz.optimit.taxi.controller;
 
-import io.github.classgraph.PackageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -23,8 +22,8 @@ public class AutoModelController {
     public ApiResponse getModelById(@PathVariable int id){
         return autoModelService.getModelById(id);
     }
-    @GetMapping("/getModelList/")
-    public ApiResponse getModelList(){
-        return autoModelService.getModelList();
+    @GetMapping("/getModelList/{id}")
+    public ApiResponse getModelList(@PathVariable int id){
+        return autoModelService.getModelList(id);
     }
 }

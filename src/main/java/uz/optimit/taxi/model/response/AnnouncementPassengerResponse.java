@@ -32,6 +32,7 @@ public class AnnouncementPassengerResponse {
      private double price;
 
      private boolean baggage;
+
      private int forFamiliar;
 
      private String info;

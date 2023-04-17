@@ -1,5 +1,6 @@
 package uz.optimit.taxi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,11 +18,14 @@ public class AutoModel {
     private Integer id;
 
     private String name;
+
+    @JsonIgnore
     @ManyToOne
     private AutoCategory autoCategory;
 
     private byte countSeat;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "autoModel")
     private List<Car> car;
 }

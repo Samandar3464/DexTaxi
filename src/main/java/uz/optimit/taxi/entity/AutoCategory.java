@@ -1,6 +1,5 @@
 package uz.optimit.taxi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +16,8 @@ public class AutoCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    @JsonIgnore
-    @OneToMany(mappedBy = "autoCategory" , cascade = CascadeType.ALL)
+
+
+    @OneToMany(mappedBy = "autoCategory" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<AutoModel> autoModel;
 }
