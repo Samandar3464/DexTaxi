@@ -1,4 +1,4 @@
-package uz.optimit.taxi.AdminController;
+package uz.optimit.taxi.controller.AdminController;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

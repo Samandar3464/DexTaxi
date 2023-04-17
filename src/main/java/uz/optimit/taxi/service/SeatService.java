@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.Car;
 import uz.optimit.taxi.entity.Seat;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.SeatRepository;
-import uz.optimit.taxi.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SeatService {
      private final SeatRepository seatRepository;
-     private final UserRepository userRepository;
 
     public List<Seat> createCarSeats(byte count , Car car){
           List<Seat> seatList  = new ArrayList<>();
@@ -40,7 +39,7 @@ public class SeatService {
                seat.setActive(true);
           });
           seatRepository.saveAll(byIdIn);
-          return new ApiResponse(byIdIn,true);
+          return new ApiResponse(getSeatResponses(byIdIn),true);
      }
 
      @ResponseStatus(HttpStatus.OK)
@@ -50,18 +49,26 @@ public class SeatService {
                seat.setActive(false);
           });
           seatRepository.saveAll(byIdIn);
-          return new ApiResponse(byIdIn,true);
+          return new ApiResponse(getSeatResponses(byIdIn),true);
      }
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getSeatListByCarId(UUID carID){
           List<Seat> allByCarId = seatRepository.findAllByCar_Id(carID);
-          return new ApiResponse(allByCarId,true);
+          return new ApiResponse(getSeatResponses(allByCarId),true);
      }
 
      @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getSeatListByActive(UUID carID){
+     public ApiResponse getActiveSeatListByCarId(UUID carID){
           List<Seat> allByCarId = seatRepository.findAllByCar_IdAndActive(carID,true);
-          return new ApiResponse(allByCarId,true);
+          return new ApiResponse(getSeatResponses(allByCarId),true);
+     }
+
+     private static List<SeatResponse> getSeatResponses(List<Seat> allByCarId) {
+          List<SeatResponse> seatList = new ArrayList<>();
+          allByCarId.forEach(seat -> {
+               seatList.add(SeatResponse.from(seat));
+          });
+          return seatList;
      }
 }

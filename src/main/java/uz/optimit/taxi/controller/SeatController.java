@@ -1,6 +1,5 @@
 package uz.optimit.taxi.controller;
 
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -28,6 +27,11 @@ public class SeatController {
      @GetMapping("getSeatListByCarId/{id}")
      public ApiResponse getSeatListByCarId(@PathVariable UUID id){
           return seatService.getSeatListByCarId(id);
+     }
+
+     @GetMapping("getActiveSeatListByCarId/{id}")
+     public ApiResponse getActiveSeatListByCarId(@PathVariable UUID id){
+          return seatService.getActiveSeatListByCarId(id);
      }
 
 }
