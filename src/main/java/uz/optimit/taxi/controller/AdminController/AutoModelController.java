@@ -21,8 +21,9 @@ public class AutoModelController {
     public ApiResponse getModelById(@PathVariable int id){
         return autoModelService.getModelById(id);
     }
-    @GetMapping("/getModelList/")
-    public ApiResponse getModelList(){
-        return autoModelService.getModelList();
+
+    @GetMapping("/getModelList/{id}")
+    public ApiResponse getModelList(@PathVariable int id){
+        return autoModelService.getModelList(id);
     }
 }

@@ -173,7 +173,11 @@ public class NotificationService {
                 seatRepository.save(seat);
                 countActiveSeat--;
             }else {
-                throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
+                List<Seat> activeSeats = seatRepository.findAllByCarIdAndActive(car.getId(), true);
+                Notification notification = reCreateNotification(passenger.getId(), announcementDriver.getId(), driver.getId(), activeSeats);
+                notificationRepository.save(notification);
+                return new ApiResponse(HttpStatus.CREATED, true);
+//                throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
             }
         }
         if (countActiveSeat == 0) {
@@ -187,6 +191,7 @@ public class NotificationService {
         announcementPassengerRepository.save(announcementPassenger);
         return new ApiResponse(YOU_ARE_ACCEPTED_REQUEST, true);
     }
+
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getAcceptedNotification() {
@@ -235,6 +240,15 @@ public class NotificationService {
             notification.setCarSeats(selectedSeats);
         }
         return notificationRepository.save(notification);
+    }
+
+    private Notification reCreateNotification(UUID receiverId, UUID announcementDriverId , UUID  senderId,List<Seat> seatList ){
+        return Notification.builder()
+                .senderId(senderId)
+                .receiverId(receiverId)
+                .announcementId(announcementDriverId)
+                .carSeats(seatList)
+                .build();
     }
 
 }

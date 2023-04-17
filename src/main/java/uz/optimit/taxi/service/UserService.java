@@ -20,6 +20,7 @@ import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
+import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.UserRepository;

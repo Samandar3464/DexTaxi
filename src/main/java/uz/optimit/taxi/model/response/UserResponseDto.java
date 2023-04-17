@@ -29,8 +29,14 @@ public class UserResponseDto {
      private List<Familiar> passengersList;
 
      public static UserResponseDto from(User user, String downloadUrl) {
-          Attachment attachment = user.getProfilePhoto();
-          String photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+          String photoLink =null;
+          if (user.getProfilePhoto()!=null){
+               Attachment attachment = user.getProfilePhoto();
+               photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+          }else {
+               photoLink=downloadUrl+"avatar.png";
+          }
+
           return UserResponseDto.builder()
               .id(user.getId())
               .name(user.getName())
