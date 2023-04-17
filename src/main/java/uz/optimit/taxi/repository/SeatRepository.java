@@ -11,4 +11,5 @@ public interface SeatRepository extends JpaRepository<Seat, UUID> {
     List<Seat> findAllByIdIn(Collection<UUID> id);
 
     List<Seat> findAllByCarIdAndActive(UUID car_id, boolean active);
+    List<Seat> findAllByCarId(UUID car_id);
 }

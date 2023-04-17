@@ -60,7 +60,7 @@ public class SeatService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getActiveSeatListByCarId(UUID carID){
-          List<Seat> allByCarId = seatRepository.findAllByCarIdAndActive(carID,true);
+          List<Seat> allByCarId = seatRepository.findAllByCarId(carID);
           return new ApiResponse(getSeatResponses(allByCarId),true);
      }
 

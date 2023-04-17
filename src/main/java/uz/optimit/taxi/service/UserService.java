@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import uz.optimit.taxi.entity.Familiar;
 import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -19,6 +20,7 @@ import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
+import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.UserRepository;
 import uz.optimit.taxi.utils.JwtService;
@@ -40,6 +42,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
+    private final FamiliarRepository familiarRepository;
 
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -52,6 +55,7 @@ public class UserService {
         System.out.println("verificationCode = " + verificationCode);
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository);
         User save = userRepository.save(user);
+        familiarRepository.save(Familiar.fromUser(save));
         String access = jwtService.generateAccessToken(user);
         String refresh = jwtService.generateRefreshToken(save.getPhone());
         return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true,new TokenResponse(access, refresh));

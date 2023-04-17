@@ -7,6 +7,7 @@ import uz.optimit.taxi.entity.Seat;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class AnnouncementPassengerRegisterRequestDto {
      private double toLongitude;
      private double toLatitude;
      private boolean baggage;
-     private int forFamiliar;
+     private List<UUID> passengersList;
      private LocalDateTime timeToTravel;
      private String info;
 }

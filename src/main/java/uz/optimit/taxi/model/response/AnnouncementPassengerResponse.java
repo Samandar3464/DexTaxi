@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.optimit.taxi.entity.AnnouncementPassenger;
-import uz.optimit.taxi.entity.City;
-import uz.optimit.taxi.entity.Region;
-import uz.optimit.taxi.entity.Seat;
+import uz.optimit.taxi.entity.*;
 
 import java.util.UUID;
 import java.util.List;
@@ -31,7 +28,7 @@ public class AnnouncementPassengerResponse {
 
      private double toLatitude;
 
-     private int forFamiliar;
+     private List<Familiar> passengersList;
      private boolean baggage;
 
      private String info;
@@ -47,7 +44,7 @@ public class AnnouncementPassengerResponse {
               .toLatitude(announcementPassenger.getToLatitude())
               .toLongitude(announcementPassenger.getToLongitude())
               .baggage(announcementPassenger.isBaggage())
-              .forFamiliar(announcementPassenger.getForFamiliar())
+              .passengersList(announcementPassenger.getPassengersList())
               .info(announcementPassenger.getInfo())
               .build();
      }

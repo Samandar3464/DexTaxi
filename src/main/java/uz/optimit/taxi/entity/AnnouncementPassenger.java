@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.repository.CityRepository;
+import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
@@ -40,7 +41,8 @@ public class AnnouncementPassenger {
      private double toLongitude;
 
      private double toLatitude;
-     private int forFamiliar;
+     @OneToMany(mappedBy = "announcementPassenger")
+     private List<Familiar> passengersList;
      private boolean baggage;
 
      private boolean active;
@@ -51,7 +53,7 @@ public class AnnouncementPassenger {
 
      private LocalDateTime createdTime;
 
-     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository) {
+     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, FamiliarRepository familiarRepository) {
           return AnnouncementPassenger.builder()
               .user(user)
               .fromRegion(regionRepository.getById(announcementRequestDto.getFromRegionId()))
@@ -62,7 +64,7 @@ public class AnnouncementPassenger {
               .fromLongitude(announcementRequestDto.getFromLongitude())
               .toLatitude(announcementRequestDto.getToLatitude())
               .toLongitude(announcementRequestDto.getToLongitude())
-              .forFamiliar(announcementRequestDto.getForFamiliar())
+              .passengersList(familiarRepository.findByIdIn(announcementRequestDto.getPassengersList()))
               .timeToTravel(announcementRequestDto.getTimeToTravel())
               .info(announcementRequestDto.getInfo())
               .createdTime(LocalDateTime.now())
