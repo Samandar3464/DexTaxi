@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface AnnouncementDriverRepository extends JpaRepository<AnnouncementDriver, UUID> {
      List<AnnouncementDriver> findAllByActive(boolean Active);
 
-    List<AnnouncementDriver> findAllByActiveAndUserId(boolean b, UUID id);
+    List<AnnouncementDriver> findAllByUserIdAndActive(UUID user_id, boolean active);
     Optional<AnnouncementDriver> findByUserIdAndActive( UUID user_id, boolean active);
 
     Optional<AnnouncementDriver> findByIdAndActive(UUID announcementId, boolean b);

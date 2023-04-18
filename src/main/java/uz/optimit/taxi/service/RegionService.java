@@ -2,20 +2,19 @@ package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.Region;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordAlreadyExistException;
+import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.model.request.RegionRegisterRequestDto;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-import static uz.optimit.taxi.entity.Enum.Constants.REGION_ALREADY_EXIST;
-import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+import static uz.optimit.taxi.entity.Enum.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class RegionService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getRegionById(Integer id){
-        Optional<Region> all = regionRepository.findById(id);
-        return new ApiResponse(all.get(),true);
+        Region region = regionRepository.findById(id).orElseThrow(()->new RecordNotFoundException(REGION_NOT_FOUND));
+        return new ApiResponse(region,true);
     }
 }

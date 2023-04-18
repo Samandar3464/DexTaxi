@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uz.optimit.taxi.entity.Attachment;
+import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.FileUploadException;
 import uz.optimit.taxi.exception.OriginalFileNameNullException;
 import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.repository.AttachmentRepository;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,10 +28,10 @@ public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
 
     @Value("${attach.upload.folder}")
-    public  String attachUploadFolder;
+    public String attachUploadFolder;
 
     @Value("${attach.download.url}")
-    public  String attachDownloadUrl;
+    public String attachDownloadUrl;
 
 
     public String getYearMonthDay() {
@@ -47,6 +49,7 @@ public class AttachmentService {
         return fileName.substring(lastIndex + 1);
     }
 
+    //    Bitta fileni sestamaga saqlab beradi
     public Attachment saveToSystem(MultipartFile file) {
         try {
             String pathFolder = getYearMonthDay();
@@ -57,7 +60,7 @@ public class AttachmentService {
 
             byte[] bytes = file.getBytes();
             Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
-           Files.write(path, bytes).toFile();
+            Files.write(path, bytes).toFile();
 
             Attachment entity = new Attachment();
             entity.setNewName(fileName);
@@ -73,110 +76,58 @@ public class AttachmentService {
         }
 
     }
-    public List<Attachment> saveToSystemListFile(List<MultipartFile> fileList){
+
+    //    Ko'plab filelar kelsa saqlab beradi
+    public List<Attachment> saveToSystemListFile(List<MultipartFile> fileList) {
         List<Attachment> attachments = new ArrayList<>();
-        fileList.forEach((file)->{
+        fileList.forEach((file) -> {
             attachments.add(saveToSystem(file));
         });
         return attachments;
     }
 
-    private Attachment getAttachment(String fileName) {
-        String newName = fileName.split("\\.")[0];
-        Optional<Attachment> optional = attachmentRepository.findByNewName(newName);
-        if (optional.isEmpty()) {
-            throw new RecordNotFoundException(FILE_NOT_FOUND);
-        }
-        return optional.get();
+    //    Rasmni fileda joylashgan joyini linkini beradi
+    public String getUrl(UUID imageId) {
+        Attachment attachment = attachmentRepository.findById(imageId).orElseThrow(() -> new RecordNotFoundException(FILE_NOT_FOUND));
+        return attachUploadFolder + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
     }
 
+    public String getUrl(Attachment attachment) {
+        if (attachment!=null){
+            return attachDownloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+        }else {
+            return attachDownloadUrl+"avatar.png";
+        }
+    }
+
+    // Rasmni byte qilib beradi
     public byte[] open(String fileName) {
         try {
-            Attachment entity = getAttachment(fileName);
-
-            Path file = Paths.get(attachDownloadUrl + entity.getPath() + "/" + fileName+"."+entity.getType());
+            Attachment attachment = getAttachment(fileName);
+            Path file = Paths.get(attachUploadFolder + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType());
             return Files.readAllBytes(file);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-//    public AttachmentDownloadDTO download(String fileName) {
-//        try {
-//            Attachment entity = getAttachment(fileName);
-//
-//            File file = new File(attachUploadFolder + entity.getPath() + "/" + fileName);
-//
-//            File dir = file.getParentFile();
-//            File rFile = new File(dir, entity.getNewName() + "." + entity.getType());
-//
-//            Resource resource = new UrlResource(rFile.toURI());
-//
-//            if (resource.exists() || resource.isReadable()) {
-//                AttachmentDownloadDTO attachmentDownloadDTO = new AttachmentDownloadDTO(resource, "image/jpeg");
-//                return attachmentDownloadDTO;
-//            } else {
-//                throw new CouldNotRead("Could not read");
-//            }
-//        } catch (MalformedURLException | FileNotFoundException e) {
-//            throw new SomethingWentWrong("Something went wrong");
-//        }
-//    }
+    private Attachment getAttachment(String fileName) {
+        String newName = fileName.split("\\.")[0];
+        return attachmentRepository.findByNewName(newName).orElseThrow(() -> new RecordNotFoundException(FILE_NOT_FOUND));
+    }
 
-
-//    public Page<AttachmentResponseDTO> getWithPage(Integer page, Integer size) {
-//        Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
-//        Pageable pageable = PageRequest.of(page, size, sort);
-//
-//        Page<Attachment> pageObj = repository.findAll(pageable);
-//
-//        List<Attachment> entityList = pageObj.getContent();
-//        List<AttachmentResponseDTO> dtoList = new ArrayList<>();
-//
-//
-//        for (Attachment entity : entityList) {
-//
-//            AttachmentResponseDTO dto = new AttachmentResponseDTO();
-//            dto.setId(entity.getId());
-//            dto.setPath(entity.getPath());
-//            dto.setExtension(entity.getType());
-//            dto.setUrl(attachUploadFolder + "/" + entity.getId() + "." + entity.getType());
-//            dto.setOriginalName(entity.getOriginName());
-//            dto.setSize(entity.getSize());
-//            dto.setCreatedData(entity.getCreatedDate());
-//            dtoList.add(dto);
-//        }
-//
-//        return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
-//    }
-
-
-//    public String deleteById(String fileName) {
-//        try {
-//            Attachment entity = getAttachment(fileName);
-//            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName);
-//
-//            Files.delete(file);
-//            repository.deleteById(entity.getId());
-//
-//            return "deleted";
-//        } catch (
-//                IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
-//
-    public String getUrl(UUID imageId)  {
-        Optional<Attachment> optional = attachmentRepository.findById(imageId);
-        if (optional.isEmpty()) {
-            throw new RecordNotFoundException("File not found");
+//    File systendan ochirib tashlaydi
+    public ApiResponse deleteNewNameId(String fileName) {
+        try {
+            Attachment entity = getAttachment(fileName);
+            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName);
+            Files.delete(file);
+            attachmentRepository.deleteById(entity.getId());
+            return new ApiResponse(DELETED, true);
+        } catch (
+                IOException e) {
+            throw new RuntimeException(e);
         }
-        return attachUploadFolder + optional.get().getId() + "." + optional.get().getType();
     }
-
-
 }
 
