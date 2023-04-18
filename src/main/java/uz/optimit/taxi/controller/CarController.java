@@ -1,6 +1,7 @@
 package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -16,11 +17,13 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse addCar(@ModelAttribute  @Validated  CarRegisterRequestDto carRegisterRequestDto) {
         return carService.addCar(carRegisterRequestDto);
     }
 
     @GetMapping("/getByUserId/{id}")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse getByUserId(@PathVariable UUID id){
         return carService.getByUserId(id);
     }

@@ -2,6 +2,7 @@ package uz.optimit.taxi.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.TokenResponse;
@@ -40,6 +41,7 @@ public class UserController {
      }
 
      @GetMapping("/getById/{id}")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getUserById(@PathVariable UUID id){
          return userService.getByUserId(id);
      }
