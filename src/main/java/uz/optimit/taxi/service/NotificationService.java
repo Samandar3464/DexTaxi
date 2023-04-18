@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
-import uz.optimit.taxi.exception.AnnouncementNotFoundException;
-import uz.optimit.taxi.exception.CarNotFound;
-import uz.optimit.taxi.exception.NotEnoughSeat;
-import uz.optimit.taxi.exception.RecordNotFoundException;
+import uz.optimit.taxi.exception.*;
 import uz.optimit.taxi.model.request.AcceptDriverRequestDto;
 import uz.optimit.taxi.model.request.NotificationRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponseAnonymous;
@@ -110,7 +107,7 @@ public class NotificationService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Transactional(rollbackFor = {NotEnoughSeat.class,CarNotFound.class})
+    @Transactional(rollbackFor = {NotEnoughSeat.class, CarNotFound.class,UserNotFoundException.class, AnnouncementNotFoundException.class, RecordNotFoundException.class})
     public ApiResponse acceptDiverRequest(AcceptDriverRequestDto acceptDriverRequestDto) throws NotEnoughSeat {
         User user = userService.checkUserExistByContext();
         User driver = userService.checkUserExistById(acceptDriverRequestDto.getSenderId());
@@ -149,7 +146,7 @@ public class NotificationService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Transactional(rollbackFor = {NotEnoughSeat.class})
+    @Transactional(rollbackFor = {NotEnoughSeat.class, CarNotFound.class,UserNotFoundException.class, AnnouncementNotFoundException.class, RecordNotFoundException.class})
     public ApiResponse acceptPassengerRequest(UUID userId) {
         User driver = userService.checkUserExistByContext();
         User passenger = userService.checkUserExistById(userId);

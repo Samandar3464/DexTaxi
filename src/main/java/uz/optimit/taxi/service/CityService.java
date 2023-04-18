@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.City;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordAlreadyExistException;
+import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.model.request.CityRequestDto;
 import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.RegionRepository;
@@ -31,7 +32,8 @@ public class CityService {
           }
 
           City city = City.builder()
-              .name(cityRequestDto.getName()).region(repository.findById(cityRequestDto.getRegionId()).get()).build();
+              .name(cityRequestDto.getName()).region(repository.findById(cityRequestDto.getRegionId()).orElseThrow(()->new RecordNotFoundException(REGION_NOT_FOUND))).build();
+
           City save = cityRepository.save(city);
           return new ApiResponse(SUCCESSFULLY, true,save);
      }
@@ -42,6 +44,8 @@ public class CityService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getCityById(Integer id) {
-          return new ApiResponse(cityRepository.findById(id).get(),true);
+          return new ApiResponse(cityRepository.findById(id).orElseThrow(()->new RecordNotFoundException(CITY_NOT_FOUND)),true);
      }
+
+
 }

@@ -1,6 +1,7 @@
 package uz.optimit.taxi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
@@ -16,16 +17,19 @@ public class AnnouncementPassengerFamiliar {
      private final AnnouncementFamiliarService announcementFamiliarService;
 
      @PostMapping("/add")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse add(@RequestBody FamiliarRegisterRequestDto  familiarRegisterRequestDto) {
          return announcementFamiliarService.addForFamiliar(familiarRegisterRequestDto);
 
      }
      @GetMapping("/getFamiliarList")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getList() {
           return announcementFamiliarService.getFamiliarListByUser();
      }
 
      @PostMapping("/getFamiliarListByIdList")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getListByIds(@RequestBody List<UUID> list) {
           return announcementFamiliarService.getFamiliarListByUserId(list);
      }

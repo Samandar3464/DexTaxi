@@ -13,6 +13,7 @@ public class Constants {
     public static final String FILE_NOT_FOUND="FILE NOT FOUND";
     public static final String AUTO_CATEGORY_ALREADY_EXIST="AUTO CATEGORY ALREADY EXIST";
     public static final String AUTO_MODEL_ALREADY_EXIST="AUTO MODEL ALREADY EXIST";
+    public static final String AUTO_MODEL_NOT_FOUND="AUTO MODEL NOT FOUND";
     public static final String REGION_ALREADY_EXIST="REGION ALREADY EXIST";
     public static final String CITY_ALREADY_EXIST="CITY ALREADY EXIST";
     public static final String CAR_NOT_FOUND="CAR NOT FOUND";
@@ -21,7 +22,9 @@ public class Constants {
     public static final String USER_VERIFIED_SUCCESSFULLY="USER VERIFIED SUCCESSFULLY";
     public static final String YOU_ARE_ACCEPTED_REQUEST="YOU ARE ACCEPTED REQUEST";
     public static final String NOT_ENOUGH_SEAT="NOT ENOUGH SEAT";
-    public static final String FAMILIAR_ALREADY_EXIST="FAMILIAR_ALREADY_EXIST";
+    public static final String FAMILIAR_ALREADY_EXIST="FAMILIAR ALREADY EXIST";
+    public static final String REGION_NOT_FOUND="REGION NOT FOUND";
+    public static final String CITY_NOT_FOUND="CITY NOT FOUND";
 
 
 }

@@ -61,18 +61,17 @@ public class AnnouncementDriverService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getById(UUID id) {
-          Optional<AnnouncementDriver> driver = repository.findById(id);
-          Car car = carRepository.findByUserIdAndActive(driver.get().getUser().getId(), true).orElseThrow(()->
+          AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(()->new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+          Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(()->
                new CarNotFound(CAR_NOT_FOUND));
-          AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(driver.get(), car, attachmentService.attachDownloadUrl);
+          AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(announcementDriver, car, attachmentService.attachDownloadUrl);
           return new ApiResponse(announcementDriverResponse, true);
      }
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getDriverAnnouncements() {
           User user = userService.checkUserExistByContext();
-          List<AnnouncementDriver> announcementDrivers = repository.findAllByActiveAndUserId(true,user.getId());
-
+          List<AnnouncementDriver> announcementDrivers = repository.findAllByUserIdAndActive(user.getId(),true);
           return new ApiResponse(announcementDrivers, true);
      }
 

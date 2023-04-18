@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AutoModel;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordAlreadyExistException;
+import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.model.request.AutoModelRegisterRequestDto;
 import uz.optimit.taxi.repository.AutoCategoryRepository;
 import uz.optimit.taxi.repository.AutoModelRepository;
@@ -14,8 +15,7 @@ import uz.optimit.taxi.repository.AutoModelRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static uz.optimit.taxi.entity.Enum.Constants.AUTO_MODEL_ALREADY_EXIST;
-import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+import static uz.optimit.taxi.entity.Enum.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class AutoModelService {
     }
 
     public ApiResponse getModelById(int id) {
-        return new ApiResponse(autoModelRepository.findById(id).get(), true);
+        return new ApiResponse(autoModelRepository.findById(id).orElseThrow(()->new RecordNotFoundException(AUTO_MODEL_NOT_FOUND)), true);
     }
 
     public ApiResponse getModelList(int categoryId) {
