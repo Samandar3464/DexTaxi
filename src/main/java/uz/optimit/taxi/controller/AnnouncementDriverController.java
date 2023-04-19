@@ -50,7 +50,7 @@ public class AnnouncementDriverController {
         return announcementDriverService.deleteDriverAnnouncement(id);
     }
 
-    @GetMapping("getAnnouncementDriverByFilter/{from}/{to}/{fromTime}/{toTime}/{size}")
+    @GetMapping("getAnnouncementDriverByFilterAndSize/{from}/{to}/{fromTime}/{toTime}/{size}")
     public ApiResponse getByFilter(
         @PathVariable Integer from,
         @PathVariable Integer to,

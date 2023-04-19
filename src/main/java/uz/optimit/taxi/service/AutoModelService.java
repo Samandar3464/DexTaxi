@@ -49,6 +49,6 @@ public class AutoModelService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteModelById(int id) {
         autoModelRepository.deleteById(id);
-        return new ApiResponse(SUCCESSFULLY,true);
+        return new ApiResponse(DELETED,true);
     }
 }

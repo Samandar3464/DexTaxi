@@ -42,7 +42,7 @@ public class AnnouncementPassenger {
 
     private double toLatitude;
 
-    @OneToMany(mappedBy = "announcementPassenger")
+    @OneToMany(mappedBy = "announcementPassenger",cascade = CascadeType.ALL)
     private List<Familiar> passengersList;
 
     private boolean baggage;
@@ -65,7 +65,7 @@ public class AnnouncementPassenger {
                 .fromLongitude(announcementRequestDto.getFromLongitude())
                 .toLatitude(announcementRequestDto.getToLatitude())
                 .toLongitude(announcementRequestDto.getToLongitude())
-                .passengersList(familiarRepository.findByIdIn(announcementRequestDto.getPassengersList()))
+                .passengersList(familiarRepository.findByIdInAndActive(announcementRequestDto.getPassengersList(),true))
                 .timeToTravel(announcementRequestDto.getTimeToTravel())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
