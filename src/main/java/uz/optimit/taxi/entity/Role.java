@@ -21,4 +21,5 @@ public class Role {
     @JsonIgnore
     @ManyToOne
     private User user;
+
 }
