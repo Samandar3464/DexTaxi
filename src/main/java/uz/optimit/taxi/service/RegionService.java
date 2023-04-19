@@ -43,4 +43,9 @@ public class RegionService {
         Region region = regionRepository.findById(id).orElseThrow(()->new RecordNotFoundException(REGION_NOT_FOUND));
         return new ApiResponse(region,true);
     }
+
+    public ApiResponse deleteRegionById(Integer id) {
+        regionRepository.deleteById(id);
+        return new ApiResponse(SUCCESSFULLY,true);
+    }
 }

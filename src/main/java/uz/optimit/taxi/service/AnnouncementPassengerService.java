@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -33,7 +34,7 @@ public class AnnouncementPassengerService {
     private final RegionRepository regionRepository;
     private final CityRepository cityRepository;
     private final UserService userService;
-    private  final  AttachmentService attachmentService;
+    private final AttachmentService attachmentService;
     private final FamiliarRepository familiarRepository;
 
 
@@ -41,10 +42,10 @@ public class AnnouncementPassengerService {
     public ApiResponse add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
         User user = userService.checkUserExistByContext();
         Optional<AnnouncementPassenger> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
-        if (byUserIdAndActive.isPresent()){
+        if (byUserIdAndActive.isPresent()) {
             throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
         }
-        AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository, cityRepository,familiarRepository);
+        AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository, cityRepository, familiarRepository);
         repository.save(announcementPassenger);
         return new ApiResponse(SUCCESSFULLY, true);
     }
@@ -72,8 +73,7 @@ public class AnnouncementPassengerService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerAnnouncements() {
         User user = userService.checkUserExistByContext();
-
-        List<AnnouncementPassenger> announcementPassengers = repository.findAllByActiveAndUserId(true, user.getId());
+        List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActive(user.getId(),true);
         return new ApiResponse(announcementPassengers, true);
     }
 
@@ -85,19 +85,26 @@ public class AnnouncementPassengerService {
         return new ApiResponse(DELETED, true);
     }
 
-
     @ResponseStatus(HttpStatus.FOUND)
     public ApiResponse findFilter(
-        Integer fromRegion,
-        Integer toRegion,
-        LocalDateTime timeToTravel,
-        LocalDateTime toTime
-        ){
+            Integer fromRegion,
+            Integer toRegion,
+            LocalDateTime timeToTravel,
+            LocalDateTime toTime
+    ) {
         List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-        List<AnnouncementPassenger> byFilter = repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc(true,fromRegion,toRegion,timeToTravel,toTime);
+        List<AnnouncementPassenger> byFilter = repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc(true, fromRegion, toRegion, timeToTravel, toTime);
         byFilter.forEach(a -> {
             passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
         });
-        return new ApiResponse(passengerResponses,true);
+        return new ApiResponse(passengerResponses, true);
+    }
+
+    public ApiResponse getHistory() {
+        User user = userService.checkUserExistByContext();
+        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
+        List<AnnouncementPassengerResponse> response = new ArrayList<>();
+        allByActive.forEach((announcementPassenger)-> response.add(AnnouncementPassengerResponse.from(announcementPassenger,attachmentService.attachUploadFolder)));
+        return new ApiResponse(response,true);
     }
 }

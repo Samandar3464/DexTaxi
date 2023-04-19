@@ -93,4 +93,10 @@ public class CarService {
         save.setSeatList(carSeats);
         return save;
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse deleteCarByID(UUID id) {
+        carRepository.deleteById(id);
+        return new ApiResponse(SUCCESSFULLY,true);
+    }
 }

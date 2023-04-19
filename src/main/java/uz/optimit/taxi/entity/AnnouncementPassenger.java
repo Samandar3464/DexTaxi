@@ -49,11 +49,11 @@ public class AnnouncementPassenger {
 
     private boolean active;
 
-     private LocalDateTime timeToTravel;
-     private String info;
-     private double price;
-     private LocalDateTime createdTime;
+    private LocalDateTime timeToTravel;
 
+    private String info;
+
+    private double price;
 
     private LocalDateTime createdTime;
 

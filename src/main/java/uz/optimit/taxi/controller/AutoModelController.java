@@ -25,8 +25,14 @@ public class AutoModelController {
         return autoModelService.getModelById(id);
     }
     @GetMapping("/getModelList/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse getModelList(@PathVariable int id){
         return autoModelService.getModelList(id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ApiResponse deleteModelById(@PathVariable int id) {
+        return autoModelService.deleteModelById(id);
     }
 }

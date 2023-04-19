@@ -27,4 +27,10 @@ public class CarController {
     public ApiResponse getByUserId(@PathVariable UUID id){
         return carService.getByUserId(id);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
+    public ApiResponse deleteCarByID(@PathVariable UUID id) {
+        return carService.deleteCarByID(id);
+    }
 }

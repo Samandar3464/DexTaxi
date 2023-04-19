@@ -19,5 +19,5 @@ public interface AnnouncementPassengerRepository extends JpaRepository<Announcem
      List<AnnouncementPassenger> findAllByActive(boolean Active);
 //     List<AnnouncementPassenger> findAllByActiveAndOrderByCreatedTime(boolean Active);
 
-    List<AnnouncementPassenger> findAllByActiveAndUserId(boolean b, UUID id);
+    List<AnnouncementPassenger> findAllByUserIdAndActive(UUID id, boolean active);
 }

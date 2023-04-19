@@ -34,4 +34,10 @@ public class AnnouncementPassengerFamiliar {
           return announcementFamiliarService.getFamiliarListByUserId(list);
      }
 
+     @DeleteMapping("/delete/{id}")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     public ApiResponse deleteFamiliar(@PathVariable UUID id) {
+          return announcementFamiliarService.deleteFamiliar(id);
+     }
+
 }

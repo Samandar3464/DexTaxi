@@ -39,4 +39,10 @@ public class AutoCategoryService {
     public ApiResponse getCategoryList() {
         return  new ApiResponse(autoCategoryRepository.findAll(),true);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse deleteAutoCategoryById(int id){
+        autoCategoryRepository.deleteById(id);
+      return new ApiResponse(SUCCESSFULLY,true);
+    }
 }

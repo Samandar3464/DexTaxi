@@ -25,9 +25,15 @@ public class AutoCategoryController {
     public ApiResponse getCategoryById(@PathVariable int id){
         return autoCategoryService.getCategoryById(id);
     }
-    @GetMapping("/getCategoryList/")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ApiResponse getModelList(){
+    @GetMapping("/getCategoryList")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse getCategoryList(){
         return autoCategoryService.getCategoryList();
     }
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ApiResponse deleteAutoCategoryById(@PathVariable int id) {
+        return autoCategoryService.deleteAutoCategoryById(id);
+    }
+
 }

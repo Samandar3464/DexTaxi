@@ -99,7 +99,7 @@ public class UserService {
         String accessTokenByRefresh = jwtService.getAccessTokenByRefresh(refreshToken);
         return new ApiResponse(new TokenResponse(accessTokenByRefresh), true);
     }
-
+    @ResponseStatus(HttpStatus.OK)
     public User checkUserExistByContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
@@ -109,11 +109,11 @@ public class UserService {
         return userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
-
+    @ResponseStatus(HttpStatus.OK)
     public User checkUserExistById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
-
+    @ResponseStatus(HttpStatus.OK)
     private boolean verificationCodeLiveTime(LocalDateTime localDateTime) {
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth() - localDateTime.getDayOfMonth();
@@ -124,16 +124,16 @@ public class UserService {
         }
         return false;
     }
-
+    @ResponseStatus(HttpStatus.OK)
     private Integer verificationCodeGenerator() {
         return RandomGenerator.getDefault().nextInt(100000, 999999);
     }
-
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         return new ApiResponse(UserResponseDto.from(user, attachmentService.attachDownloadUrl), true);
     }
-
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse setStatus(StatusDto statusDto) {
         User user = userRepository.findById(statusDto.getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 //        Optional<Status> statusOld = statusRepository.findByUserId(user.getId());
@@ -142,6 +142,11 @@ public class UserService {
         Status save = statusRepository.save(status);
         user.setStatus(save);
         userRepository.save(user);
+        return new ApiResponse(SUCCESSFULLY,true);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse deleteUserByID(UUID id) {
+        userRepository.deleteById(id);
         return new ApiResponse(SUCCESSFULLY,true);
     }
 }
