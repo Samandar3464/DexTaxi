@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -18,6 +17,7 @@ import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -82,6 +82,20 @@ public class AnnouncementPassengerService {
         announcementPassenger.setActive(false);
         repository.save(announcementPassenger);
         return new ApiResponse(DELETED, true);
-
     }
+
+    @ResponseStatus(HttpStatus.FOUND)
+    public ApiResponse findFilter(
+        Integer fromRegion,
+        Integer toRegion,
+        LocalDateTime timeToTravel,
+        LocalDateTime toTime
+        ){
+        List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
+        List<AnnouncementPassenger> byFilter = repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc(true,fromRegion,toRegion,timeToTravel,toTime);
+        byFilter.forEach(a -> {
+            passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
+        });
+        return new ApiResponse(passengerResponses,true);
+}
 }

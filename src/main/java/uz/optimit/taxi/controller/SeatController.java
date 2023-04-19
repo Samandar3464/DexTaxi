@@ -16,20 +16,20 @@ public class SeatController {
      private final SeatService seatService;
 
      @PostMapping("onActive")
-     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
      public ApiResponse onActive(@RequestBody List<UUID> uuidList){
         return  seatService.onActive(uuidList);
      }
 
      @PostMapping("ofActive")
-     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
      public ApiResponse ofActive(@RequestBody List<UUID> uuidList){
           return seatService.ofActive(uuidList);
      }
 
 
      @GetMapping("getActiveSeatListByCarId/{id}")
-     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
      public ApiResponse getActiveSeatListByCarId(@PathVariable UUID id){
           return seatService.getActiveSeatListByCarId(id);
      }
