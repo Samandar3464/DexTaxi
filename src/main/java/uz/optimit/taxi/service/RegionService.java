@@ -46,6 +46,6 @@ public class RegionService {
 
     public ApiResponse deleteRegionById(Integer id) {
         regionRepository.deleteById(id);
-        return new ApiResponse(SUCCESSFULLY,true);
+        return new ApiResponse(DELETED,true);
     }
 }

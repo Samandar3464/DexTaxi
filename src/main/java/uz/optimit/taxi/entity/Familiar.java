@@ -35,6 +35,7 @@ public class Familiar {
      private short age;
 
      private double status;
+     private boolean active;
 
      @ManyToOne
      @JsonIgnore
@@ -50,6 +51,7 @@ public class Familiar {
               .phone(registerRequestDto.getPhone())
               .gender(registerRequestDto.getGender())
               .age(registerRequestDto.getAge())
+              .active(true)
               .user(user)
               .build();
      }
@@ -59,6 +61,7 @@ public class Familiar {
               .name(user.getName())
               .phone(user.getPhone())
               .gender(user.getGender())
+              .active(true)
               .age((short) (LocalDateTime.now().getYear() - user.getBirthDate().getYear()))
               .user(user)
               .build();

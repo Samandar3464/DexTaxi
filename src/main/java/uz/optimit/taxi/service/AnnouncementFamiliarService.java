@@ -11,6 +11,7 @@ import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -26,7 +27,7 @@ public class AnnouncementFamiliarService {
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse addForFamiliar(FamiliarRegisterRequestDto familiarRegisterRequestDto) {
           User user = userService.checkUserExistByContext();
-          if (familiarRepository.existsByPhoneAndUserId(familiarRegisterRequestDto.getPhone(),user.getId())){
+          if (familiarRepository.existsByPhoneAndUserIdAndActive(familiarRegisterRequestDto.getPhone(),user.getId(),true)){
                throw new UserAlreadyExistException(FAMILIAR_ALREADY_EXIST);
           }
           familiarRepository.save(Familiar.from(familiarRegisterRequestDto, user));
@@ -35,19 +36,21 @@ public class AnnouncementFamiliarService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUser() {
           User user = userService.checkUserExistByContext();
-          List<Familiar> familiarList = familiarRepository.findAllByUserId(user.getId());
+          List<Familiar> familiarList = familiarRepository.findAllByUserIdAndActive(user.getId(),true);
           return new ApiResponse(SUCCESSFULLY, true, familiarList);
      }
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUserId(List<UUID> uuidList) {
-          List<Familiar> familiarList = familiarRepository.findByIdIn(uuidList);
+          List<Familiar> familiarList = familiarRepository.findByIdInAndActive(uuidList,true);
           return new ApiResponse(SUCCESSFULLY, true, familiarList);
      }
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse deleteFamiliar(UUID uuid){
-          familiarRepository.deleteById(uuid);
-          return new ApiResponse(SUCCESSFULLY,true);
+          Optional<Familiar> byId = familiarRepository.findById(uuid);
+          byId.get().setActive(false);
+          familiarRepository.save(byId.get());
+          return new ApiResponse(DELETED,true);
      }
 }

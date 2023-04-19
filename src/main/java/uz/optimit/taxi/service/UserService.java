@@ -146,8 +146,10 @@ public class UserService {
     }
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteUserByID(UUID id) {
-        userRepository.deleteById(id);
-        return new ApiResponse(SUCCESSFULLY,true);
+        Optional<User> byId = userRepository.findById(id);
+        byId.get().setBlocked(true);
+        userRepository.save(byId.get());
+        return new ApiResponse(DELETED,true);
     }
 }
 
