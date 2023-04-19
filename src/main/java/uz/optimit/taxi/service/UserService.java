@@ -12,17 +12,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.Familiar;
+import uz.optimit.taxi.entity.Status;
 import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
+import uz.optimit.taxi.model.request.StatusDto;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
 import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RoleRepository;
+import uz.optimit.taxi.repository.StatusRepository;
 import uz.optimit.taxi.repository.UserRepository;
 import uz.optimit.taxi.utils.JwtService;
 
@@ -44,7 +47,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
     private final FamiliarRepository familiarRepository;
-
+    private final StatusRepository statusRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
@@ -54,12 +57,13 @@ public class UserService {
         }
         Integer verificationCode = verificationCodeGenerator();
         System.out.println("verificationCode = " + verificationCode);
-        User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository);
+        Status status = statusRepository.save(new Status(0,0));
+        User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
         User save = userRepository.save(user);
         familiarRepository.save(Familiar.fromUser(save));
         String access = jwtService.generateAccessToken(user);
         String refresh = jwtService.generateRefreshToken(save.getPhone());
-        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true,new TokenResponse(access, refresh));
+        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true, new TokenResponse(access, refresh));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -75,8 +79,6 @@ public class UserService {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
     }
-
-
 
 
     @ResponseStatus(HttpStatus.OK)
@@ -98,18 +100,18 @@ public class UserService {
         return new ApiResponse(new TokenResponse(accessTokenByRefresh), true);
     }
 
-    public  User checkUserExistByContext(){
+    public User checkUserExistByContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
         User user = (User) authentication.getPrincipal();
-        return userRepository.findByPhone(user.getPhone()).orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
+        return userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
 
-    public  User checkUserExistById(UUID id){
-        return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
+    public User checkUserExistById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
     private boolean verificationCodeLiveTime(LocalDateTime localDateTime) {
@@ -129,7 +131,18 @@ public class UserService {
 
     public ApiResponse getByUserId(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        return new ApiResponse(UserResponseDto.from(user,attachmentService.attachDownloadUrl),true);
+        return new ApiResponse(UserResponseDto.from(user, attachmentService.attachDownloadUrl), true);
+    }
+
+    public ApiResponse setStatus(StatusDto statusDto) {
+        User user = userRepository.findById(statusDto.getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+//        Optional<Status> statusOld = statusRepository.findByUserId(user.getId());
+//        Status status = Status.from(statusDto,statusOld.get());
+        Status status = Status.from(statusDto,user.getStatus());
+        Status save = statusRepository.save(status);
+        user.setStatus(save);
+        userRepository.save(user);
+        return new ApiResponse(SUCCESSFULLY,true);
     }
 }
 

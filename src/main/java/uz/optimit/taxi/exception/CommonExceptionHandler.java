@@ -94,4 +94,21 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
+
+    @ExceptionHandler(AnnouncementNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse notEnoughNotException(AnnouncementNotFoundException e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
+    }
+    @ExceptionHandler(AnnouncementAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse notEnoughNotException(AnnouncementAlreadyExistException e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
+    }
 }
