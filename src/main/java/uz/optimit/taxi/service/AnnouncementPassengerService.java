@@ -73,8 +73,8 @@ public class AnnouncementPassengerService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerAnnouncements() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementPassenger> announcementDrivers = repository.findAllByUserIdAndActive(user.getId(),true);
-        return new ApiResponse(announcementDrivers, true);
+        List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActive(user.getId(),true);
+        return new ApiResponse(announcementPassengers, true);
     }
 
     @ResponseStatus(HttpStatus.OK)

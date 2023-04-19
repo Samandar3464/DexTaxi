@@ -94,6 +94,14 @@ public class AnnouncementDriverService {
           return new ApiResponse(DELETED ,true);
      }
 
+     public ApiResponse getHistory() {
+          User user = userService.checkUserExistByContext();
+          List<AnnouncementDriver> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
+          List<AnnouncementDriverResponse> response = new ArrayList<>();
+          allByActive.forEach((announcementDriver)-> response.add(AnnouncementDriverResponse.from(announcementDriver,announcementDriver.getCar(),attachmentService.attachUploadFolder)));
+          return new ApiResponse(response,true);
+     }
+
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getByFilter(Integer from, Integer to, LocalDateTime fromTime, LocalDateTime toTime) {
           List<AnnouncementDriver> all = repository
