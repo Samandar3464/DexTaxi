@@ -47,5 +47,9 @@ public class CityService {
           return new ApiResponse(cityRepository.findById(id).orElseThrow(()->new RecordNotFoundException(CITY_NOT_FOUND)),true);
      }
 
-
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse deleteCityById(Integer id) {
+          cityRepository.deleteById(id);
+          return new ApiResponse(SUCCESSFULLY,true);
+     }
 }
