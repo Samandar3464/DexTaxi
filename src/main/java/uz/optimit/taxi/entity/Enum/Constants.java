@@ -25,6 +25,6 @@ public class Constants {
     public static final String FAMILIAR_ALREADY_EXIST="FAMILIAR ALREADY EXIST";
     public static final String REGION_NOT_FOUND="REGION NOT FOUND";
     public static final String CITY_NOT_FOUND="CITY NOT FOUND";
-
+    public static final String YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT="YOU ALREADY HAVE ACTIVE ANNOUNCEMENT";
 
 }

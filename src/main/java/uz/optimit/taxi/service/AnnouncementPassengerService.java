@@ -8,6 +8,7 @@ import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
@@ -19,6 +20,7 @@ import uz.optimit.taxi.repository.RegionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -38,6 +40,10 @@ public class AnnouncementPassengerService {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
         User user = userService.checkUserExistByContext();
+        Optional<AnnouncementPassenger> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
+        if (byUserIdAndActive.isPresent()){
+            throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
+        }
         AnnouncementPassenger announcementPassenger = AnnouncementPassenger.from(announcementPassengerRegisterRequestDto, user, regionRepository, cityRepository,familiarRepository);
         repository.save(announcementPassenger);
         return new ApiResponse(SUCCESSFULLY, true);
@@ -66,7 +72,7 @@ public class AnnouncementPassengerService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerAnnouncements() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementDriver> announcementDrivers = repository.findAllByActiveAndUserId(true, user.getId());
+        List<AnnouncementPassenger> announcementDrivers = repository.findAllByActiveAndUserId(true, user.getId());
         return new ApiResponse(announcementDrivers, true);
     }
 

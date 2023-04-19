@@ -11,6 +11,7 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementDriverService;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -47,5 +48,10 @@ public class AnnouncementDriverController {
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id){
         return announcementDriverService.deleteDriverAnnouncement(id);
+    }
+
+    @GetMapping("getAnnouncementDriverByFilter/{from}/{to}/{fromTime}/{toTime}")
+    public ApiResponse getByFilter(@PathVariable Integer from, @PathVariable Integer to, @PathVariable LocalDateTime fromTime, @PathVariable LocalDateTime toTime){
+       return announcementDriverService.getByFilter(from,to ,fromTime,toTime);
     }
 }

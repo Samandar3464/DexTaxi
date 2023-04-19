@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.model.request.StatusDto;
 import uz.optimit.taxi.model.request.UserLoginRequestDto;
 import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.request.UserVerifyRequestDto;
@@ -44,5 +45,11 @@ public class UserController {
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getUserById(@PathVariable UUID id){
          return userService.getByUserId(id);
+     }
+
+     @PostMapping("/setStatus")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     public ApiResponse setStatus(@RequestBody StatusDto statusDto){
+         return userService.setStatus(statusDto);
      }
 }
