@@ -23,6 +23,7 @@ public class AnnouncementPassengerRegisterRequestDto {
      private double toLongitude;
      private double toLatitude;
      private boolean baggage;
+     private double price;
      private List<UUID> passengersList;
      private LocalDateTime timeToTravel;
      private String info;

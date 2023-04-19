@@ -81,6 +81,5 @@ public class AnnouncementDriverService {
           announcementDriver.setActive(false);
           repository.save(announcementDriver);
           return new ApiResponse(DELETED ,true);
-
      }
 }

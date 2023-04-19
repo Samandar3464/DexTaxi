@@ -65,7 +65,7 @@ public class User implements UserDetails {
     @OneToOne
     private Attachment profilePhoto;
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
     @JsonIgnore
@@ -89,8 +89,8 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.forEach(role ->
-                authorityList.add(new SimpleGrantedAuthority("ROLE_" + role)));
+        roles.forEach(role ->
+                authorityList.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
         return authorityList;
     }
 

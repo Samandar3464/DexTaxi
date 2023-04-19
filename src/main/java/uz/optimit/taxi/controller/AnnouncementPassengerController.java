@@ -7,6 +7,7 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementPassengerService;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -24,7 +25,7 @@ public class AnnouncementPassengerController {
 
      @GetMapping("/getById/{id}")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse getPassengerById(@PathVariable("id")UUID id) {
+     public ApiResponse getPassengerById(@PathVariable("id") UUID id) {
           return announcementPassengerService.getAnnouncementById(id);
      }
 
@@ -35,13 +36,23 @@ public class AnnouncementPassengerController {
 
      @GetMapping("/getPassengerAnnouncements")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse getPassengerAnnouncements(){
+     public ApiResponse getPassengerAnnouncements() {
           return announcementPassengerService.getPassengerAnnouncements();
      }
 
      @DeleteMapping("/deletePassengerAnnouncements/{id}")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id){
+     public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id) {
           return announcementPassengerService.deletePassengerAnnouncement(id);
+     }
+
+     @GetMapping("/getAnnouncementPassengerByFilter/{fromRegion}/{toRegion}/{timeToTravel}/{toTime}")
+     public ApiResponse getAnnouncementPassengerByFilter(
+                                    @PathVariable Integer fromRegion,
+                                    @PathVariable Integer toRegion,
+                                    @PathVariable LocalDateTime timeToTravel,
+                                    @PathVariable LocalDateTime toTime
+                                    ) {
+       return announcementPassengerService.findFilter(fromRegion, toRegion, timeToTravel, toTime);
      }
 }
