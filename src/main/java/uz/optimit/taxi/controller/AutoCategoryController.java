@@ -25,9 +25,9 @@ public class AutoCategoryController {
     public ApiResponse getCategoryById(@PathVariable int id){
         return autoCategoryService.getCategoryById(id);
     }
-    @GetMapping("/getCategoryList/")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ApiResponse getModelList(){
+    @GetMapping("/getCategoryList")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse getCategoryList(){
         return autoCategoryService.getCategoryList();
     }
 }

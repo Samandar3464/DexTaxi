@@ -1,7 +1,7 @@
-package uz.optimit.taxi.controller.AdminController;
+package uz.optimit.taxi.AdminController;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,21 +19,21 @@ public class AdminControllerUptoCar {
     private final CarService carService;
 
     @GetMapping("/dicActiveCars")
-    //    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse disActiveCarsList(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse disActiveCarsList() {
         return carService.disActiveCarList();
     }
 
 
     @GetMapping("/getCar/{id}")
-    //    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse getCarById(@PathVariable("id") UUID id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse getCarById(@PathVariable("id") UUID id) {
         return carService.getCarById(id);
     }
 
     @GetMapping("/activateCar/{id}")
-    //    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse activateCar(@PathVariable("id") UUID id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse activateCar(@PathVariable("id") UUID id) {
         return carService.activateCar(id);
     }
 }

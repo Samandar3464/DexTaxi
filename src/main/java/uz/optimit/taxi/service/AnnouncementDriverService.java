@@ -14,6 +14,7 @@ import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponse;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponseAnonymous;
+import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.repository.AnnouncementDriverRepository;
 import uz.optimit.taxi.repository.CarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
@@ -48,7 +49,8 @@ public class AnnouncementDriverService {
           if (byUserIdAndActive.isPresent()){
                throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
           }
-          AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
+          Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+          AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository, car);
           repository.save(announcementDriver);
           return new ApiResponse(SUCCESSFULLY, true);
      }
@@ -98,5 +100,13 @@ public class AnnouncementDriverService {
                driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
           });
           return new ApiResponse(driverResponses, true);
+     }
+
+     public ApiResponse getHistory() {
+          User user = userService.checkUserExistByContext();
+          List<AnnouncementDriver> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
+          List<AnnouncementDriverResponse> response = new ArrayList<>();
+          allByActive.forEach((announcementDriver)-> response.add(AnnouncementDriverResponse.from(announcementDriver,announcementDriver.getCar(),attachmentService.attachUploadFolder)));
+          return new ApiResponse(response,true);
      }
 }
