@@ -12,29 +12,27 @@ import uz.optimit.taxi.service.AutoModelService;
 @RequestMapping("/api/v1/autoModel")
 public class AutoModelController {
 
-     private final AutoModelService autoModelService;
+    private final AutoModelService autoModelService;
 
-     @PostMapping("/add")
-     @PreAuthorize("hasRole('ADMIN')")
-     public ApiResponse addAutoModel(@RequestBody AutoModelRegisterRequestDto autoModelRegisterRequestDto) {
-          return autoModelService.addAutoCategory(autoModelRegisterRequestDto);
-     }
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse addAutoModel(@RequestBody AutoModelRegisterRequestDto autoModelRegisterRequestDto) {
+        return autoModelService.addAutoCategory(autoModelRegisterRequestDto);
+    }
+    @GetMapping("/getModelById/{id}")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse getModelById(@PathVariable int id){
+        return autoModelService.getModelById(id);
+    }
+    @GetMapping("/getModelList/{id}")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse getModelList(@PathVariable int id){
+        return autoModelService.getModelList(id);
+    }
 
-     @GetMapping("/getModelById/{id}")
-     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse getModelById(@PathVariable int id) {
-          return autoModelService.getModelById(id);
-     }
-
-     @GetMapping("/getModelList/{id}")
-     @PreAuthorize("hasAnyRole('ADMIN')")
-     public ApiResponse getModelList(@PathVariable int id) {
-          return autoModelService.getModelList(id);
-     }
-
-     @DeleteMapping("/delete/{id}")
-     @PreAuthorize("hasAnyRole('ADMIN')")
-     public ApiResponse deleteModelById(@PathVariable int id) {
-          return autoModelService.deleteModelById(id);
-     }
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ApiResponse deleteModelById(@PathVariable int id) {
+        return autoModelService.deleteModelById(id);
+    }
 }

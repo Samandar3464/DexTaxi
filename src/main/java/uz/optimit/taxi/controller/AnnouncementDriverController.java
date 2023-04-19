@@ -50,7 +50,7 @@ public class AnnouncementDriverController {
         return announcementDriverService.deleteDriverAnnouncement(id);
     }
 
-    @GetMapping("getAnnouncementDriverByFilterAndSize/{from}/{to}/{fromTime}/{toTime}/{size}")
+    @GetMapping("getAnnouncementDriverByFilter/{from}/{to}/{fromTime}/{toTime}/{size}")
     public ApiResponse getByFilter(
         @PathVariable Integer from,
         @PathVariable Integer to,
@@ -69,5 +69,10 @@ public class AnnouncementDriverController {
         @PathVariable LocalDateTime toTime
     ){
         return announcementDriverService.getByFilter(from,to ,fromTime,toTime);
+    }
+
+    @GetMapping("/getDriverAnnouncementHistory")
+    public ApiResponse getDriverAnnouncementHistory(){
+        return announcementDriverService.getHistory();
     }
 }

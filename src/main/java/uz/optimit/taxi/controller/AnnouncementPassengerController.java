@@ -55,4 +55,9 @@ public class AnnouncementPassengerController {
                                     ) {
        return announcementPassengerService.findFilter(fromRegion, toRegion, timeToTravel, toTime);
      }
+
+     @GetMapping("/getPassengerAnnouncementHistory")
+     public ApiResponse getDriverAnnouncementHistory(){
+          return announcementPassengerService.getHistory();
+     }
 }

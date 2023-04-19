@@ -49,10 +49,13 @@ public class AnnouncementPassenger {
 
     private boolean active;
 
-     private LocalDateTime timeToTravel;
-     private String info;
-     private double price;
-     private LocalDateTime createdTime;
+    private LocalDateTime timeToTravel;
+
+    private String info;
+
+    private double price;
+
+    private LocalDateTime createdTime;
 
     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, FamiliarRepository familiarRepository) {
         return AnnouncementPassenger.builder()
