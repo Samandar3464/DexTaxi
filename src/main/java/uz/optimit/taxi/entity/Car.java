@@ -1,8 +1,10 @@
 package uz.optimit.taxi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -36,12 +38,14 @@ public class Car {
     @OneToOne
     private Attachment photoDriverLicense;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
+
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     private List<AnnouncementDriver> announcementDriver;
 
-    @OneToMany(mappedBy = "car" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     private List<Seat> seatList;
 
     private boolean active;
