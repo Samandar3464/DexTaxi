@@ -18,13 +18,13 @@ import java.util.List;
 @Builder
 @Entity
 public class AnnouncementPassenger {
-     @Id
-     @GeneratedValue(strategy = GenerationType.AUTO)
-     private UUID id;
-     @ManyToOne
-     private Region fromRegion;
-     @ManyToOne
-     private Region toRegion;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    @ManyToOne
+    private Region fromRegion;
+    @ManyToOne
+    private Region toRegion;
 
      @ManyToOne
      private City fromCity;

@@ -8,6 +8,7 @@ import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.Car;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
@@ -17,6 +18,7 @@ import uz.optimit.taxi.repository.AnnouncementDriverRepository;
 import uz.optimit.taxi.repository.CarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,10 @@ public class AnnouncementDriverService {
           User user = userService.checkUserExistByContext();
           if (user.getCars().isEmpty()){
                throw new CarNotFound(CAR_NOT_FOUND);
+          }
+          Optional<AnnouncementDriver> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
+          if (byUserIdAndActive.isPresent()){
+               throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
           }
           AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository);
           repository.save(announcementDriver);
@@ -81,5 +87,16 @@ public class AnnouncementDriverService {
           announcementDriver.setActive(false);
           repository.save(announcementDriver);
           return new ApiResponse(DELETED ,true);
+     }
+
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse getByFilter(Integer from, Integer to, LocalDateTime fromTime, LocalDateTime toTime) {
+          List<AnnouncementDriver> all = repository
+                  .findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToDriveBetweenOrderByCreatedTimeDesc(true,from, to,fromTime,toTime);
+          List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
+          all.forEach(announcementDriver -> {
+               driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
+          });
+          return new ApiResponse(driverResponses, true);
      }
 }

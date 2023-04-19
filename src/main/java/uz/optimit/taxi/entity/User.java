@@ -53,7 +53,8 @@ public class User implements UserDetails {
 
     private boolean isBlocked;
 
-    private double status;
+    @OneToOne
+    private Status status;
 
     private Integer verificationCode;
 
@@ -68,7 +69,7 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Car> cars;
 
@@ -119,7 +120,9 @@ public class User implements UserDetails {
         return true;
     }
 
-    public static User fromPassenger(UserRegisterDto userRegisterDto, PasswordEncoder passwordEncoder, AttachmentService attachmentService  , Integer verificationCode , RoleRepository roleRepository){
+    public static User fromPassenger(UserRegisterDto userRegisterDto, PasswordEncoder passwordEncoder,
+                                     AttachmentService attachmentService, Integer verificationCode ,
+                                     RoleRepository roleRepository ,Status status){
        Attachment attachment= new Attachment();
         if (userRegisterDto.getProfilePhoto()==null){
             attachment=null;
@@ -138,6 +141,7 @@ public class User implements UserDetails {
                 .profilePhoto(attachment)
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .roles(List.of(roleRepository.findByName("YOLOVCHI"), (roleRepository.findByName("HAYDOVCHI"))))
+                .status(status)
                 .isBlocked(true)
                 .build();
     }

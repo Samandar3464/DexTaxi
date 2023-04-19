@@ -1,5 +1,6 @@
 package uz.optimit.taxi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class Role {
     @Column(unique = true)
     private String name;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
-
 }
