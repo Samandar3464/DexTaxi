@@ -30,4 +30,10 @@ public class AutoCategoryController {
     public ApiResponse getCategoryList(){
         return autoCategoryService.getCategoryList();
     }
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ApiResponse deleteAutoCategoryById(@PathVariable int id) {
+        return autoCategoryService.deleteAutoCategoryById(id);
+    }
+
 }

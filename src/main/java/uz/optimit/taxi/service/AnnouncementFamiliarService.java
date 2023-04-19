@@ -44,4 +44,10 @@ public class AnnouncementFamiliarService {
           List<Familiar> familiarList = familiarRepository.findByIdIn(uuidList);
           return new ApiResponse(SUCCESSFULLY, true, familiarList);
      }
+
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse deleteFamiliar(UUID uuid){
+          familiarRepository.deleteById(uuid);
+          return new ApiResponse(SUCCESSFULLY,true);
+     }
 }

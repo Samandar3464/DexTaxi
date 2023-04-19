@@ -46,4 +46,9 @@ public class AutoModelService {
         List<AutoModel> allByAutoCategoryId = autoModelRepository.findAllByAutoCategoryId(categoryId);
         return new ApiResponse(allByAutoCategoryId, true);
     }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse deleteModelById(int id) {
+        autoModelRepository.deleteById(id);
+        return new ApiResponse(SUCCESSFULLY,true);
+    }
 }

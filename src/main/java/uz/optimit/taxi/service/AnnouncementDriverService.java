@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.Car;
+import uz.optimit.taxi.entity.Seat;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
@@ -18,6 +19,7 @@ import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.repository.AnnouncementDriverRepository;
 import uz.optimit.taxi.repository.CarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
+import uz.optimit.taxi.repository.SeatRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class AnnouncementDriverService {
 
      private final AnnouncementDriverRepository repository;
      private final CarRepository carRepository;
+     private final SeatRepository seatRepository;
      private final RegionRepository regionRepository;
      private final UserService userService;
      private  final  AttachmentService attachmentService;
@@ -102,11 +105,17 @@ public class AnnouncementDriverService {
           return new ApiResponse(driverResponses, true);
      }
 
-     public ApiResponse getHistory() {
-          User user = userService.checkUserExistByContext();
-          List<AnnouncementDriver> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
-          List<AnnouncementDriverResponse> response = new ArrayList<>();
-          allByActive.forEach((announcementDriver)-> response.add(AnnouncementDriverResponse.from(announcementDriver,announcementDriver.getCar(),attachmentService.attachUploadFolder)));
-          return new ApiResponse(response,true);
+     @ResponseStatus(HttpStatus.OK)
+     public ApiResponse getByFilter(Integer from, Integer to, LocalDateTime fromTime, LocalDateTime toTime, int size) {
+          List<AnnouncementDriver> all = repository
+              .findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToDriveBetweenOrderByCreatedTimeDesc(true, from, to, fromTime, toTime);
+          List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
+          all.forEach(announcementDriver -> {
+               List<Seat> allByCarIdAndActive = seatRepository.findAllByCarIdAndActive(announcementDriver.getCar().getId(), true);
+               if (allByCarIdAndActive.size() >= size) {
+                    driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
+               }
+          });
+          return new ApiResponse(driverResponses, true);
      }
 }

@@ -52,4 +52,10 @@ public class UserController {
      public ApiResponse setStatus(@RequestBody StatusDto statusDto){
          return userService.setStatus(statusDto);
      }
+
+     @DeleteMapping("/delete/{id}")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     public ApiResponse deleteRegionById(@PathVariable UUID id) {
+          return userService.deleteUserByID(id);
+     }
 }

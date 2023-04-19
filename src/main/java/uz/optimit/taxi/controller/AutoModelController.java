@@ -29,4 +29,10 @@ public class AutoModelController {
     public ApiResponse getModelList(@PathVariable int id){
         return autoModelService.getModelList(id);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ApiResponse deleteModelById(@PathVariable int id) {
+        return autoModelService.deleteModelById(id);
+    }
 }

@@ -13,7 +13,6 @@ import uz.optimit.taxi.service.RegionService;
 public class RegionController {
 
      private final RegionService regionService;
-
      @PostMapping("/add")
      @PreAuthorize("hasRole('ADMIN')")
      public ApiResponse addRegion(@RequestBody RegionRegisterRequestDto regionRegisterRequestDto) {
@@ -30,5 +29,11 @@ public class RegionController {
      @PreAuthorize("hasAnyRole('ADMIN')")
      public ApiResponse getRegionById(@PathVariable Integer id){
           return regionService.getRegionById(id);
+     }
+
+     @DeleteMapping("/delete/{id}")
+     @PreAuthorize("hasAnyRole('ADMIN')")
+     public ApiResponse deleteRegionById(@PathVariable Integer id) {
+          return regionService.deleteRegionById(id);
      }
 }

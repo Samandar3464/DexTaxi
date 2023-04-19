@@ -30,4 +30,10 @@ public class CityController {
      public ApiResponse getCityById(@PathVariable Integer id){
           return cityService.getCityById(id);
      }
+
+     @DeleteMapping("/delete/{id}")
+     @PreAuthorize("hasAnyRole('ADMIN')")
+     public ApiResponse deleteCityById(@PathVariable Integer id) {
+          return cityService.deleteCityById(id);
+     }
 }
