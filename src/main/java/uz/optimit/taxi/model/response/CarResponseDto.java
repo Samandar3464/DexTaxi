@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.Attachment;
 import uz.optimit.taxi.entity.Car;
+import uz.optimit.taxi.entity.Seat;
 
 
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class CarResponseDto {
 
      private boolean active;
 
+    private List<Seat> seatList;
+
 
      public static CarResponseDto from(Car car, String downloadUrl){
          Attachment texPassportPhoto1 = car.getTexPassportPhoto();
@@ -56,6 +59,7 @@ public class CarResponseDto {
                  .texPassport(car.getTexPassport())
                  .autoModel(car.getAutoModel().getName())
                  .active(car.isActive())
+                 .seatList(car.getSeatList())
                  .texPassportPhotoPath(texPasswordPhotoLink)
                  .photoDriverLicense(photoDriverLicense2)
                  .autoPhotosPath(carPhotoList)

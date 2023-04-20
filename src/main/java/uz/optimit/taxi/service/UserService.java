@@ -72,6 +72,7 @@ public class UserService {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authentication);
             User user = (User) authenticate.getPrincipal();
+            Optional<User> byPhone = userRepository.findByPhone(user.getPhone());
             String access = jwtService.generateAccessToken(user);
             String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
             return new ApiResponse(new TokenResponse(access, refresh), true);
@@ -146,8 +147,10 @@ public class UserService {
     }
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteUserByID(UUID id) {
-        userRepository.deleteById(id);
-        return new ApiResponse(SUCCESSFULLY,true);
+        Optional<User> byId = userRepository.findById(id);
+        byId.get().setBlocked(true);
+        userRepository.save(byId.get());
+        return new ApiResponse(DELETED,true);
     }
 }
 

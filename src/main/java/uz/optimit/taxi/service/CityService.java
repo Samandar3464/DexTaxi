@@ -50,6 +50,6 @@ public class CityService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse deleteCityById(Integer id) {
           cityRepository.deleteById(id);
-          return new ApiResponse(SUCCESSFULLY,true);
+          return new ApiResponse(DELETED,true);
      }
 }

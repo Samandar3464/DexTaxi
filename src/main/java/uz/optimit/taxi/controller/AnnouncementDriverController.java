@@ -50,23 +50,28 @@ public class AnnouncementDriverController {
         return announcementDriverService.deleteDriverAnnouncement(id);
     }
 
-    @GetMapping("getAnnouncementDriverByFilter/{from}/{to}/{fromTime}/{toTime}")
-    public ApiResponse getByFilter(@PathVariable Integer from, @PathVariable Integer to, @PathVariable LocalDateTime fromTime, @PathVariable LocalDateTime toTime){
-       return announcementDriverService.getByFilter(from,to ,fromTime,toTime);
+    @GetMapping("getAnnouncementDriverByFilter/{from}/{to}/{fromTime}/{toTime}/{size}")
+    public ApiResponse getByFilter(
+        @PathVariable Integer from,
+        @PathVariable Integer to,
+        @PathVariable LocalDateTime fromTime,
+        @PathVariable LocalDateTime toTime,
+        @PathVariable int size
+    ){
+       return announcementDriverService.getByFilter(from,to ,fromTime,toTime,size);
     }
 
+    @GetMapping("getAnnouncementDriverByFilter/{from}/{to}/{fromTime}/{toTime}")
+    public ApiResponse getByFilter(
+        @PathVariable Integer from,
+        @PathVariable Integer to,
+        @PathVariable LocalDateTime fromTime,
+        @PathVariable LocalDateTime toTime
+    ){
+        return announcementDriverService.getByFilter(from,to ,fromTime,toTime);
+    }
     @GetMapping("/getDriverAnnouncementHistory")
     public ApiResponse getDriverAnnouncementHistory(){
         return announcementDriverService.getHistory();
-    }
-    @GetMapping("getAnnouncementDriverByFilterAdnSize/{from}/{to}/{fromTime}/{toTime}/{size}")
-    public ApiResponse getByFilter(
-            @PathVariable Integer from,
-            @PathVariable Integer to,
-            @PathVariable LocalDateTime fromTime,
-            @PathVariable LocalDateTime toTime,
-            @PathVariable int size
-    ){
-        return announcementDriverService.getByFilter(from,to ,fromTime,toTime,size);
     }
 }

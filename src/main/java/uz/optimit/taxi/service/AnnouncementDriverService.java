@@ -39,6 +39,7 @@ public class AnnouncementDriverService {
      private final RegionRepository regionRepository;
      private final UserService userService;
      private  final  AttachmentService attachmentService;
+     private final SeatService seatService;
 
 
 
@@ -54,6 +55,7 @@ public class AnnouncementDriverService {
           }
           Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
           AnnouncementDriver announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository, car);
+          seatService.onActive(announcementDriverRegisterRequestDto.getSeatIdList());
           repository.save(announcementDriver);
           return new ApiResponse(SUCCESSFULLY, true);
      }

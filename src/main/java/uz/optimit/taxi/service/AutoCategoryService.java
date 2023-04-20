@@ -12,8 +12,7 @@ import uz.optimit.taxi.repository.AutoCategoryRepository;
 
 import java.util.Optional;
 
-import static uz.optimit.taxi.entity.Enum.Constants.AUTO_CATEGORY_ALREADY_EXIST;
-import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
+import static uz.optimit.taxi.entity.Enum.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +42,6 @@ public class AutoCategoryService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteAutoCategoryById(int id){
         autoCategoryRepository.deleteById(id);
-      return new ApiResponse(SUCCESSFULLY,true);
+      return new ApiResponse(DELETED,true);
     }
 }

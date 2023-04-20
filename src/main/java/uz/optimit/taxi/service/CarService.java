@@ -17,6 +17,7 @@ import uz.optimit.taxi.repository.CarRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -72,7 +73,12 @@ public class CarService {
         carRepository.save(car);
         return new ApiResponse(CAR_ACTIVATED, true);
     }
-
+    public ApiResponse getCar() {
+        User user = userService.checkUserExistByContext();
+        Car car = carRepository.findByUserId(user.getId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
+        return new ApiResponse(carResponseDto, true);
+    }
 
     private Car from(CarRegisterRequestDto carRegisterRequestDto, User user) {
         AutoModel autoModel1 = autoModelRepository.getByIdAndAutoCategoryId(carRegisterRequestDto.getAutoModelId(), carRegisterRequestDto.getAutoCategoryId());
@@ -96,7 +102,9 @@ public class CarService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteCarByID(UUID id) {
-        carRepository.deleteById(id);
-        return new ApiResponse(SUCCESSFULLY,true);
+        Optional<Car> byId = carRepository.findById(id);
+        byId.get().setActive(false);
+        carRepository.save(byId.get());
+        return new ApiResponse(DELETED,true);
     }
 }
