@@ -73,7 +73,12 @@ public class CarService {
         carRepository.save(car);
         return new ApiResponse(CAR_ACTIVATED, true);
     }
-
+    public ApiResponse getCar() {
+        User user = userService.checkUserExistByContext();
+        Car car = carRepository.findByUserId(user.getId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
+        return new ApiResponse(carResponseDto, true);
+    }
 
     private Car from(CarRegisterRequestDto carRegisterRequestDto, User user) {
         AutoModel autoModel1 = autoModelRepository.getByIdAndAutoCategoryId(carRegisterRequestDto.getAutoModelId(), carRegisterRequestDto.getAutoCategoryId());

@@ -72,6 +72,7 @@ public class UserService {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authentication);
             User user = (User) authenticate.getPrincipal();
+            Optional<User> byPhone = userRepository.findByPhone(user.getPhone());
             String access = jwtService.generateAccessToken(user);
             String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
             return new ApiResponse(new TokenResponse(access, refresh), true);
