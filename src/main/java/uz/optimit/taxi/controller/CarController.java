@@ -28,6 +28,12 @@ public class CarController {
         return carService.getByUserId(id);
     }
 
+    @GetMapping("/getCarSeats")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
+    public ApiResponse getCar(){
+        return carService.getCarSeat();
+    }
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse deleteCarByID(@PathVariable UUID id) {

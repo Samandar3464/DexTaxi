@@ -66,7 +66,7 @@ public class User implements UserDetails {
     @OneToOne
     private Attachment profilePhoto;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
 //    @JsonIgnore

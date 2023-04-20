@@ -70,7 +70,6 @@ public class AnnouncementDriverController {
     ){
         return announcementDriverService.getByFilter(from,to ,fromTime,toTime);
     }
-
     @GetMapping("/getDriverAnnouncementHistory")
     public ApiResponse getDriverAnnouncementHistory(){
         return announcementDriverService.getHistory();
