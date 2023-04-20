@@ -12,6 +12,7 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.model.response.CarResponseDto;
+import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.AutoModelRepository;
 import uz.optimit.taxi.repository.CarRepository;
 
@@ -73,11 +74,13 @@ public class CarService {
         carRepository.save(car);
         return new ApiResponse(CAR_ACTIVATED, true);
     }
-    public ApiResponse getCar() {
+
+    public ApiResponse getCarSeat() {
         User user = userService.checkUserExistByContext();
         Car car = carRepository.findByUserId(user.getId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
-        CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
-        return new ApiResponse(carResponseDto, true);
+        List<SeatResponse> seatResponses = new ArrayList<>();
+        car.getSeatList().forEach(seat -> seatResponses.add(SeatResponse.from(seat)));
+        return new ApiResponse(seatResponses, true);
     }
 
     private Car from(CarRegisterRequestDto carRegisterRequestDto, User user) {
@@ -105,6 +108,6 @@ public class CarService {
         Optional<Car> byId = carRepository.findById(id);
         byId.get().setActive(false);
         carRepository.save(byId.get());
-        return new ApiResponse(DELETED,true);
+        return new ApiResponse(DELETED, true);
     }
 }
