@@ -28,10 +28,10 @@ public class CarController {
         return carService.getByUserId(id);
     }
 
-    @GetMapping("/getCar")
+    @GetMapping("/getCarSeats")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse getCar(){
-        return carService.getCar();
+        return carService.getCarSeat();
     }
 
     @DeleteMapping("/delete/{id}")
