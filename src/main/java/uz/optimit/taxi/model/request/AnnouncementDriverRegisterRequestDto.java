@@ -22,6 +22,7 @@ public class AnnouncementDriverRegisterRequestDto {
      private double backSeatPrice;
      private boolean baggage;
      private String info;
-     List<UUID> seatIdList;
+     private List<UUID> seatIdList;
+
 
 }

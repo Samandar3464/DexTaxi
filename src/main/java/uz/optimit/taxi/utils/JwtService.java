@@ -24,8 +24,8 @@ import java.util.function.Function;
 public class JwtService {
     private static final String ACCESS_SECRET_KEY = "404E635266556A586E327235753878F413F4428472B4B6250645367566B5970";
     private static final String REFRESH_SECRET_KEY = "404E635266556A586E327235753878F413F4428472B4B6250645lll367566B5970";
-    private static final int REFRESH_SECRET_TIME = 1000 * 60 * 1000;
-    private static final int ACCESS_SECRET_TIME = 1000 * 60 * 10 * 24;
+    private static final int REFRESH_SECRET_TIME = 1000 * 60 * 100000;
+    private static final int ACCESS_SECRET_TIME = 100000 * 60 * 10 * 24;
     private final UserRepository userRepository;
 
     //GENERATE TOKENS
