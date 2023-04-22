@@ -33,5 +33,9 @@ public class SeatController {
 //     public ApiResponse getActiveSeatListByCarId(@PathVariable UUID id){
 //          return seatService.getActiveSeatListByCarId(id);
 //     }
-
+     @GetMapping("getSeatListByCarId/{id}")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+     public ApiResponse getSeatListByCarId(@PathVariable UUID id){
+          return seatService.getActiveSeatListByCarId(id);
+     }
 }

@@ -19,6 +19,7 @@ import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -89,22 +90,31 @@ public class AnnouncementPassengerService {
     public ApiResponse findFilter(
             Integer fromRegion,
             Integer toRegion,
-            LocalDateTime timeToTravel,
-            LocalDateTime toTime
+            String timeToTravel,
+            String toTime
     ) {
+        List<AnnouncementPassenger> byFilter = getAnnouncementPassengers(fromRegion, toRegion, timeToTravel, toTime);
         List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-        List<AnnouncementPassenger> byFilter = repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc(true, fromRegion, toRegion, timeToTravel, toTime);
         byFilter.forEach(a -> {
             passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
         });
         return new ApiResponse(passengerResponses, true);
     }
 
+    private List<AnnouncementPassenger> getAnnouncementPassengers(Integer fromRegion, Integer toRegion, String timeToTravel, String toTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime timeToTravel1 = LocalDateTime.parse(timeToTravel,formatter);
+        LocalDateTime toTime1 = LocalDateTime.parse(toTime,formatter);
+        return  repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc
+            (true, fromRegion, toRegion, timeToTravel1, toTime1);
+    }
+
     public ApiResponse getHistory() {
         User user = userService.checkUserExistByContext();
         List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
         List<AnnouncementPassengerResponse> response = new ArrayList<>();
-        allByActive.forEach((announcementPassenger)-> response.add(AnnouncementPassengerResponse.from(announcementPassenger,attachmentService.attachUploadFolder)));
+        allByActive.forEach((announcementPassenger)-> response.add(AnnouncementPassengerResponse
+            .from(announcementPassenger,attachmentService.attachUploadFolder)));
         return new ApiResponse(response,true);
     }
 }
