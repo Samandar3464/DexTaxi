@@ -46,14 +46,13 @@ public class AnnouncementPassengerController {
           return announcementPassengerService.deletePassengerAnnouncement(id);
      }
 
-     @GetMapping("/getAnnouncementPassengerByFilter/{fromRegion}/{toRegion}/{timeToTravel}/{toTime}")
+     @GetMapping("/getAnnouncementPassengerByFilter/{fromRegion}/{toRegion}/{timeToTravel}")
      public ApiResponse getAnnouncementPassengerByFilter(
-                                    @PathVariable Integer fromRegion,
-                                    @PathVariable Integer toRegion,
-                                    @PathVariable LocalDateTime timeToTravel,
-                                    @PathVariable LocalDateTime toTime
-                                    ) {
-       return announcementPassengerService.findFilter(fromRegion, toRegion, timeToTravel, toTime);
+         @PathVariable Integer fromRegion,
+         @PathVariable Integer toRegion,
+         @PathVariable String timeToTravel
+     ) {
+          return announcementPassengerService.findFilter(fromRegion, toRegion, timeToTravel+" 00:01",timeToTravel+" 23:59");
      }
 
      @GetMapping("/getPassengerAnnouncementHistory")

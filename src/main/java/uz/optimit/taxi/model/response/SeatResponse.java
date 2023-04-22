@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.Seat;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -25,4 +26,5 @@ public class SeatResponse {
               .id(seat.getId())
               .build();
      }
+
 }
