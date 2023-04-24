@@ -63,7 +63,7 @@ public class UserService {
         familiarRepository.save(Familiar.fromUser(save));
         String access = jwtService.generateAccessToken(user);
         String refresh = jwtService.generateRefreshToken(save.getPhone());
-        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true, new TokenResponse(access, refresh));
+        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true, new TokenResponse(access, refresh, UserResponseDto.fromDriver(user,attachmentService.attachDownloadUrl)));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -74,7 +74,7 @@ public class UserService {
             User user = (User) authenticate.getPrincipal();
             String access = jwtService.generateAccessToken(user);
             String refresh = jwtService.generateRefreshToken(userLoginRequestDto.getPhone());
-            return new ApiResponse(new TokenResponse(access, refresh), true);
+            return new ApiResponse(new TokenResponse(access, refresh ,UserResponseDto.fromDriver(user,attachmentService.attachDownloadUrl)), true);
         } catch (BadCredentialsException e) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
@@ -131,7 +131,7 @@ public class UserService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        return new ApiResponse(UserResponseDto.from(user, attachmentService.attachDownloadUrl), true);
+        return new ApiResponse(UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl), true);
     }
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse setStatus(StatusDto statusDto) {

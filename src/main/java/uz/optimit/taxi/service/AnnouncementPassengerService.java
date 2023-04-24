@@ -66,7 +66,7 @@ public class AnnouncementPassengerService {
     public ApiResponse getAnnouncementById(UUID id) {
         AnnouncementPassenger active = repository.findByIdAndActive(id, true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         AnnouncementPassengerResponse passengerResponse =
-                AnnouncementPassengerResponse.from(active, attachmentService.attachDownloadUrl);
+                AnnouncementPassengerResponse.from(active);
         return new ApiResponse(passengerResponse, true);
     }
 
@@ -75,7 +75,10 @@ public class AnnouncementPassengerService {
     public ApiResponse getPassengerAnnouncements() {
         User user = userService.checkUserExistByContext();
         List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActive(user.getId(),true);
-        return new ApiResponse(announcementPassengers, true);
+        List<AnnouncementPassengerResponseAnonymous> anonymousList = new ArrayList<>();
+        announcementPassengers.forEach(obj->
+                anonymousList.add(AnnouncementPassengerResponseAnonymous.from(obj)));
+        return new ApiResponse(anonymousList, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -114,7 +117,7 @@ public class AnnouncementPassengerService {
         List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
         List<AnnouncementPassengerResponse> response = new ArrayList<>();
         allByActive.forEach((announcementPassenger)-> response.add(AnnouncementPassengerResponse
-            .from(announcementPassenger,attachmentService.attachUploadFolder)));
+            .from(announcementPassenger)));
         return new ApiResponse(response,true);
     }
 }
