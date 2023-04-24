@@ -3,6 +3,7 @@ package uz.optimit.taxi.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import uz.optimit.taxi.model.response.UserResponseDto;
 
 @Getter
 @Setter
@@ -10,7 +11,7 @@ import lombok.Setter;
 public class TokenResponse {
     private String accessToken;
     private String refreshToken;
-
+    private UserResponseDto userResponseDto;
      public TokenResponse(String refreshToken) {
           this.refreshToken=refreshToken;
      }
