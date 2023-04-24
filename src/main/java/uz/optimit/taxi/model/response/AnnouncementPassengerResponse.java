@@ -37,7 +37,7 @@ public class AnnouncementPassengerResponse {
      public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger, String url) {
           return AnnouncementPassengerResponse.builder()
               .id(announcementPassenger.getId())
-              .userResponseDto(UserResponseDto.from(announcementPassenger.getUser(), url))
+              .userResponseDto(UserResponseDto.fromDriver(announcementPassenger.getUser(), url))
               .fromRegion(announcementPassenger.getFromRegion())
               .toRegion(announcementPassenger.getToRegion())
               .fromLatitude(announcementPassenger.getFromLatitude())

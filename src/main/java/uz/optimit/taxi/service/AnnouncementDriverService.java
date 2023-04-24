@@ -41,7 +41,6 @@ public class AnnouncementDriverService {
      private final AttachmentService attachmentService;
      private final SeatService seatService;
 
-
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
           User user = userService.checkUserExistByContext();

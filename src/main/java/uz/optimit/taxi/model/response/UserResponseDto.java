@@ -48,4 +48,24 @@ public class UserResponseDto {
               .profilePhotoUrl(photoLink)
               .build();
      }
+
+     public static UserResponseDto fromDriver(User user, String downloadUrl) {
+          String photoLink =null;
+          if (user.getProfilePhoto()!=null){
+               Attachment attachment = user.getProfilePhoto();
+               photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+          }else {
+               photoLink=downloadUrl+"avatar.png";
+          }
+
+          return UserResponseDto.builder()
+              .id(user.getId())
+              .name(user.getName())
+              .surname(user.getSurname())
+              .phone(user.getPhone())
+              .age(LocalDate.now().getYear() - user.getBirthDate().getYear())
+              .gender(user.getGender())
+              .profilePhotoUrl(photoLink)
+              .build();
+     }
 }

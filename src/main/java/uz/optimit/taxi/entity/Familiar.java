@@ -41,9 +41,6 @@ public class Familiar {
      @JsonIgnore
      private User user;
 
-     @ManyToOne
-     @JsonIgnore
-     private AnnouncementPassenger announcementPassenger;
 
      public static Familiar from(FamiliarRegisterRequestDto registerRequestDto, User user) {
           return Familiar.builder()
