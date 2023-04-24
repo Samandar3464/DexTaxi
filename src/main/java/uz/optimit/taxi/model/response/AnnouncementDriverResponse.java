@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,8 @@ public class AnnouncementDriverResponse {
      private String color;
      private String carNumber;
      private String autoModel;
-
+     private LocalDateTime timeToDrive;
+     private List<Seat> seatList;
 
      public static AnnouncementDriverResponse from(AnnouncementDriver announcementDriver, Car car,String downloadUrl){
 
@@ -43,13 +45,15 @@ public class AnnouncementDriverResponse {
               .id(announcementDriver.getId())
               .fromRegion(announcementDriver.getFromRegion())
               .toRegion(announcementDriver.getToRegion())
-              .userResponseDto(UserResponseDto.from(announcementDriver.getUser(),downloadUrl))
+              .userResponseDto(UserResponseDto.fromDriver(announcementDriver.getUser(),downloadUrl))
               .frontSeatPrice(announcementDriver.getFrontSeatPrice())
               .backSeatPrice(announcementDriver.getBackSeatPrice())
               .info(announcementDriver.getInfo())
               .baggage(announcementDriver.isBaggage())
+              .timeToDrive(announcementDriver.getTimeToDrive())
               .carPhotoPath(photos)
               .color(car.getColor())
+              .seatList(announcementDriver.getCar().getSeatList())
               .carNumber(car.getCarNumber())
               .autoModel(car.getAutoModel().getName())
               .build();

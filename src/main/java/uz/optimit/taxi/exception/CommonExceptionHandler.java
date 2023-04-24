@@ -67,14 +67,14 @@ public class CommonExceptionHandler {
             , null);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-//    public ApiResponse handleAccessTokenTimeExceededException(Exception e) {
-//        return new ApiResponse(
-//                TOKEN_TIME_OUT
-//                , false
-//                , null);
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ApiResponse handleAccessTokenTimeExceededException(Exception e) {
+        return new ApiResponse(
+                TOKEN_TIME_OUT
+                , false
+                , null);
+    }
 
     @ExceptionHandler(SmsSendingFailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)

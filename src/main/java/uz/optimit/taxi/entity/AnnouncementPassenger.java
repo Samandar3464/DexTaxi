@@ -42,7 +42,7 @@ public class AnnouncementPassenger {
 
     private double toLatitude;
 
-    @OneToMany(mappedBy = "announcementPassenger",cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Familiar> passengersList;
 
     private boolean baggage;

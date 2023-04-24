@@ -142,7 +142,7 @@ public class NotificationService {
         fromDriverToUser.setActive(false);
         notificationRepository.save(fromDriverToUser);
         announcementPassengerRepository.save(announcementPassenger);
-        return new ApiResponse(YOU_ARE_ACCEPTED_REQUEST, true);
+        return new ApiResponse(YOU_ACCEPTED_REQUEST, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -186,7 +186,7 @@ public class NotificationService {
         notificationRepository.save(fromUserToDriver);
         announcementDriverRepository.save(announcementDriver);
         announcementPassengerRepository.save(announcementPassenger);
-        return new ApiResponse(YOU_ARE_ACCEPTED_REQUEST, true);
+        return new ApiResponse(YOU_ACCEPTED_REQUEST, true);
     }
 
 

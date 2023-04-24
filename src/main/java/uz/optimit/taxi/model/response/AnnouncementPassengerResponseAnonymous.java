@@ -9,6 +9,7 @@ import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.City;
 import uz.optimit.taxi.entity.Region;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -21,6 +22,8 @@ public class AnnouncementPassengerResponseAnonymous {
      private Region toRegion;
      private City fromCity;
      private City toCity;
+     private double price;
+     private LocalDateTime timeToTravel;
      public  static AnnouncementPassengerResponseAnonymous from(AnnouncementPassenger announcementPassenger) {
           return AnnouncementPassengerResponseAnonymous
               .builder()
@@ -29,6 +32,8 @@ public class AnnouncementPassengerResponseAnonymous {
               .toRegion(announcementPassenger.getToRegion())
               .fromCity(announcementPassenger.getFromCity())
               .toCity(announcementPassenger.getToCity())
+              .price(announcementPassenger.getPrice())
+              .timeToTravel(announcementPassenger.getTimeToTravel())
               .build();
      }
 }
