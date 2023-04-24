@@ -19,6 +19,8 @@ public class AnnouncementDriverResponse {
      private UUID id;
      private Region fromRegion;
      private Region toRegion;
+     private City fromCity;
+     private City toCity;
      private UserResponseDto userResponseDto;
      private double frontSeatPrice;
      private double backSeatPrice;
@@ -45,6 +47,8 @@ public class AnnouncementDriverResponse {
               .id(announcementDriver.getId())
               .fromRegion(announcementDriver.getFromRegion())
               .toRegion(announcementDriver.getToRegion())
+              .fromCity(announcementDriver.getFromCity())
+              .toCity(announcementDriver.getToCity())
               .userResponseDto(UserResponseDto.fromDriver(announcementDriver.getUser(),downloadUrl))
               .frontSeatPrice(announcementDriver.getFrontSeatPrice())
               .backSeatPrice(announcementDriver.getBackSeatPrice())
