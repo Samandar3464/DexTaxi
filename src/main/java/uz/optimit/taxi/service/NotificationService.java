@@ -84,6 +84,7 @@ public class NotificationService {
     }
 
 
+
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse seeNotification() {
         User user = userService.checkUserExistByContext();
@@ -93,7 +94,8 @@ public class NotificationService {
 
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         notifications.forEach(obj -> userResponseDtoList.add(
-                UserResponseDto.from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
+                UserResponseDto.
+                        from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
 
         return new ApiResponse(userResponseDtoList, true);
     }

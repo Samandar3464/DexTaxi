@@ -40,7 +40,7 @@ public class UserResponseDto {
           return UserResponseDto.builder()
               .id(user.getId())
               .name(user.getName())
-              .passengersList(user.getPassengersList())
+//              .passengersList(passengersList)
               .surname(user.getSurname())
               .phone(user.getPhone())
               .age(LocalDate.now().getYear() - user.getBirthDate().getYear())

@@ -1,6 +1,7 @@
 package uz.optimit.taxi.entity.api;
 
 import lombok.*;
+import uz.optimit.taxi.model.response.UserResponseDto;
 
 @Getter
 @Setter
