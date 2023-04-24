@@ -95,7 +95,7 @@ public class NotificationService {
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         notifications.forEach(obj -> userResponseDtoList.add(
                 UserResponseDto.
-                        from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
+                        from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository)));
 
         return new ApiResponse(userResponseDtoList, true);
     }
@@ -200,7 +200,7 @@ public class NotificationService {
                 .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
         User sender = userService.checkUserExistById(notification.getSenderId());
-        return new ApiResponse(UserResponseDto.from(sender, attachmentService.attachDownloadUrl), true);
+        return new ApiResponse(UserResponseDto.from(sender, attachmentService.attachDownloadUrl,announcementPassengerRepository), true);
     }
 
     private Notification getNotification(User user1, User user2) {
