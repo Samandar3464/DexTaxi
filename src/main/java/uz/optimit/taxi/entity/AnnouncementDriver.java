@@ -59,8 +59,8 @@ public class AnnouncementDriver {
               .user(user)
               .fromRegion(regionRepository.findById(announcementRequestDto.getFromRegionId()).get())
               .toRegion(regionRepository.findById(announcementRequestDto.getToRegionId()).get())
-              .fromCity(cityRepository.findById(announcementRequestDto.getFromCityId()).orElse(null))
-              .toCity(cityRepository.findById(announcementRequestDto.getToCityId()).orElse(null))
+              .fromCity(cityRepository.findById(announcementRequestDto.getFromCityId()).get())
+              .toCity(cityRepository.findById(announcementRequestDto.getToCityId()).get())
               .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())
               .backSeatPrice(announcementRequestDto.getBackSeatPrice())
               .baggage(announcementRequestDto.isBaggage())
@@ -71,5 +71,22 @@ public class AnnouncementDriver {
               .active(true)
               .build();
      }
+     public static AnnouncementDriver from1(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, Car car) {
+          return AnnouncementDriver.builder()
+              .user(user)
+              .fromRegion(regionRepository.findById(announcementRequestDto.getFromRegionId()).get())
+              .toRegion(regionRepository.findById(announcementRequestDto.getToRegionId()).get())
+              .frontSeatPrice(announcementRequestDto.getFrontSeatPrice())
+              .backSeatPrice(announcementRequestDto.getBackSeatPrice())
+              .baggage(announcementRequestDto.isBaggage())
+              .timeToDrive(announcementRequestDto.getTimeToDrive())
+              .info(announcementRequestDto.getInfo())
+              .createdTime(LocalDateTime.now())
+              .car(car)
+              .active(true)
+              .build();
+     }
+
+
 
 }
