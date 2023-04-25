@@ -26,5 +26,4 @@ public class AnnouncementDriverRegisterRequestDto {
      private String info;
      private List<UUID> seatIdList;
 
-
 }

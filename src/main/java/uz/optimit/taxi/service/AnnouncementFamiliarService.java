@@ -31,6 +31,9 @@ public class AnnouncementFamiliarService {
           if (familiarRepository.existsByPhoneAndUserIdAndActive(familiarRegisterRequestDto.getPhone(), user.getId(), true)) {
                throw new UserAlreadyExistException(FAMILIAR_ALREADY_EXIST);
           }
+          if (familiarRepository.existsByPhoneAndUserIdAndActive(familiarRegisterRequestDto.getPhone(), user.getId(),false)) {
+               toActive(familiarRegisterRequestDto, user);
+          }
           familiarRepository.save(Familiar.from(familiarRegisterRequestDto, user));
           return new ApiResponse(SUCCESSFULLY, true);
      }
@@ -54,5 +57,14 @@ public class AnnouncementFamiliarService {
           byId.get().setActive(false);
           familiarRepository.save(byId.get());
           return new ApiResponse(DELETED, true);
+     }
+
+     private void toActive(FamiliarRegisterRequestDto familiarRegisterRequestDto, User user) {
+          Familiar familiar = familiarRepository.findFirstByUserIdAndPhone(user.getId(), familiarRegisterRequestDto.getPhone());
+          familiar.setActive(true);
+          familiar.setAge(familiarRegisterRequestDto.getAge());
+          familiar.setName(familiarRegisterRequestDto.getName());
+          familiar.setGender(familiarRegisterRequestDto.getGender());
+          familiarRepository.save(familiar);
      }
 }

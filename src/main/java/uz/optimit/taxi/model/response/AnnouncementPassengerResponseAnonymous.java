@@ -18,8 +18,8 @@ import java.util.UUID;
 public class AnnouncementPassengerResponseAnonymous {
 
      private UUID id;
-     private Region fromRegion;
-     private Region toRegion;
+     private RegionResponseDto fromRegion;
+     private RegionResponseDto toRegion;
      private City fromCity;
      private City toCity;
      private double price;
@@ -29,8 +29,8 @@ public class AnnouncementPassengerResponseAnonymous {
           return AnnouncementPassengerResponseAnonymous
               .builder()
               .id(announcementPassenger.getId())
-              .fromRegion(announcementPassenger.getFromRegion())
-              .toRegion(announcementPassenger.getToRegion())
+              .fromRegion(RegionResponseDto.from(announcementPassenger.getFromRegion()))
+              .toRegion(RegionResponseDto.from(announcementPassenger.getToRegion()))
               .fromCity(announcementPassenger.getFromCity())
               .toCity(announcementPassenger.getToCity())
               .price(announcementPassenger.getPrice())
