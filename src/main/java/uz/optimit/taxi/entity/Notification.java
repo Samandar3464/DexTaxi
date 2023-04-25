@@ -25,7 +25,9 @@ public class Notification {
 
     private UUID receiverId;
 
-    private UUID announcementId;
+    private UUID announcementDriverId;
+
+    private UUID announcementPassengerId;
 
     private boolean active;
 
@@ -43,7 +45,8 @@ public class Notification {
     public static Notification from(NotificationRequestDto notificationRequestDto ){
         return Notification.builder()
                 .receiverId(notificationRequestDto.getReceiverId())
-                .announcementId(notificationRequestDto.getAnnouncementId())
+                .announcementDriverId(notificationRequestDto.getAnnouncementDriverId())
+                .announcementPassengerId(notificationRequestDto.getAnnouncementPassengerId())
                 .createdTime(LocalDateTime.now())
                 .received(false)
                 .active(true)

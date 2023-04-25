@@ -40,12 +40,17 @@ public class NotificationController {
         return notificationService.getPassengerPostedNotification();
     }
 
-    @GetMapping("/seeNotification")
+    @GetMapping("/seeNotificationForDriver")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
-    public ApiResponse seeNotificationComeToPassenger(){
-        return notificationService.seeNotification();
+    public ApiResponse seeNotificationComeToDriver(){
+        return notificationService.seeNotificationForDriver();
     }
 
+    @GetMapping("/seeNotificationForPassenger")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    public ApiResponse seeNotificationComeToPassenger(){
+        return notificationService.seeNotificationForPassenger();
+    }
     @DeleteMapping("/deleteNotification/{id}")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
     public ApiResponse deleteNotification(@PathVariable UUID id){

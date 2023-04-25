@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.optimit.taxi.entity.AnnouncementDriver;
-import uz.optimit.taxi.entity.Attachment;
-import uz.optimit.taxi.entity.Car;
-import uz.optimit.taxi.entity.Seat;
+import uz.optimit.taxi.entity.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,8 +30,9 @@ public class AnnouncementDriverResponse {
     private String autoModel;
     private LocalDateTime timeToDrive;
     private List<Seat> seatList;
+    private List<Familiar> familiars;
 
-    public static AnnouncementDriverResponse from(AnnouncementDriver announcementDriver, Car car, String downloadUrl) {
+    public static AnnouncementDriverResponse from(AnnouncementDriver announcementDriver, Car car,List<Familiar> familiars ,String downloadUrl) {
 
         List<Attachment> attachment1 = car.getAutoPhotos();
         List<String> photos = new ArrayList<>();
@@ -59,6 +57,7 @@ public class AnnouncementDriverResponse {
                 .seatList(announcementDriver.getCar().getSeatList())
                 .carNumber(car.getCarNumber())
                 .autoModel(car.getAutoModel().getName())
+                .familiars(familiars)
                 .build();
     }
 
