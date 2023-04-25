@@ -17,12 +17,13 @@ public class AnnouncementDriverRegisterRequestDto {
 
      private Integer fromRegionId;
      private Integer toRegionId;
+     private Integer fromCityId;
+     private Integer toCityId;
      private LocalDateTime timeToDrive;
      private double frontSeatPrice;
      private double backSeatPrice;
      private boolean baggage;
      private String info;
      private List<UUID> seatIdList;
-
 
 }

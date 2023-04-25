@@ -42,7 +42,7 @@ public class AnnouncementPassenger {
 
     private double toLatitude;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Familiar> passengersList;
 
     private boolean baggage;

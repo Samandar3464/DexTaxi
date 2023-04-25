@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.optimit.taxi.entity.*;
+import uz.optimit.taxi.entity.AnnouncementPassenger;
+import uz.optimit.taxi.entity.City;
+import uz.optimit.taxi.entity.Familiar;
 
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -15,31 +17,29 @@ import java.util.List;
 @Builder
 public class AnnouncementPassengerResponse {
      private UUID id;
-     private Region fromRegion;
-     private Region toRegion;
-     private City fromCity;
-     private City toCity;
-     private UserResponseDto userResponseDto;
-     private double fromLatitude;
+    private City toCity;
+    private UUID userId;
+    private String info;
+    private double price;
+    private City fromCity;
+    private boolean baggage;
+    private double toLatitude;
+    private double toLongitude;
+    private double fromLatitude;
+    private double fromLongitude;
+    private RegionResponseDto toRegion;
+    private RegionResponseDto fromRegion;
+    private List<Familiar> passengersList;
 
-     private double fromLongitude;
-
-     private double toLongitude;
-
-     private double toLatitude;
-
-     private List<Familiar> passengersList;
-     
-     private boolean baggage;
-
-     private String info;
-
-     public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger, String url) {
+     public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger) {
           return AnnouncementPassengerResponse.builder()
               .id(announcementPassenger.getId())
-              .userResponseDto(UserResponseDto.fromDriver(announcementPassenger.getUser(), url))
-              .fromRegion(announcementPassenger.getFromRegion())
-              .toRegion(announcementPassenger.getToRegion())
+              .userId(announcementPassenger.getUser().getId())
+              .fromRegion(RegionResponseDto.from(announcementPassenger.getFromRegion()))
+              .toRegion(RegionResponseDto.from(announcementPassenger.getToRegion()))
+              .fromCity(announcementPassenger.getFromCity())
+              .toCity(announcementPassenger.getToCity())
+              .price(announcementPassenger.getPrice())
               .fromLatitude(announcementPassenger.getFromLatitude())
               .fromLongitude(announcementPassenger.getFromLongitude())
               .toLatitude(announcementPassenger.getToLatitude())

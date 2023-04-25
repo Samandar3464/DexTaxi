@@ -28,6 +28,7 @@ public class Status {
     private User user;
 
     public Status(int stars, int count) {
+
     }
 
     public static Status from(StatusDto statusDto, Status status){
