@@ -19,6 +19,8 @@ public class AnnouncementDriverResponse {
     private UUID id;
     private RegionResponseDto fromRegion;
     private RegionResponseDto toRegion;
+    private City fromCity;
+    private City toCity;
     private UserResponseDto userResponseDto;
     private double frontSeatPrice;
     private double backSeatPrice;
@@ -32,7 +34,7 @@ public class AnnouncementDriverResponse {
     private List<Seat> seatList;
     private List<Familiar> familiars;
 
-    public static AnnouncementDriverResponse from(AnnouncementDriver announcementDriver, Car car,List<Familiar> familiars ,String downloadUrl) {
+    public static AnnouncementDriverResponse from(AnnouncementDriver announcementDriver, Car car, String downloadUrl) {
 
         List<Attachment> attachment1 = car.getAutoPhotos();
         List<String> photos = new ArrayList<>();
@@ -40,7 +42,35 @@ public class AnnouncementDriverResponse {
             photos.add(downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType());
         });
 
+        if (announcementDriver.getFromCity() == null) {
+            return getResponse1(announcementDriver, car, downloadUrl, photos);
+        }
+        return getResponse(announcementDriver, car, downloadUrl, photos);
+    }
 
+    private static AnnouncementDriverResponse getResponse(AnnouncementDriver announcementDriver, Car car, String downloadUrl, List<String> photos) {
+        return AnnouncementDriverResponse
+                .builder()
+                .id(announcementDriver.getId())
+                .fromRegion(RegionResponseDto.from(announcementDriver.getFromRegion()))
+                .toRegion(RegionResponseDto.from(announcementDriver.getToRegion()))
+                .fromCity(announcementDriver.getFromCity())
+                .toCity(announcementDriver.getToCity())
+                .userResponseDto(UserResponseDto.fromDriver(announcementDriver.getUser(), downloadUrl))
+                .frontSeatPrice(announcementDriver.getFrontSeatPrice())
+                .backSeatPrice(announcementDriver.getBackSeatPrice())
+                .info(announcementDriver.getInfo())
+                .baggage(announcementDriver.isBaggage())
+                .timeToDrive(announcementDriver.getTimeToDrive())
+                .carPhotoPath(photos)
+                .color(car.getColor())
+                .seatList(announcementDriver.getCar().getSeatList())
+                .carNumber(car.getCarNumber())
+                .autoModel(car.getAutoModel().getName())
+                .build();
+    }
+
+    private static AnnouncementDriverResponse getResponse1(AnnouncementDriver announcementDriver, Car car, String downloadUrl, List<String> photos) {
         return AnnouncementDriverResponse
                 .builder()
                 .id(announcementDriver.getId())
@@ -57,7 +87,6 @@ public class AnnouncementDriverResponse {
                 .seatList(announcementDriver.getCar().getSeatList())
                 .carNumber(car.getCarNumber())
                 .autoModel(car.getAutoModel().getName())
-                .familiars(familiars)
                 .build();
     }
 
