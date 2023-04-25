@@ -154,8 +154,10 @@ public class AnnouncementDriverService {
      public ApiResponse getByFilter(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, String  timeToDrive, String timeToDrive2){
           List<AnnouncementDriver> driverList = getAnnouncementDrivers(fromRegion_id, toRegion_id, fromCity_id, toCity_id, timeToDrive, timeToDrive2);
           List<AnnouncementDriverResponse> announcementDrivers = new ArrayList<>();
+
           driverList.forEach(announcementDriver -> {
-               announcementDrivers.add(AnnouncementDriverResponse.from(announcementDriver,announcementDriver.getCar(), attachmentService.attachDownloadUrl));
+               announcementDrivers.add(AnnouncementDriverResponse.fromDriver(announcementDriver,announcementDriver.getCar(), attachmentService.attachDownloadUrl));
           });
           return new ApiResponse(announcementDrivers,true);
      }
+}
