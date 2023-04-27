@@ -33,16 +33,16 @@ public class NotificationMessageResponse {
 
     }
 
-    public static NotificationMessageResponse fromForPassenger(NotificationRequestDto notificationRequestDto) {
+    public static NotificationMessageResponse fromForPassenger(NotificationRequestDto notificationRequestDto,String token) {
         return NotificationMessageResponse.builder()
-                .receiverToken(notificationRequestDto.getReceiverToken())
+                .receiverToken(token)
                 .title(notificationRequestDto.getTitle())
                 .build();
     }
 
-    public static NotificationMessageResponse fromForDriver(NotificationRequestDto notificationRequestDto) {
+    public static NotificationMessageResponse fromForDriver(NotificationRequestDto notificationRequestDto, String token) {
         return NotificationMessageResponse.builder()
-                .receiverToken(notificationRequestDto.getReceiverToken())
+                .receiverToken(token)
                 .title(notificationRequestDto.getTitle())
                 .build();
     }

@@ -45,7 +45,7 @@ public class NotificationService {
 
         Notification notification = from(notificationRequestDto, user);
         UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository);
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto);
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto, notification.getReceiverToken());
         notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
@@ -65,7 +65,7 @@ public class NotificationService {
 
         Notification notification = from(notificationRequestDto, user);
         UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForPassenger(notificationRequestDto);
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForPassenger(notificationRequestDto, notification.getReceiverToken());
         notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
@@ -279,7 +279,8 @@ public class NotificationService {
         Notification notification = Notification.from(notificationRequestDto);
         notification.setSenderId(user.getId());
         notification.setUser(user);
-
+        User receiver = userService.checkUserExistById(notificationRequestDto.getReceiverId());
+        notification.setReceiverToken(receiver.getFireBaseToken());
         if (notificationRequestDto.getSeatIdList() != null) {
             List<Seat> selectedSeats = seatRepository.findAllByIdIn(notificationRequestDto.getSeatIdList());
             notification.setCarSeats(selectedSeats);

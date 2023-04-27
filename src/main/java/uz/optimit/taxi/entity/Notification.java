@@ -49,7 +49,6 @@ public class Notification {
     public static Notification from(NotificationRequestDto notificationRequestDto ){
         return Notification.builder()
                 .receiverId(notificationRequestDto.getReceiverId())
-                .receiverToken(notificationRequestDto.getReceiverToken())
                 .announcementDriverId(notificationRequestDto.getAnnouncementDriverId())
                 .announcementPassengerId(notificationRequestDto.getAnnouncementPassengerId())
                 .createdTime(LocalDateTime.now())

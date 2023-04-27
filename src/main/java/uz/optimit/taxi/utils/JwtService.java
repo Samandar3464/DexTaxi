@@ -1,10 +1,9 @@
 package uz.optimit.taxi.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uz.optimit.taxi.entity.User;
@@ -18,6 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+
+import static uz.optimit.taxi.entity.Enum.Constants.TOKEN_TIME_OUT;
+import static uz.optimit.taxi.entity.Enum.Constants.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -85,10 +87,10 @@ public class JwtService {
 
     public String getAccessTokenByRefresh(String token) {
         String username = extraRefreshToken(token);
-        if (username==null){
-            throw new TimeExceededException("Refresh token time out");
+        if (username == null) {
+            throw new TimeExceededException(TOKEN_TIME_OUT);
         }
-        User user = userRepository.findByPhone(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findByPhone(username).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         return generateAccessToken(user);
     }
 
@@ -128,8 +130,9 @@ public class JwtService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (Exception e) {
-           throw e;
+        } catch (ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
+                 IllegalArgumentException e) {
+          throw e;
         }
     }
 
@@ -138,7 +141,7 @@ public class JwtService {
     public String extraRefreshToken(String token) {
         try {
             return extraRefreshClaim(token, Claims::getSubject);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
 

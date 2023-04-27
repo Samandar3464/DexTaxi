@@ -1,5 +1,8 @@
 package uz.optimit.taxi.exception;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.optimit.taxi.entity.api.ApiResponse;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -67,14 +71,23 @@ public class CommonExceptionHandler {
             , null);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-//    public ApiResponse handleAccessTokenTimeExceededException(Exception e) {
-//        return new ApiResponse(
-//                TOKEN_TIME_OUT
-//                , false
-//                , null);
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiResponse handleAccessTimeExceededException(Exception e) {
+        return new ApiResponse(
+                TOKEN_TIME_OUT
+                , false
+                , null);
+    }
+
+    @ExceptionHandler(TimeExceededException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiResponse handleAccessTokenTimeExceeded(TimeExceededException e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
+    }
 
     @ExceptionHandler(SmsSendingFailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -107,6 +120,14 @@ public class CommonExceptionHandler {
     public ApiResponse notEnoughNotException(AnnouncementAlreadyExistException e) {
         return new ApiResponse(
                 e.getMessage()
+                , false
+                , null);
+    }
+    @ExceptionHandler(FirebaseMessagingException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse notEnoughNotException(FirebaseMessagingException e) {
+        return new ApiResponse(
+                FIREBASE_EXCEPTION
                 , false
                 , null);
     }
