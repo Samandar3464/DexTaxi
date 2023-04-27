@@ -14,8 +14,6 @@ import java.util.UUID;
 @Builder
 public class NotificationRequestDto {
 
-    private String receiverToken;
-
     private String title;
 
     private String body;

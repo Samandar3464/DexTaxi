@@ -94,7 +94,7 @@ public class UserService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getToken(RefreshToken refreshToken) {
         String accessTokenByRefresh = jwtService.getAccessTokenByRefresh(refreshToken.getReFreshToken());
-        return new ApiResponse(new TokenResponse(accessTokenByRefresh), true);
+        return new ApiResponse("NEW ACCESS TOKEN ",true,new TokenResponse(accessTokenByRefresh));
     }
 
     @ResponseStatus(HttpStatus.OK)

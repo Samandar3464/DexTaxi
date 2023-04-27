@@ -106,9 +106,9 @@ public class CarService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteCarByID(UUID id) {
-        Optional<Car> byId = carRepository.findById(id);
-        byId.get().setActive(false);
-        carRepository.save(byId.get());
+        Car byId = carRepository.findById(id).orElseThrow(()->new CarNotFound(CAR_NOT_FOUND));
+        byId.setActive(false);
+        carRepository.save(byId);
         return new ApiResponse(DELETED, true);
     }
 }
