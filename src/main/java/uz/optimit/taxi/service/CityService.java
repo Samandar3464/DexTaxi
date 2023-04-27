@@ -38,8 +38,8 @@ public class CityService {
           return new ApiResponse(SUCCESSFULLY, true,save);
      }
      @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getCityList() {
-          return new ApiResponse(cityRepository.findAll(),true);
+     public ApiResponse getCityList(Integer id) {
+          return new ApiResponse(cityRepository.findAllByRegionId(id),true);
      }
 
      @ResponseStatus(HttpStatus.OK)

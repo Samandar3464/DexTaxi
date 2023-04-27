@@ -7,7 +7,6 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementPassengerService;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -56,6 +55,7 @@ public class AnnouncementPassengerController {
      }
 
      @GetMapping("/getPassengerAnnouncementHistory")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getDriverAnnouncementHistory(){
           return announcementPassengerService.getHistory();
      }

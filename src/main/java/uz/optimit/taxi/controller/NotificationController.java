@@ -74,4 +74,10 @@ public class NotificationController {
         return notificationService.getAcceptedNotification();
     }
 
+
+    @GetMapping("changeToRead/{id}")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    public ApiResponse changeToRead(@PathVariable UUID id){
+       return notificationService.changeToRead(id);
+    }
 }

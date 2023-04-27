@@ -70,6 +70,7 @@ public class AnnouncementDriverController {
         return announcementDriverService.getByFilter(from,to ,fromTime+" 00:01",fromTime+" 23:59");
     }
     @GetMapping("/getDriverAnnouncementHistory")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse getDriverAnnouncementHistory(){
         return announcementDriverService.getHistory();
     }
