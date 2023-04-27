@@ -3,7 +3,6 @@ package uz.optimit.taxi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -14,14 +13,14 @@ import java.util.UUID;
 @Entity
 public class Attachment  {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String originName;
     private long size;
     private String newName;
     private String type;
     private String contentType;
-    private double path;
-    @ManyToMany
-    private List<Car> car;
+    private String path;
+    @ManyToOne
+    private Car car;
 }
