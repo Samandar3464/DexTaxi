@@ -40,7 +40,6 @@ public class LuggagePassengerService {
           if (luggagePassenger.isPresent()) {
                throw  new LuggageAnnouncementAlreadyExist(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_ALREADY_EXIST);
           }
-
           if (familiarRepository.findById(l.getReceiverId()).isEmpty() || familiarRepository.findById(l.getSenderId()).isEmpty()) {
                throw new FamiliarNotFound(Constants.FAMILIAR_NOT_FOUND);
           }

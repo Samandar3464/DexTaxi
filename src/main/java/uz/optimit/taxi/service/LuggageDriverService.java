@@ -9,10 +9,12 @@ import uz.optimit.taxi.entity.Enum.Constants;
 import uz.optimit.taxi.entity.LuggageDriver;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.exception.LuggageAnnouncementAlreadyExist;
 import uz.optimit.taxi.exception.LuggageAnnouncementNotFound;
 import uz.optimit.taxi.model.request.LuggageDriverRequestDto;
 import uz.optimit.taxi.model.response.LuggageDriverResponse;
+import uz.optimit.taxi.repository.CarRepository;
 import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.LuggageDriverRepository;
 import uz.optimit.taxi.repository.RegionRepository;
@@ -29,6 +31,7 @@ import java.util.UUID;
 public class LuggageDriverService {
 
      private final LuggageDriverRepository luggageDriverRepository;
+     private final CarRepository carRepository;
      private final AttachmentService attachmentService;
      private final RegionRepository regionRepository;
      private final UserService userService;
@@ -37,6 +40,9 @@ public class LuggageDriverService {
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(LuggageDriverRequestDto luggageDriverRequestDto) {
           User user = userService.checkUserExistByContext();
+          if (carRepository.findByUserIdAndActive(user.getId(),true).isEmpty()) {
+               throw new CarNotFound(Constants.CAR_NOT_FOUND);
+          }
           if (luggageDriverRepository.findBySupplierIdAndActive(user.getId(), true).isPresent()) {
               throw new LuggageAnnouncementAlreadyExist(Constants.LUGGAGE_DRIVER_ANNOUNCEMENT_ALREADY_EXIST);
           }

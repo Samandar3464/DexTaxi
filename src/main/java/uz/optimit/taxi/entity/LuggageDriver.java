@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.LuggageDriverRequestDto;
-import uz.optimit.taxi.model.response.UserResponseDto;
-import uz.optimit.taxi.repository.AnnouncementDriverRepository;
 import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
