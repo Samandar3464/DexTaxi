@@ -10,6 +10,7 @@ import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,11 +36,28 @@ public class Familiar {
     private short age;
 
     private double status;
+
     private boolean active;
 
     @ManyToOne
     @JsonIgnore
     private User user;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender")
+    private List<LuggageDriver> luggageDriverList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver")
+    private List<LuggageDriver> luggageDrivers;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender")
+    private List<LuggagePassenger> luggagePassengers;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver")
+    private List<LuggagePassenger> luggagePassengerList;
 
 
     public static Familiar from(FamiliarRegisterRequestDto registerRequestDto, User user) {

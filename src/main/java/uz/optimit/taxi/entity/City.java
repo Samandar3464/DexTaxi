@@ -33,6 +33,22 @@ public class City {
 
      @JsonIgnore
      @OneToMany(mappedBy = "fromCity")
+     private List<LuggageDriver> luggageDrivers;
+
+     @JsonIgnore
+     @OneToMany(mappedBy = "toCity")
+     private List<LuggageDriver> luggageDriverList;
+
+     @JsonIgnore
+     @OneToMany(mappedBy = "fromCity")
+     private List<LuggagePassenger> luggagePassengers;
+
+     @JsonIgnore
+     @OneToMany(mappedBy = "toCity")
+     private List<LuggagePassenger> luggagePassengerList;
+
+     @JsonIgnore
+     @OneToMany(mappedBy = "fromCity")
      private List<AnnouncementPassenger> fromAnnouncementUser;
 
      @JsonIgnore

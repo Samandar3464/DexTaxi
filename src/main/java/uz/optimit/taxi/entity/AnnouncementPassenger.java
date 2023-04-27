@@ -21,18 +21,6 @@ public class AnnouncementPassenger {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @ManyToOne
-    private Region fromRegion;
-    @ManyToOne
-    private Region toRegion;
-
-    @ManyToOne
-    private City fromCity;
-    @ManyToOne
-    private City toCity;
-
-    @ManyToOne
-    private User user;
 
     private double fromLatitude;
 
@@ -42,20 +30,35 @@ public class AnnouncementPassenger {
 
     private double toLatitude;
 
-    @ManyToMany
-    private List<Familiar> passengersList;
-
     private boolean baggage;
 
     private boolean active;
-
-    private LocalDateTime timeToTravel;
 
     private String info;
 
     private double price;
 
+    private LocalDateTime timeToTravel;
+
     private LocalDateTime createdTime;
+
+    @ManyToOne
+    private Region fromRegion;
+
+    @ManyToOne
+    private Region toRegion;
+
+    @ManyToOne
+    private City fromCity;
+
+    @ManyToOne
+    private City toCity;
+
+    @ManyToOne
+    private User user;
+
+    @ManyToMany
+    private List<Familiar> passengersList;
 
     public static AnnouncementPassenger from(AnnouncementPassengerRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, FamiliarRepository familiarRepository) {
         return AnnouncementPassenger.builder()

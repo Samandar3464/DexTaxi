@@ -23,6 +23,22 @@ public class Region {
     @OneToMany(mappedBy = "region")
     private List<City> cities;
 
+    @OneToMany(mappedBy = "fromRegion")
+    @JsonIgnore
+    private List<LuggageDriver> luggageDriverList;
+
+    @OneToMany(mappedBy = "toRegion")
+    @JsonIgnore
+    private List<LuggageDriver> luggageDrivers;
+
+    @OneToMany(mappedBy = "fromRegion")
+    @JsonIgnore
+    private List<LuggagePassenger> luggagePassengers;
+
+    @OneToMany(mappedBy = "toRegion")
+    @JsonIgnore
+    private List<LuggagePassenger> luggagePassengerList;
+
     @JsonIgnore
     @OneToMany(mappedBy = "fromRegion")
     private List<AnnouncementPassenger> fromAnnouncementUser;

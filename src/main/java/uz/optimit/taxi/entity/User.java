@@ -1,6 +1,7 @@
 package uz.optimit.taxi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -82,11 +83,22 @@ public class User implements UserDetails {
     private List<AnnouncementDriver> announcementDrivers;
 
 
+    @OneToMany(mappedBy="supplier" ,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
+    private List<LuggageDriver> luggageDriverList;
+
+    @OneToMany(mappedBy = "supplier")
+    @JsonIgnore
+    private List<LuggagePassenger> luggagePassengerList;
+
+
     @OneToMany(mappedBy = "user")
     private List<Familiar> passengersList;
 
     @OneToMany(mappedBy = "user")
     private List<Notification> notifications;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();

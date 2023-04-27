@@ -34,7 +34,8 @@ public class UserResponseDto {
                Attachment attachment = user.getProfilePhoto();
                photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
           }else {
-               photoLink=downloadUrl+"avatar.png";
+//               photoLink=downloadUrl+"avatar.png";
+                photoLink = "https://www.pngegg.com/en/png-wbapv";
           }
 
           return UserResponseDto.builder()
@@ -55,7 +56,8 @@ public class UserResponseDto {
                Attachment attachment = user.getProfilePhoto();
                photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
           }else {
-               photoLink=downloadUrl+"avatar.png";
+//               photoLink=downloadUrl+"avatar.png";
+               photoLink = "https://www.pngegg.com/en/png-wbapv";
           }
 
           return UserResponseDto.builder()

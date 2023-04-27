@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.Car;
-import uz.optimit.taxi.entity.Seat;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
@@ -32,8 +31,6 @@ public class AnnouncementDriverService {
 
      private final AnnouncementDriverRepository repository;
      private final CarRepository carRepository;
-     private final SeatRepository seatRepository;
-     private final UserRepository userRepository;
      private final RegionRepository regionRepository;
      private final CityRepository cityRepository;
      private final UserService userService;

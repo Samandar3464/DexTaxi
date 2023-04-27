@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.Familiar;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.FamiliarNotFound;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
@@ -53,9 +54,9 @@ public class AnnouncementFamiliarService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse deleteFamiliar(UUID uuid) {
-          Optional<Familiar> byId = familiarRepository.findById(uuid);
-          byId.get().setActive(false);
-          familiarRepository.save(byId.get());
+          Familiar byId = familiarRepository.findById(uuid).orElseThrow(()->new FamiliarNotFound(FAMILIAR_NOT_FOUND));
+          byId.setActive(false);
+          familiarRepository.save(byId);
           return new ApiResponse(DELETED, true);
      }
 
