@@ -39,7 +39,8 @@ public class UserResponseDto {
             Attachment attachment = user.getProfilePhoto();
             photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
         } else {
-            photoLink = downloadUrl + "avatar.png";
+//            photoLink = downloadUrl + "avatar.png";
+            photoLink = "https://sb.kaleidousercontent.com/67418/992x558/7632960ff9/people.png";
         }
         AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         return UserResponseDto.builder()
@@ -60,7 +61,8 @@ public class UserResponseDto {
             Attachment attachment = user.getProfilePhoto();
             photoLink = downloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
         } else {
-            photoLink = downloadUrl + "avatar.png";
+//            photoLink = downloadUrl + "avatar.png";
+            photoLink = "https://sb.kaleidousercontent.com/67418/992x558/7632960ff9/people.png";
         }
 
         return UserResponseDto.builder()

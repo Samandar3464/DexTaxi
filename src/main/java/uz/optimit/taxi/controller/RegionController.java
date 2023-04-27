@@ -20,13 +20,11 @@ public class RegionController {
      }
 
      @GetMapping("/getRegionList")
-//     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getRegionList() {
           return regionService.getRegionList();
      }
 
      @GetMapping("/regionById/{id}")
-//     @PreAuthorize("hasAnyRole('ADMIN','YOLOVCHI','HAYHOVCHI')")
      public ApiResponse getRegionById(@PathVariable Integer id){
           return regionService.getRegionById(id);
      }

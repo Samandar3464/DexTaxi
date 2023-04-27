@@ -61,8 +61,9 @@ public class CarService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse getByUserId(UUID userId) {
-        Car car = carRepository.findByUserId(userId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+    public ApiResponse getCar() {
+        User user = userService.checkUserExistByContext();
+        Car car = carRepository.findByUserIdAndActive(user.getId(),true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
@@ -77,7 +78,7 @@ public class CarService {
 
     public ApiResponse getCarSeat() {
         User user = userService.checkUserExistByContext();
-        Car car = carRepository.findByUserId(user.getId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        Car car = carRepository.findByUserIdAndActive(user.getId(),true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         List<SeatResponse> seatResponses = new ArrayList<>();
         car.getSeatList().forEach(seat -> seatResponses.add(SeatResponse.from(seat)));
         return new ApiResponse(seatResponses, true);

@@ -33,7 +33,11 @@ public class Notification {
 
     private boolean received;
 
+    private boolean read;
+
     private LocalDateTime createdTime;
+
+    private String receiverToken;
 
     @ManyToMany
     private List<Seat> carSeats;
@@ -45,10 +49,12 @@ public class Notification {
     public static Notification from(NotificationRequestDto notificationRequestDto ){
         return Notification.builder()
                 .receiverId(notificationRequestDto.getReceiverId())
+                .receiverToken(notificationRequestDto.getReceiverToken())
                 .announcementDriverId(notificationRequestDto.getAnnouncementDriverId())
                 .announcementPassengerId(notificationRequestDto.getAnnouncementPassengerId())
                 .createdTime(LocalDateTime.now())
                 .received(false)
+                .read(false)
                 .active(true)
                 .build();
 

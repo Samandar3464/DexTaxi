@@ -19,14 +19,12 @@ public class CityController {
           return cityService.saveCity(cityRequestDto);
      }
 
-     @GetMapping("/getList")
-//     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse getCityList(){
-          return cityService.getCityList();
+     @GetMapping("/getList/{id}")
+     public ApiResponse getCityList(@PathVariable Integer id){
+          return cityService.getCityList(id);
      }
 
      @GetMapping("/getCityById/{id}")
-//     @PreAuthorize("hasAnyRole('ADMIN')")
      public ApiResponse getCityById(@PathVariable Integer id){
           return cityService.getCityById(id);
      }
