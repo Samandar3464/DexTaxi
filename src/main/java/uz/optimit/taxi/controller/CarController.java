@@ -22,15 +22,15 @@ public class CarController {
         return carService.addCar(carRegisterRequestDto);
     }
 
-    @GetMapping("/getByUserId/{id}")
+    @GetMapping("/getCar")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
-    public ApiResponse getByUserId(@PathVariable UUID id){
-        return carService.getByUserId(id);
+    public ApiResponse getCar(){
+        return carService.getCar();
     }
 
     @GetMapping("/getCarSeats")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
-    public ApiResponse getCar(){
+    public ApiResponse getCarSeats(){
         return carService.getCarSeat();
     }
 

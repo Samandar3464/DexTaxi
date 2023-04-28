@@ -13,7 +13,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class NotificationRequestDto {
+
+    private String title;
+
+    private String body;
+
     private UUID receiverId;
-    private UUID announcementId;
+
+    private UUID announcementDriverId;
+
+    private UUID announcementPassengerId;
+
     private List<UUID> seatIdList;
 }

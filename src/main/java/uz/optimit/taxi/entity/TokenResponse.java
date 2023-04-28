@@ -12,7 +12,8 @@ public class TokenResponse {
     private String accessToken;
     private String refreshToken;
     private UserResponseDto userResponseDto;
-     public TokenResponse(String refreshToken) {
-          this.refreshToken=refreshToken;
+
+     public TokenResponse(String accessToken) {
+          this.accessToken=accessToken;
      }
 }

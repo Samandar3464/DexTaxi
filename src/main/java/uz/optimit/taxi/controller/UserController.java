@@ -7,10 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.api.ApiResponse;
-import uz.optimit.taxi.model.request.StatusDto;
-import uz.optimit.taxi.model.request.UserLoginRequestDto;
-import uz.optimit.taxi.model.request.UserRegisterDto;
-import uz.optimit.taxi.model.request.UserVerifyRequestDto;
+import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.service.UserService;
 
 import java.util.UUID;
@@ -37,8 +34,8 @@ public class UserController {
      }
 
      @PostMapping("get/token/refreshToken")
-     public ApiResponse refreshToken(@RequestBody TokenResponse token) {
-          return userService.getToken(token.getRefreshToken());
+     public ApiResponse refreshToken(@RequestBody RefreshToken token) {
+          return userService.getToken(token);
      }
 
      @GetMapping("/getById/{id}")
@@ -53,8 +50,13 @@ public class UserController {
          return userService.setStatus(statusDto);
      }
 
-     @DeleteMapping("/delete/{id}")
-     public ApiResponse deleteRegionById(@PathVariable UUID id) {
+     @PutMapping("/block/{id}")
+     public ApiResponse blockRegionById(@PathVariable UUID id) {
           return userService.deleteUserByID(id);
+     }
+
+     @PostMapping("/setFireBaseToken")
+     public ApiResponse setFireBaseToken(@RequestBody FireBaseTokenRegisterDto fireBaseTokenRegisterDto){
+          return userService.saveFireBaseToken(fireBaseTokenRegisterDto);
      }
 }

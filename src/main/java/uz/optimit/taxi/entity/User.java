@@ -54,6 +54,8 @@ public class User implements UserDetails {
 
     private boolean isBlocked;
 
+    private String fireBaseToken;
+
     @OneToOne
     private Status status;
 

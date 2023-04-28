@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.City;
-import uz.optimit.taxi.entity.Region;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

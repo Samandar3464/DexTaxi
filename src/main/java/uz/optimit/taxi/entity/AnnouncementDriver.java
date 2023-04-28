@@ -1,6 +1,5 @@
 package uz.optimit.taxi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
@@ -8,7 +7,6 @@ import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.RegionRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,16 +20,6 @@ public class AnnouncementDriver {
      @Id
      @GeneratedValue(strategy = GenerationType.AUTO)
      private UUID id;
-
-     private String info;
-
-     private boolean baggage;
-
-     private boolean active;
-
-     private LocalDateTime timeToDrive;
-
-     private LocalDateTime createdTime;
 
      private double frontSeatPrice;
 
@@ -49,12 +37,22 @@ public class AnnouncementDriver {
      @ManyToOne
      private City toCity;
 
+
      @ManyToOne
      private User user;
 
      @ManyToOne
      private Car car;
 
+     private boolean baggage;
+
+     private boolean active;
+
+     private LocalDateTime timeToDrive;
+
+     private LocalDateTime createdTime;
+
+     private String info;
 
      public static AnnouncementDriver from(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, Car car) {
           return AnnouncementDriver.builder()
@@ -73,7 +71,6 @@ public class AnnouncementDriver {
               .active(true)
               .build();
      }
-
      public static AnnouncementDriver from1(AnnouncementDriverRegisterRequestDto announcementRequestDto, User user, RegionRepository regionRepository, CityRepository cityRepository, Car car) {
           return AnnouncementDriver.builder()
               .user(user)
@@ -89,6 +86,5 @@ public class AnnouncementDriver {
               .active(true)
               .build();
      }
-
 
 }
