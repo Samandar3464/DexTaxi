@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
+import static uz.optimit.taxi.entity.Enum.Constants.PASSENGER;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -142,7 +142,7 @@ public class User implements UserDetails {
                 .verificationCodeLiveTime(LocalDateTime.now())
                 .profilePhoto(attachment)
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
-                .roles(List.of(roleRepository.findByName("YOLOVCHI"), (roleRepository.findByName("HAYDOVCHI"))))
+                .roles(List.of(roleRepository.findByName(PASSENGER)))
                 .status(status)
                 .isBlocked(true)
                 .build();

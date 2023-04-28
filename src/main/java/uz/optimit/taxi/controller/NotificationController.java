@@ -18,65 +18,65 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/addNotificationToDriver")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse createNotificationToDriver(@RequestBody NotificationRequestDto notificationRequestDto) {
         return notificationService.createNotificationForDriver(notificationRequestDto);
     }
     @PostMapping("/addNotificationToPassenger")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse createNotificationToPassenger(@RequestBody NotificationRequestDto notificationRequestDto) {
         return notificationService.createNotificationForPassenger(notificationRequestDto);
     }
 
     @GetMapping("/getDriverNotification")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse getDriverPostedNotification(){
         return notificationService.getDriverPostedNotification();
     }
 
     @GetMapping("/getPassengerNotification")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse getPassengerPostedNotification(){
         return notificationService.getPassengerPostedNotification();
     }
 
     @GetMapping("/seeNotificationForDriver")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse seeNotificationComeToDriver(){
         return notificationService.seeNotificationForDriver();
     }
 
     @GetMapping("/seeNotificationForPassenger")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse seeNotificationComeToPassenger(){
         return notificationService.seeNotificationForPassenger();
     }
     @DeleteMapping("/deleteNotification/{id}")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse deleteNotification(@PathVariable UUID id){
         return notificationService.deleteNotification(id);
     }
 
     @PostMapping("/acceptDiverRequest")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse joinDiverRequest(@RequestBody AcceptDriverRequestDto acceptDriverRequestDto){
         return notificationService.acceptDiverRequest(acceptDriverRequestDto);
     }
 
     @GetMapping("/acceptPassengerRequest/{id}")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse joinPassengerRequest(@PathVariable UUID id){
         return notificationService.acceptPassengerRequest(id);
     }
     @GetMapping("/getAcceptedNotifications/")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse getAcceptedNotifications(){
         return notificationService.getAcceptedNotification();
     }
 
 
     @GetMapping("changeToRead/{id}")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse changeToRead(@PathVariable UUID id){
        return notificationService.changeToRead(id);
     }

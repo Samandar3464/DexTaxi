@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import uz.optimit.taxi.configuration.jwtConfig.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,12 +20,14 @@ public class SecurityConfiguration {
 
     private final String[] WHITE_LINE = new String[]{
             "/**",
+//            "/api/v1/driver/**",
+//            "/api/v1/passenger/**",
             "/api/v1/user/**",
             "/static/image/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
     };
-    private final JwtAuthFilter jwtAuthFilter;
+    private final JwtFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
