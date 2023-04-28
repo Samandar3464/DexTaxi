@@ -1,11 +1,10 @@
 package uz.optimit.taxi.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import uz.optimit.taxi.entity.TokenResponse;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.service.UserService;
@@ -34,8 +33,8 @@ public class UserController {
      }
 
      @PostMapping("get/token/refreshToken")
-     public ApiResponse refreshToken(@RequestBody RefreshToken token) {
-          return userService.getToken(token);
+     public ApiResponse refreshToken(HttpServletRequest httpServletRequest) throws Exception {
+          return userService.getToken(httpServletRequest);
      }
 
      @GetMapping("/getById/{id}")

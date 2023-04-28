@@ -73,6 +73,7 @@ public class CarService {
         Car car = carRepository.findById(carId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         car.setActive(true);
         carRepository.save(car);
+        userService.addRoleDriver(List.of(car));
         return new ApiResponse(CAR_ACTIVATED, true);
     }
 

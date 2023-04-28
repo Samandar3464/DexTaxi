@@ -30,6 +30,14 @@ public class Constants {
     public static final String YOU_COME_TO_MESSAGE_FROM_DRIVER="SIZGA HAYDOVCHIDAN HABAR KELDI";
     public static final String CAR_HAS_ENOUGH_SEAT_BUT_NOT_SUIT_YOUR_CHOOSE="Siz habar jo'natgan haydovchining mashinasida yetarli joy bor lekin siz belgilangan joylar band qilindi , Agar maqul bolsa boshqa joy tanlang";
     public static final String FIREBASE_EXCEPTION="FIREBASE EXCEPTION";
+    public static final String REFRESH_TOKEN_NOT_FOUND="FIREBASE EXCEPTION";
+    public static final String REFRESH_TOKEN="RefreshToken ";
+    public static final String AUTHORITIES="authorities";
+    public static final String AUTHORIZATION="Authorization";
+    public static final String DRIVER="HAYDOVCHI";
+    public static final String PASSENGER="YOLOVCHI";
+    public static final String CODE_TIME_OUT="CODE TIME OUT";
+    public static final String SOMETHING_WRONG="SOMETHING_WRONG";
 
 
 }
