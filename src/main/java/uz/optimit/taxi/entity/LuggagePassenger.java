@@ -2,6 +2,9 @@ package uz.optimit.taxi.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.webjars.NotFoundException;
+import uz.optimit.taxi.entity.Enum.Constants;
+import uz.optimit.taxi.exception.LuggageAnnouncementNotFound;
 import uz.optimit.taxi.model.request.LuggagePassengerRequestDto;
 import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.FamiliarRepository;
@@ -21,6 +24,14 @@ public class LuggagePassenger {
      private UUID id;
 
      private double price;
+
+     private double fromLatitude;
+
+     private double fromLongitude;
+
+     private double toLongitude;
+
+     private double toLatitude;
 
      private String cargoDescription;
 
@@ -50,22 +61,30 @@ public class LuggagePassenger {
 
      @ManyToOne
      private User supplier;
+     
+     @ManyToOne
+     private User user;
 
 
-     public static LuggagePassenger from(LuggagePassengerRequestDto luggagePassengerRequestDto, RegionRepository regionRepository, CityRepository cityRepository, FamiliarRepository familiarRepository) {
+     public static LuggagePassenger from(LuggagePassengerRequestDto luggagePassengerRequestDto, RegionRepository regionRepository, CityRepository cityRepository, FamiliarRepository familiarRepository,User user) {
           return LuggagePassenger
               .builder()
               .active(true)
+              .user(user)
               .createdTime(LocalDateTime.now())
               .price(luggagePassengerRequestDto.getPrice())
               .timeToLeave(luggagePassengerRequestDto.getTimeToLeave())
               .cargoDescription(luggagePassengerRequestDto.getCargoDescription())
-              .fromRegion(regionRepository.findById(luggagePassengerRequestDto.getFromRegionId()).get())
-              .toRegion(regionRepository.findById(luggagePassengerRequestDto.getToRegionId()).get())
-              .fromCity(cityRepository.findById(luggagePassengerRequestDto.getFromCityId()).get())
-              .toCity(cityRepository.findById(luggagePassengerRequestDto.getToCityId()).get())
-              .sender(familiarRepository.findById(luggagePassengerRequestDto.getSenderId()).get())
-              .receiver(familiarRepository.findById(luggagePassengerRequestDto.getReceiverId()).get())
+              .fromLatitude(luggagePassengerRequestDto.getFromLatitude())
+              .fromLongitude(luggagePassengerRequestDto.getFromLongitude())
+              .toLatitude(luggagePassengerRequestDto.getToLatitude())
+              .toLongitude(luggagePassengerRequestDto.getToLongitude())
+              .fromRegion(regionRepository.findById(luggagePassengerRequestDto.getFromRegionId()).orElseThrow(()-> new NotFoundException(Constants.REGION_NOT_FOUND)))
+              .toRegion(regionRepository.findById(luggagePassengerRequestDto.getToRegionId()).orElseThrow(()-> new NotFoundException(Constants.REGION_NOT_FOUND)))
+              .fromCity(cityRepository.findById(luggagePassengerRequestDto.getFromCityId()).orElseThrow(()-> new NotFoundException(Constants.CITY_NOT_FOUND)))
+              .toCity(cityRepository.findById(luggagePassengerRequestDto.getToCityId()).orElseThrow(()-> new NotFoundException(Constants.CITY_NOT_FOUND)))
+              .sender(familiarRepository.findById(luggagePassengerRequestDto.getSenderId()).orElseThrow(()-> new LuggageAnnouncementNotFound(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_NOT_FOUND)))
+              .receiver(familiarRepository.findById(luggagePassengerRequestDto.getReceiverId()).orElseThrow(()-> new LuggageAnnouncementNotFound(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_NOT_FOUND)))
               .build();
      }
 }

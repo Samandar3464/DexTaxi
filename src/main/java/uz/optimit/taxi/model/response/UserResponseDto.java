@@ -55,7 +55,7 @@ public class UserResponseDto {
                 .build();
     }
 
-    public static UserResponseDto fromDriver(User user, String downloadUrl) {
+    public static UserResponseDto fromAnnouncement(User user, String downloadUrl) {
         String photoLink = null;
         if (user.getProfilePhoto() != null) {
             Attachment attachment = user.getProfilePhoto();
@@ -75,4 +75,5 @@ public class UserResponseDto {
                 .profilePhotoUrl(photoLink)
                 .build();
     }
+
 }

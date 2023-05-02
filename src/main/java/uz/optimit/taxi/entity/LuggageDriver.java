@@ -54,6 +54,8 @@ public class LuggageDriver {
      @JsonBackReference
      private User supplier;
 
+     @ManyToOne
+     private User user;
 
      public static LuggageDriver from(LuggageDriverRequestDto luggageDriverRequestDto, RegionRepository regionRepository, CityRepository cityRepository, User user) {
           return LuggageDriver
@@ -66,8 +68,8 @@ public class LuggageDriver {
               .fromCity(cityRepository.findById(luggageDriverRequestDto.getFromCityId()).get())
               .toCity(cityRepository.findById(luggageDriverRequestDto.getToCityId()).get())
               .supplier(user)
+              .user(user)
               .active(true)
               .build();
      }
-
 }

@@ -22,11 +22,19 @@ public class CarController {
         return carService.addCar(carRegisterRequestDto);
     }
 
-    @GetMapping("/getCar")
+    @GetMapping("/getCarById/{id}")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
-    public ApiResponse getCar(){
-        return carService.getCar();
+    public ApiResponse getCarById(@PathVariable UUID id){
+        return carService.getCarById(id);
     }
+
+    @GetMapping("/getCarByUserId/{id}")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
+    public ApiResponse getCarByUserId(@PathVariable UUID id){
+        return carService.getByUserId(id);
+    }
+
+
 
     @GetMapping("/getCarSeats")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")

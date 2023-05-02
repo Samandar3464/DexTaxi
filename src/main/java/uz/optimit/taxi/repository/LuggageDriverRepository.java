@@ -14,4 +14,5 @@ public interface LuggageDriverRepository extends JpaRepository<LuggageDriver, UU
      List<LuggageDriver> findAllByFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToLeaveBetweenOrderByCreatedTimeDesc(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, LocalDateTime timeToLeave, LocalDateTime timeToLeave2);
      List<LuggageDriver> findAllByFromRegionIdAndToRegionIdAndTimeToLeaveBetweenOrderByCreatedTimeDesc(Integer fromRegion_id, Integer toRegion_id, LocalDateTime timeToLeave, LocalDateTime timeToLeave2);
      Optional<LuggageDriver> findByIdAndActive(UUID id,boolean active);
+     Optional<LuggageDriver> findByUserIdAndActive(UUID id,boolean active);
 }

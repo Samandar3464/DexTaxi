@@ -39,7 +39,7 @@ public class LuggageDriverResponse {
               .toRegion(RegionResponseDto.from(luggageDriver.getToRegion()))
               .fromCity(luggageDriver.getFromCity())
               .toCity(luggageDriver.getToCity())
-              .supplier(UserResponseDto.fromDriver(luggageDriver.getSupplier(),url))
+              .supplier(UserResponseDto.fromAnnouncement(luggageDriver.getSupplier(),url))
               .build();
      }
 }

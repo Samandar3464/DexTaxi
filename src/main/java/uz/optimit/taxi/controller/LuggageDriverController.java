@@ -32,19 +32,23 @@ public class LuggageDriverController {
      }
 
      @GetMapping("/getListByFilter/{fromRegionId}/{toRegionId}/{fromCityId}/{toCityId}/{timeToLeave}")
-     public ApiResponse getListByFilter(@PathVariable Integer fromRegionId,
-                                        @PathVariable Integer toRegionId,
-                                        @PathVariable Integer fromCityId,
-                                        @PathVariable Integer toCityId,
-                                        @PathVariable String timeToLeave
+     public ApiResponse getListByFilter
+         (
+             @PathVariable Integer fromRegionId,
+             @PathVariable Integer toRegionId,
+             @PathVariable Integer fromCityId,
+             @PathVariable Integer toCityId,
+             @PathVariable String timeToLeave
      ){
           return luggageDriverService.getByFilter(fromRegionId,toRegionId,fromCityId,toCityId,timeToLeave);
      }
 
      @GetMapping("/getListByFilter/{fromRegionId}/{toRegionId}/{timeToLeave}")
-     public ApiResponse getByFilter(@PathVariable Integer fromRegionId,
-                                    @PathVariable Integer toRegionId,
-                                    @PathVariable String timeToLeave
+     public ApiResponse getByFilter
+         (
+             @PathVariable Integer fromRegionId,
+             @PathVariable Integer toRegionId,
+             @PathVariable String timeToLeave
      ){
           return luggageDriverService.getByFilter(fromRegionId,toRegionId,timeToLeave);
      }

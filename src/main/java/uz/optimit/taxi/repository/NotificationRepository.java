@@ -9,16 +9,11 @@ import java.util.UUID;
 
 public interface NotificationRepository extends JpaRepository<Notification, UUID> {
 
-    Optional<Notification> findByIdAndActive(UUID id, boolean active);
-
-    List<Notification> findAllBySenderIdAndActiveAndReceived(UUID senderId, boolean active, boolean received);
-
-    List<Notification> findAllByReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(UUID receiverId, boolean active, boolean received);
-
-    Optional<Notification> findBySenderIdAndReceiverIdAndActiveAndReceived(UUID senderId, UUID receiverId, boolean active, boolean received);
-
-    Optional<Notification> findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(UUID receiverId);
-
-    List<Notification> findByAnnouncementDriverIdAndActiveAndReceived(UUID announcementId, boolean active, boolean received);
-
+     Optional<Notification> findByIdAndActive(UUID id, boolean active);
+     List<Notification> findAllBySenderIdAndActiveAndReceived(UUID senderId, boolean active, boolean received);
+     List<Notification> findAllByReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(UUID receiverId, boolean active, boolean received);
+     Optional<Notification> findBySenderIdAndReceiverIdAndActiveAndReceived(UUID senderId, UUID receiverId, boolean active, boolean received);
+     Optional<Notification> findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(UUID receiverId);
+     List<Notification> findByAnnouncementDriverIdAndActiveAndReceived(UUID announcementId, boolean active, boolean received);
+     List<Notification> findAllByUserIdAndActiveAndReceived(UUID id, boolean b, boolean b1);
 }

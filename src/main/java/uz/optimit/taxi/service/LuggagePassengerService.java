@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.Enum.Constants;
 import uz.optimit.taxi.entity.LuggagePassenger;
+import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.FamiliarNotFound;
 import uz.optimit.taxi.exception.LuggageAnnouncementAlreadyExist;
@@ -32,18 +33,20 @@ public class LuggagePassengerService {
      private final FamiliarRepository familiarRepository;
      private final RegionRepository regionRepository;
      private final CityRepository cityRepository;
+     private final UserService userService;
 
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(LuggagePassengerRequestDto l) {
-
-          Optional<LuggagePassenger> luggagePassenger = luggagePassengerRepository.findBySenderIdAndReceiverIdAndActive(l.getSenderId(), l.getReceiverId(), true);
+          User user = userService.checkUserExistByContext();
+          Optional<LuggagePassenger> luggagePassenger = luggagePassengerRepository.
+              findBySenderIdAndReceiverIdAndActive(l.getSenderId(), l.getReceiverId(), true);
           if (luggagePassenger.isPresent()) {
                throw  new LuggageAnnouncementAlreadyExist(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_ALREADY_EXIST);
           }
           if (familiarRepository.findById(l.getReceiverId()).isEmpty() || familiarRepository.findById(l.getSenderId()).isEmpty()) {
                throw new FamiliarNotFound(Constants.FAMILIAR_NOT_FOUND);
           }
-          luggagePassengerRepository.save(LuggagePassenger.from(l, regionRepository, cityRepository, familiarRepository));
+          luggagePassengerRepository.save(LuggagePassenger.from(l, regionRepository, cityRepository, familiarRepository,user));
           return new ApiResponse(Constants.SUCCESSFULLY, true);
      }
 

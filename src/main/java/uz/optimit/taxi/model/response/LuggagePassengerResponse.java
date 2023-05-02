@@ -25,6 +25,14 @@ public class LuggagePassengerResponse {
 
      private RegionResponseDto toRegion;
 
+     private double toLatitude;
+
+     private double toLongitude;
+
+     private double fromLatitude;
+
+     private double fromLongitude;
+
      private City fromCity;
 
      private City toCity;
@@ -40,6 +48,10 @@ public class LuggagePassengerResponse {
               .price(luggagePassenger.getPrice())
               .cargoDescription(luggagePassenger.getCargoDescription())
               .timeToLeave(luggagePassenger.getTimeToLeave())
+              .fromLatitude(luggagePassenger.getFromLatitude())
+              .fromLongitude(luggagePassenger.getFromLongitude())
+              .toLatitude(luggagePassenger.getToLatitude())
+              .toLongitude(luggagePassenger.getToLongitude())
               .fromRegion(RegionResponseDto.from(luggagePassenger.getFromRegion()))
               .toRegion(RegionResponseDto.from(luggagePassenger.getToRegion()))
               .fromCity(luggagePassenger.getFromCity())

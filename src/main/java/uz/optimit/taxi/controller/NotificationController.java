@@ -3,6 +3,7 @@ package uz.optimit.taxi.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AcceptDriverRequestDto;
 import uz.optimit.taxi.model.request.NotificationRequestDto;
@@ -51,6 +52,7 @@ public class NotificationController {
     public ApiResponse seeNotificationComeToPassenger(){
         return notificationService.seeNotificationForPassenger();
     }
+
     @DeleteMapping("/deleteNotification/{id}")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
     public ApiResponse deleteNotification(@PathVariable UUID id){
@@ -68,13 +70,13 @@ public class NotificationController {
     public ApiResponse joinPassengerRequest(@PathVariable UUID id){
         return notificationService.acceptPassengerRequest(id);
     }
+
     @GetMapping("/getAcceptedNotifications/")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
     public ApiResponse getAcceptedNotifications(){
         return notificationService.getAcceptedNotification();
     }
-
-
+    
     @GetMapping("changeToRead/{id}")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI')")
     public ApiResponse changeToRead(@PathVariable UUID id){

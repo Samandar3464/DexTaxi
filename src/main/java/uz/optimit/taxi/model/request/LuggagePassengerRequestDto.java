@@ -1,14 +1,9 @@
 package uz.optimit.taxi.model.request;
 
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.optimit.taxi.entity.AnnouncementDriver;
-import uz.optimit.taxi.entity.City;
-import uz.optimit.taxi.entity.Familiar;
-import uz.optimit.taxi.entity.Region;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,6 +17,14 @@ public class LuggagePassengerRequestDto {
      private double price;
 
      private String cargoDescription;
+
+     private double fromLatitude;
+
+     private double fromLongitude;
+
+     private double toLongitude;
+
+     private double toLatitude;
 
      private LocalDateTime timeToLeave;
 
