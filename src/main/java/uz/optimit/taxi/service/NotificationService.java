@@ -44,7 +44,7 @@ public class NotificationService {
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_PASSENGER);
 
         Notification notification = from(notificationRequestDto, user);
-        UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository);
+        UserResponseDto userResponseDto = UserResponseDto.from(user, attachmentService.attachDownloadUrl, announcementPassengerRepository);
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto, notification.getReceiverToken());
         notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
@@ -64,7 +64,8 @@ public class NotificationService {
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_DRIVER);
 
         Notification notification = from(notificationRequestDto, user);
-        UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
+        UserResponseDto userResponseDto = UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl);
+//        UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForPassenger(notificationRequestDto, notification.getReceiverToken());
         notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
@@ -302,8 +303,7 @@ public class NotificationService {
     private Map<String ,String> getData(UserResponseDto userResponseDto){
         Map<String,String> data= new HashMap<>();
         data.put("id", userResponseDto.getId().toString());
-        data.put("name", userResponseDto.getName());
-        data.put("surname", userResponseDto.getSurname());
+        data.put("name", userResponseDto.getFullName());
         data.put("phone", userResponseDto.getPhone());
         data.put("age", String.valueOf(userResponseDto.getAge()));
         data.put("status", String.valueOf(userResponseDto.getStatus()));
