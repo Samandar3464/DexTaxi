@@ -78,7 +78,8 @@ public class CommonExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse handleAccessTokenTimeExceeded(Exception e) {
         return new ApiResponse(
-                TOKEN_TIME_OUT
+//
+                e.getMessage()
                 , false
                 , null);
     }
@@ -124,6 +125,22 @@ public class CommonExceptionHandler {
     public ApiResponse notEnoughNotException(FirebaseMessagingException e) {
         return new ApiResponse(
                 FIREBASE_EXCEPTION
+                , false
+                , null);
+    }
+    @ExceptionHandler(CarNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse notEnoughNotException(CarNotFound e) {
+        return new ApiResponse(
+                CAR_NOT_FOUND
+                , false
+                , null);
+    }
+    @ExceptionHandler(SmsServiceBroken.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse notEnoughNotException(SmsServiceBroken e) {
+        return new ApiResponse(
+                CAN_NOT_TAKE_SMS_SENDING_SERVICE_TOKEN
                 , false
                 , null);
     }

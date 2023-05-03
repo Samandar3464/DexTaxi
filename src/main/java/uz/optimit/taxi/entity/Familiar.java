@@ -26,7 +26,7 @@ public class Familiar {
     @NotBlank
     private String name;
 
-
+    @NotBlank
     @Size(min = 9, max = 9)
     private String phone;
 

@@ -24,9 +24,10 @@ import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.StatusRepository;
 import uz.optimit.taxi.repository.UserRepository;
+import uz.optimit.taxi.entity.CountMassage;
+import uz.optimit.taxi.repository.CountMassageRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,15 +47,24 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final FamiliarRepository familiarRepository;
     private final StatusRepository statusRepository;
+    private final SmsService service;
+    private final CountMassageRepository countMassageRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Transactional(rollbackFor ={Exception.class})
+    @Transactional(rollbackFor = {Exception.class})
     public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
-       boolean byPhone = userRepository.existsByPhone(userRegisterDto.getPhone());
+        boolean byPhone = userRepository.existsByPhone(userRegisterDto.getPhone());
         if (byPhone) {
             throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
+//        service.sendSms(SmsModel.builder()
+//                .mobile_phone(userRegisterDto.getPhone())
+//                .message("DexTaxi , Yo'linggiz hayirli bo'lsin. Tasdiqlash kodi: " + verificationCode)
+//                .from(4546)
+//                .callback_url("http://0000.uz/test.php")
+//                .build());
+//        countMassage();
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
@@ -62,7 +72,7 @@ public class UserService {
         familiarRepository.save(Familiar.fromUser(save));
         String access = jwtGenerate.generateAccessToken(user);
         String refresh = jwtGenerate.generateRefreshToken(user);
-        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true, new TokenResponse(access, refresh, UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl)));
+        return new ApiResponse(SUCCESSFULLY, true, new TokenResponse(access, refresh, UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl)));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -96,7 +106,7 @@ public class UserService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getToken(HttpServletRequest request) throws Exception {
         String accessTokenByRefresh = jwtGenerate.checkRefreshTokenValidAndGetAccessToken(request);
-        return new ApiResponse("NEW ACCESS TOKEN ",true,new TokenResponse(accessTokenByRefresh));
+        return new ApiResponse("NEW ACCESS TOKEN ", true, new TokenResponse(accessTokenByRefresh));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -165,14 +175,25 @@ public class UserService {
         return new ApiResponse(SUCCESSFULLY, true);
     }
 
-    public void addRoleDriver(List<Car> carList){
+    public void addRoleDriver(List<Car> carList) {
         User user = userRepository.findByCarsIn(carList).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         List<Role> roles = user.getRoles();
         Role byName = roleRepository.findByName(DRIVER);
-        if (!roles.contains(byName)){
+        if (!roles.contains(byName)) {
             roles.add((roleRepository.findByName(DRIVER)));
         }
         userRepository.save(user);
+    }
+
+    private void countMassage() {
+        List<CountMassage> all = countMassageRepository.findAll();
+        if (all.isEmpty()) {
+            countMassageRepository.save(CountMassage.builder().count(1L).build());
+        } else {
+            CountMassage countMassage = all.get(0);
+            countMassage.setCount(countMassage.getCount() + 1);
+            countMassageRepository.save(countMassage);
+        }
     }
 }
 

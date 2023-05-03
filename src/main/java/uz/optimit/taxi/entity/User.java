@@ -54,7 +54,7 @@ public class User implements UserDetails {
 
     private String fireBaseToken;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Status status;
 
     private Integer verificationCode;
@@ -64,10 +64,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Attachment profilePhoto;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER ,cascade = CascadeType.ALL)
     private List<Role> roles;
 
 //    @JsonIgnore
@@ -75,18 +75,18 @@ public class User implements UserDetails {
     private List<Car> cars;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<AnnouncementPassenger> announcementUser;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<AnnouncementDriver> announcementDrivers;
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Familiar> passengersList;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Notification> notifications;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

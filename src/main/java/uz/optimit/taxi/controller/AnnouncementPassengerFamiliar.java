@@ -1,5 +1,6 @@
 package uz.optimit.taxi.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class AnnouncementPassengerFamiliar {
 
      @PostMapping("/add")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse add(@RequestBody FamiliarRegisterRequestDto  familiarRegisterRequestDto) {
+     public ApiResponse add(@RequestBody @Valid FamiliarRegisterRequestDto  familiarRegisterRequestDto) {
          return announcementFamiliarService.addForFamiliar(familiarRegisterRequestDto);
      }
 
