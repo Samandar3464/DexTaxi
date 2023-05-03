@@ -32,6 +32,19 @@ public class UserController {
           return userService.verify(userVerifyRequestDto);
      }
 
+     @PostMapping("/changePassword")
+     public ApiResponse changePassword(
+         @RequestParam String number,
+         @RequestParam String password
+     ) {
+          return userService.changePassword(number,password);
+     }
+
+     @PostMapping("/forgetPassword")
+     public ApiResponse forgetPassword(@RequestBody String number) {
+          return userService.forgetPassword(number);
+     }
+
      @PostMapping("get/token/refreshToken")
      public ApiResponse refreshToken(HttpServletRequest httpServletRequest) throws Exception {
           return userService.getToken(httpServletRequest);

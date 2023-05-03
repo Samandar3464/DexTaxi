@@ -11,7 +11,6 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
 import uz.optimit.taxi.service.AnnouncementDriverService;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
