@@ -24,7 +24,8 @@ import static uz.optimit.taxi.entity.Enum.Constants.ANNOUNCEMENT_NOT_FOUND;
 @AllArgsConstructor
 public class UserResponseDto {
     private UUID id;
-    private String fullName;
+    private String name;
+    private String surname;
     private String phone;
     private int age;
     private double status;
@@ -44,8 +45,9 @@ public class UserResponseDto {
         AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         return UserResponseDto.builder()
                 .id(user.getId())
-                .fullName(user.getFullName())
+                .name(user.getName())
                 .passengersList(announcementPassenger.getPassengersList())
+                .surname(user.getSurname())
                 .phone(user.getPhone())
                 .age(LocalDate.now().getYear() - user.getBirthDate().getYear())
                 .gender(user.getGender())
@@ -65,7 +67,8 @@ public class UserResponseDto {
 
         return UserResponseDto.builder()
                 .id(user.getId())
-                .fullName(user.getFullName())
+                .name(user.getName())
+                .surname(user.getSurname())
                 .phone(user.getPhone())
                 .age(LocalDate.now().getYear() - user.getBirthDate().getYear())
                 .gender(user.getGender())

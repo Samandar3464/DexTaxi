@@ -19,7 +19,9 @@ public class UserRegisterDto {
 
     private MultipartFile profilePhoto;
 
-    private String fullName;
+    private String name;
+
+    private String surname;
 
     @NotBlank
     @Size(min = 9, max = 9)

@@ -60,7 +60,7 @@ public class Familiar {
     public static Familiar fromUser(User user) {
         return Familiar.builder()
                 .id(user.getId())
-                .name(user.getFullName())
+                .name(user.getName())
                 .phone(user.getPhone())
                 .gender(user.getGender())
                 .active(true)
