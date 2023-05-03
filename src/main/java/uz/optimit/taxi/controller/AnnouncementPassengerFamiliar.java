@@ -20,8 +20,8 @@ public class AnnouncementPassengerFamiliar {
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse add(@RequestBody FamiliarRegisterRequestDto  familiarRegisterRequestDto) {
          return announcementFamiliarService.addForFamiliar(familiarRegisterRequestDto);
-
      }
+
      @GetMapping("/getFamiliarList")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse getList() {

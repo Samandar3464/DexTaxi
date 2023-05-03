@@ -2,7 +2,8 @@ package uz.optimit.taxi.exception;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.optimit.taxi.entity.api.ApiResponse;
 
-import javax.naming.AuthenticationException;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -53,6 +54,14 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
+    @ExceptionHandler(RecordAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
+    public ApiResponse announcementAvailable(AnnouncementAvailable e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -62,29 +71,22 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
+
     @ExceptionHandler(UserAlreadyExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse handleUserNotFoundException(UserAlreadyExistException e) {
         return new ApiResponse(
-            USER_ALREADY_EXIST
-            , false
-            , null);
-    }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiResponse handleAccessTimeExceededException(Exception e) {
-        return new ApiResponse(
-                TOKEN_TIME_OUT
+                USER_ALREADY_EXIST
                 , false
                 , null);
     }
 
-    @ExceptionHandler(TimeExceededException.class)
+    @ExceptionHandler(value = {ExpiredJwtException.class, SignatureException.class,
+            UnsupportedJwtException.class, MalformedJwtException.class, IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiResponse handleAccessTokenTimeExceeded(TimeExceededException e) {
+    public ApiResponse handleAccessTokenTimeExceeded(Exception e) {
         return new ApiResponse(
-                e.getMessage()
+                TOKEN_TIME_OUT
                 , false
                 , null);
     }
@@ -115,6 +117,7 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
+
     @ExceptionHandler(AnnouncementAlreadyExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse notEnoughNotException(AnnouncementAlreadyExistException e) {
@@ -123,6 +126,7 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
+
     @ExceptionHandler(FirebaseMessagingException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse notEnoughNotException(FirebaseMessagingException e) {

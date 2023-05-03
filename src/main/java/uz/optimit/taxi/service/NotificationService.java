@@ -33,7 +33,6 @@ public class NotificationService {
     private final SeatRepository seatRepository;
     private final AttachmentService attachmentService;
     private final FireBaseMessagingService fireBaseMessagingService;
-
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse createNotificationForDriver(NotificationRequestDto notificationRequestDto) {
         User user = userService.checkUserExistByContext();
@@ -42,17 +41,17 @@ public class NotificationService {
         List<AnnouncementPassenger> allByUserIdAndActive = announcementPassengerRepository.findAllByUserIdAndActive(user.getId(), true);
         AnnouncementPassenger announcementPassenger = allByUserIdAndActive.get(0);
         notificationRequestDto.setAnnouncementPassengerId(announcementPassenger.getId());
-        notificationRequestDto.setTitle(YOU_HAVE_RECEIVED_A_MESSAGE_FROM_A_PASSENGER);
-
+        notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_PASSENGER);
 
         Notification notification = from(notificationRequestDto, user);
-        UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository);
+        UserResponseDto userResponseDto = UserResponseDto.from(user, attachmentService.attachDownloadUrl, announcementPassengerRepository);
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto, notification.getReceiverToken());
         notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
         return new ApiResponse(SUCCESSFULLY, true);
     }
+
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse createNotificationForPassenger(NotificationRequestDto notificationRequestDto) {
@@ -62,10 +61,11 @@ public class NotificationService {
         List<AnnouncementDriver> byUserIdAndActive = announcementDriverRepository.findAllByUserIdAndActive(user.getId(), true);
         AnnouncementDriver announcementDriver = byUserIdAndActive.get(0);
         notificationRequestDto.setAnnouncementDriverId(announcementDriver.getId());
-        notificationRequestDto.setTitle(YOU_HAVE_RECEIVED_A_MESSAGE_FROM_A_DRIVER);
+        notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_DRIVER);
 
         Notification notification = from(notificationRequestDto, user);
-        UserResponseDto userResponseDto = UserResponseDto.fromAnnouncement(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
+        UserResponseDto userResponseDto = UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl);
+//        UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForPassenger(notificationRequestDto, notification.getReceiverToken());
         notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
@@ -112,11 +112,12 @@ public class NotificationService {
                 .findAllByReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(user.getId(), true, false);
 
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
-        notifications.forEach(obj -> userResponseDtoList.add(UserResponseDto.from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository)));
+        notifications.forEach(obj -> userResponseDtoList.add(
+                UserResponseDto.
+                        from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository)));
 
         return new ApiResponse(userResponseDtoList, true);
     }
-
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse seeNotificationForPassenger() {
         User user = userService.checkUserExistByContext();
@@ -127,7 +128,7 @@ public class NotificationService {
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         notifications.forEach(obj -> userResponseDtoList.add(
                 UserResponseDto.
-                    fromAnnouncement(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
+                        fromDriver(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
 
         return new ApiResponse(userResponseDtoList, true);
     }
@@ -208,13 +209,12 @@ public class NotificationService {
                 Notification notification = reCreateNotification(passenger.getId(), announcementDriver.getId(), driver.getId(), announcementPassenger.getId(), activeSeats,passenger.getFireBaseToken());
                 notificationRepository.save(notification);
 
-                UserResponseDto userResponseDto = UserResponseDto.fromAnnouncement(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
+                UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
                 NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.reCreate(passenger.getFireBaseToken());
                 notificationMessageResponse.setData(getData(userResponseDto));
                 fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
                 return new ApiResponse(HttpStatus.CREATED, true);
-//                throw new NotEnoughSeat(NOT_ENOUGH_SEAT);
             }
         }
         if (countActiveSeat == 0) {
@@ -303,8 +303,7 @@ public class NotificationService {
     private Map<String ,String> getData(UserResponseDto userResponseDto){
         Map<String,String> data= new HashMap<>();
         data.put("id", userResponseDto.getId().toString());
-        data.put("name", userResponseDto.getName());
-        data.put("surname", userResponseDto.getSurname());
+        data.put("name", userResponseDto.getFullName());
         data.put("phone", userResponseDto.getPhone());
         data.put("age", String.valueOf(userResponseDto.getAge()));
         data.put("status", String.valueOf(userResponseDto.getStatus()));

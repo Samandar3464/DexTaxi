@@ -30,12 +30,21 @@ public class Constants {
     public static final String YOU_HAVE_RECEIVED_A_MESSAGE_FROM_A_DRIVER ="SIZGA HAYDOVCHIDAN HABAR KELDI";
     public static final String CAR_HAS_ENOUGH_SEAT_BUT_NOT_SUIT_YOUR_CHOOSE="Siz habar jo'natgan haydovchining mashinasida yetarli joy bor lekin siz belgilangan joylar band qilindi , Agar maqul bolsa boshqa joy tanlang";
     public static final String FIREBASE_EXCEPTION="FIREBASE EXCEPTION";
+    public static final String REFRESH_TOKEN_NOT_FOUND="FIREBASE EXCEPTION";
+    public static final String REFRESH_TOKEN="RefreshToken ";
+    public static final String AUTHORITIES="authorities";
+    public static final String AUTHORIZATION="Authorization";
+    public static final String DRIVER="HAYDOVCHI";
+    public static final String PASSENGER="YOLOVCHI";
+    public static final String ANNOUNCEMENT_AVAILABLE="SIZDA ACTIVE E'LONLAR MAVJUD !!!";
+    public static final String CODE_TIME_OUT="CODE TIME OUT";
+    public static final String FAMILIAR_NOT_FOUND="FAMILIAR_NOT_FOUND";
+    public static final String SOMETHING_WRONG="SOMETHING_WRONG";
 
     public static final String LUGGAGE_PASSENGER_ANNOUNCEMENT_ALREADY_EXIST=" LUGGAGE  PASSENGER ANNOUNCEMENT ALREADY EXIST";
     public static final String LUGGAGE_DRIVER_ANNOUNCEMENT_ALREADY_EXIST=" LUGGAGE  DRIVER ANNOUNCEMENT ALREADY EXIST";
     public static final String LUGGAGE_DRIVER_ANNOUNCEMENT_NOT_FOUND=" LUGGAGE  DRIVER ANNOUNCEMENT NOT FOUND";
     public static final String LUGGAGE_PASSENGER_ANNOUNCEMENT_NOT_FOUND=" LUGGAGE  PASSENGER ANNOUNCEMENT NOT FOUND";
-    public static final String FAMILIAR_NOT_FOUND="FAMILIAR NOT FOUND";
 
 
 }

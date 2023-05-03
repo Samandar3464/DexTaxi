@@ -17,7 +17,7 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
+    @PreAuthorize("hasAnyRole('YOLOVCHI','ADMIN')")
     public ApiResponse addCar(@ModelAttribute  @Validated  CarRegisterRequestDto carRegisterRequestDto) {
         return carService.addCar(carRegisterRequestDto);
     }
