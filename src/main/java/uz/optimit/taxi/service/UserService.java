@@ -66,6 +66,23 @@ public class UserService {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    public ApiResponse forgetPassword(String number){
+        Integer integer = verificationCodeGenerator();
+        User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        System.out.println("Verification code: "+integer);
+        return new ApiResponse("Verification code: "+integer,true,user);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse changePassword(String number,String password){
+        User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        return new ApiResponse(user,true);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse login(UserLoginRequestDto userLoginRequestDto) {
         try {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
