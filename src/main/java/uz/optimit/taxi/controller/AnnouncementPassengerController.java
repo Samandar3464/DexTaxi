@@ -51,7 +51,7 @@ public class AnnouncementPassengerController {
          @PathVariable Integer toRegion,
          @PathVariable String timeToTravel
      ) {
-          return announcementPassengerService.findFilter(fromRegion, toRegion, timeToTravel+" 00:01",timeToTravel+" 23:59");
+          return announcementPassengerService.findFilter(timeToTravel+" 23:59", toRegion, fromRegion, timeToTravel+" 00:01");
      }
 
      @GetMapping("/getPassengerAnnouncementHistory")
