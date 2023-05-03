@@ -8,6 +8,7 @@ import uz.optimit.taxi.entity.Familiar;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
+import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
 
@@ -21,9 +22,8 @@ import static uz.optimit.taxi.entity.Enum.Constants.*;
 @RequiredArgsConstructor
 public class AnnouncementFamiliarService {
 
-     private final FamiliarRepository familiarRepository;
-
      private final UserService userService;
+     private final FamiliarRepository familiarRepository;
 
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse addForFamiliar(FamiliarRegisterRequestDto familiarRegisterRequestDto) {
@@ -53,9 +53,9 @@ public class AnnouncementFamiliarService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse deleteFamiliar(UUID uuid) {
-          Optional<Familiar> byId = familiarRepository.findById(uuid);
-          byId.get().setActive(false);
-          familiarRepository.save(byId.get());
+          Familiar familiar = familiarRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException(FAMILIAR_NOT_FOUND));
+          familiar.setActive(false);
+          familiarRepository.save(familiar);
           return new ApiResponse(DELETED, true);
      }
 

@@ -54,6 +54,14 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
+    @ExceptionHandler(RecordAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
+    public ApiResponse announcementAvailable(AnnouncementAvailable e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
