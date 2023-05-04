@@ -37,7 +37,8 @@ public class AnnouncementDriverService {
     private final SeatService seatService;
     private final NotificationRepository notificationRepository;
     private final AnnouncementPassengerRepository announcementPassengerRepository;
-     private final CityRepository cityRepository;
+    private final CityRepository cityRepository;
+
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
           User user = userService.checkUserExistByContext();
