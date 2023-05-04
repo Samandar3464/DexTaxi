@@ -26,16 +26,11 @@ public class CityService {
 
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse saveCity(CityRequestDto cityRequestDto) {
-          Optional<City> byName = cityRepository.findByNameAndRegionId(cityRequestDto.getName(),cityRequestDto.getRegionId());
-          if (byName.isPresent()) {
+          if (cityRepository.findByNameAndRegionId(cityRequestDto.getName(),cityRequestDto.getRegionId()).isPresent()) {
                throw new RecordAlreadyExistException(CITY_ALREADY_EXIST);
           }
-
-          City city = City.builder()
-              .name(cityRequestDto.getName()).region(repository.findById(cityRequestDto.getRegionId()).orElseThrow(()->new RecordNotFoundException(REGION_NOT_FOUND))).build();
-
-          City save = cityRepository.save(city);
-          return new ApiResponse(SUCCESSFULLY, true,save);
+          City city = City.builder().name(cityRequestDto.getName()).region(repository.findById(cityRequestDto.getRegionId()).orElseThrow(()->new RecordNotFoundException(REGION_NOT_FOUND))).build();
+          return new ApiResponse(SUCCESSFULLY, true,cityRepository.save(city));
      }
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getCityList(Integer id) {

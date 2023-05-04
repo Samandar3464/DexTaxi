@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,22 +37,21 @@ public class LuggagePassengerService {
      @ResponseStatus(HttpStatus.CREATED)
      public ApiResponse add(LuggagePassengerRequestDto l) {
           User user = userService.checkUserExistByContext();
-          Optional<LuggagePassenger> luggagePassenger = luggagePassengerRepository.
-              findBySenderIdAndReceiverIdAndActive(l.getSenderId(), l.getReceiverId(), true);
-          if (luggagePassenger.isPresent()) {
-               throw  new LuggageAnnouncementAlreadyExist(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_ALREADY_EXIST);
+          if (luggagePassengerRepository.
+              findBySenderIdAndReceiverIdAndActive(l.getSenderId(), l.getReceiverId(), true).isPresent()) {
+               throw new LuggageAnnouncementAlreadyExist(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_ALREADY_EXIST);
           }
           if (familiarRepository.findById(l.getReceiverId()).isEmpty() || familiarRepository.findById(l.getSenderId()).isEmpty()) {
                throw new FamiliarNotFound(Constants.FAMILIAR_NOT_FOUND);
           }
-          luggagePassengerRepository.save(LuggagePassenger.from(l, regionRepository, cityRepository, familiarRepository,user));
+          luggagePassengerRepository.save(LuggagePassenger.from(l, regionRepository, cityRepository, familiarRepository, user));
           return new ApiResponse(Constants.SUCCESSFULLY, true);
      }
 
      @ResponseStatus(HttpStatus.FOUND)
      public ApiResponse getById(UUID id) {
           LuggagePassenger byId = luggagePassengerRepository.findByIdAndActive(id, true)
-              .orElseThrow(()->new LuggageAnnouncementNotFound(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_NOT_FOUND));
+              .orElseThrow(() -> new LuggageAnnouncementNotFound(Constants.LUGGAGE_PASSENGER_ANNOUNCEMENT_NOT_FOUND));
           return new ApiResponse(LuggagePassengerResponse.from(byId), true);
      }
 

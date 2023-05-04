@@ -24,10 +24,8 @@ import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RoleRepository;
 import uz.optimit.taxi.repository.StatusRepository;
 import uz.optimit.taxi.repository.UserRepository;
-import uz.optimit.taxi.utils.JwtService;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,9 +59,9 @@ public class UserService {
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
         User save = userRepository.save(user);
         familiarRepository.save(Familiar.fromUser(save));
-        String access = jwtGenerate.generateAccessToken(user);
-        String refresh = jwtGenerate.generateRefreshToken(user);
-        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true, new TokenResponse(access, refresh, UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl)));
+        String access = JwtGenerate.generateAccessToken(user);
+        String refresh = JwtGenerate.generateRefreshToken(user);
+        return new ApiResponse(SUCCESSFULLY + " verification code :" + verificationCode, true, new TokenResponse(access, refresh, UserResponseDto.fromAnnouncement(user, attachmentService.attachDownloadUrl)));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -72,9 +70,9 @@ public class UserService {
             Authentication authentication = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getPhone(), userLoginRequestDto.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authentication);
             User user = (User) authenticate.getPrincipal();
-            String access = jwtGenerate.generateAccessToken(user);
-            String refresh = jwtGenerate.generateRefreshToken(user);
-            return new ApiResponse(new TokenResponse(access, refresh, UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl)), true);
+            String access = JwtGenerate.generateAccessToken(user);
+            String refresh = JwtGenerate.generateRefreshToken(user);
+            return new ApiResponse(new TokenResponse(access, refresh, UserResponseDto.fromAnnouncement(user, attachmentService.attachDownloadUrl)), true);
         } catch (BadCredentialsException e) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
@@ -135,7 +133,7 @@ public class UserService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        return new ApiResponse(UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl), true);
+        return new ApiResponse(UserResponseDto.fromAnnouncement(user, attachmentService.attachDownloadUrl), true);
     }
 
     @ResponseStatus(HttpStatus.OK)

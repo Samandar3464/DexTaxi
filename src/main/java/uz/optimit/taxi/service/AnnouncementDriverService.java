@@ -48,8 +48,7 @@ public class AnnouncementDriverService {
           if (announcementPassengerRepository.findByUserIdAndActive(user.getId(),true).isPresent()) {
                throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
           }
-          Optional<AnnouncementDriver> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
-          if (byUserIdAndActive.isPresent()) {
+          if (repository.findByUserIdAndActive(user.getId(), true).isPresent()) {
                throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
           }
           Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
@@ -68,9 +67,8 @@ public class AnnouncementDriverService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getDriverListForAnonymousUser() {
-          List<AnnouncementDriver> all = repository.findAllByActive(true);
           List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
-          all.forEach(announcementDriver -> {
+          repository.findAllByActive(true).forEach(announcementDriver -> {
                driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
           });
           return new ApiResponse(driverResponses, true);
@@ -123,8 +121,6 @@ public class AnnouncementDriverService {
         List<Familiar> familiars = new ArrayList<>();
         notifications.forEach(obj ->
                 familiars.addAll(announcementPassengerRepository.findByUserIdAndActive(obj.getAnnouncementPassengerId(), true).get().getPassengersList()));
-
-
         List<AnnouncementDriverResponse> response = new ArrayList<>();
         allByActive.forEach((announcementDriver) -> response.add(AnnouncementDriverResponse.from(announcementDriver, announcementDriver.getCar(), familiars, attachmentService.attachUploadFolder)));
         return new ApiResponse(response, true);

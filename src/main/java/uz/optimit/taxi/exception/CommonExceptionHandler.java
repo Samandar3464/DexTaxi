@@ -46,6 +46,7 @@ public class CommonExceptionHandler {
                 , null);
     }
 
+
     @ExceptionHandler(RecordAlreadyExistException.class)
     @ResponseStatus(HttpStatus.ALREADY_REPORTED)
     public ApiResponse handleObjectAlreadyExist(RecordAlreadyExistException e) {
@@ -54,7 +55,7 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
-    @ExceptionHandler(RecordAlreadyExistException.class)
+    @ExceptionHandler(AnnouncementAvailable.class)
     @ResponseStatus(HttpStatus.ALREADY_REPORTED)
     public ApiResponse announcementAvailable(AnnouncementAvailable e) {
         return new ApiResponse(

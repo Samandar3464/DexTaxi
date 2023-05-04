@@ -28,13 +28,11 @@ public class CarController {
         return carService.getCarById(id);
     }
 
-    @GetMapping("/getCarByUserId/{id}")
+    @GetMapping("/getCarByUserId")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
-    public ApiResponse getCarByUserId(@PathVariable UUID id){
-        return carService.getByUserId(id);
+    public ApiResponse getCarByUserId(){
+        return carService.getCar();
     }
-
-
 
     @GetMapping("/getCarSeats")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")

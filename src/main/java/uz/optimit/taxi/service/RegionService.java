@@ -23,8 +23,7 @@ public class RegionService {
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse addRegion(RegionRegisterRequestDto regionRegisterRequestDto) {
-        Optional<Region> byName = regionRepository.findByName(regionRegisterRequestDto.getName());
-        if (byName.isPresent()) {
+        if (regionRepository.findByName(regionRegisterRequestDto.getName()).isPresent()) {
             throw new RecordAlreadyExistException(REGION_ALREADY_EXIST);
         }
         Region region = Region.builder().name(regionRegisterRequestDto.getName()).build();
@@ -34,8 +33,7 @@ public class RegionService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getRegionList(){
-        List<Region> all = regionRepository.findAll();
-        return new ApiResponse(all,true);
+        return new ApiResponse(regionRepository.findAll(),true);
     }
 
     @ResponseStatus(HttpStatus.OK)

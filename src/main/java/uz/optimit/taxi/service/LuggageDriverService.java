@@ -54,8 +54,7 @@ public class LuggageDriverService {
      @ResponseStatus(HttpStatus.FOUND)
      public ApiResponse getList() {
           List<LuggageDriverResponse> responseList = new ArrayList<>();
-          List<LuggageDriver> allByActive = luggageDriverRepository.findAllByActive(true);
-          allByActive.forEach(luggageDriver -> {
+          luggageDriverRepository.findAllByActive(true).forEach(luggageDriver -> {
                    responseList.add(LuggageDriverResponse.from(luggageDriver,attachmentService.attachDownloadUrl));
               });
           return new ApiResponse(responseList, true);
@@ -63,9 +62,9 @@ public class LuggageDriverService {
 
      @ResponseStatus(HttpStatus.FOUND)
      public ApiResponse getById(UUID id) {
-          LuggageDriver byId = luggageDriverRepository.findByIdAndActive(id, true)
-              .orElseThrow(()-> new LuggageAnnouncementNotFound(Constants.LUGGAGE_DRIVER_ANNOUNCEMENT_NOT_FOUND));
-          return new ApiResponse(LuggageDriverResponse.from(byId,attachmentService.attachDownloadUrl), true);
+          return new ApiResponse(LuggageDriverResponse.from(luggageDriverRepository.findByIdAndActive(id, true)
+              .orElseThrow(()-> new LuggageAnnouncementNotFound
+           (Constants.LUGGAGE_DRIVER_ANNOUNCEMENT_NOT_FOUND)),attachmentService.attachDownloadUrl), true);
      }
 
      @ResponseStatus(HttpStatus.OK)
