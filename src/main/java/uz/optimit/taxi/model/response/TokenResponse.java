@@ -1,4 +1,4 @@
-package uz.optimit.taxi.entity;
+package uz.optimit.taxi.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

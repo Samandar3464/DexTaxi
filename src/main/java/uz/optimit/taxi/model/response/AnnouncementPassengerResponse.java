@@ -1,5 +1,9 @@
 package uz.optimit.taxi.model.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +12,7 @@ import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.City;
 import uz.optimit.taxi.entity.Familiar;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +36,7 @@ public class AnnouncementPassengerResponse {
     private RegionResponseDto toRegion;
     private RegionResponseDto fromRegion;
     private List<Familiar> passengersList;
+    private String timeToTravel;
 
     public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger) {
         return AnnouncementPassengerResponse.builder()
@@ -49,6 +55,7 @@ public class AnnouncementPassengerResponse {
                 .passengersList(announcementPassenger.getPassengersList())
                 .info(announcementPassenger.getInfo())
                 .announcementOwnerPhone(announcementPassenger.getUser().getPhone())
+                .timeToTravel(announcementPassenger.getTimeToTravel().toString())
                 .build();
     }
 }

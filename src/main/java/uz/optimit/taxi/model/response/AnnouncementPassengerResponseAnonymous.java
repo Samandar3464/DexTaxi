@@ -1,5 +1,9 @@
 package uz.optimit.taxi.model.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +27,7 @@ public class AnnouncementPassengerResponseAnonymous {
     private City fromCity;
     private City toCity;
     private double price;
-    private LocalDateTime timeToTravel;
+    private String timeToTravel;
 
     public static AnnouncementPassengerResponseAnonymous from(AnnouncementPassenger announcementPassenger) {
         return AnnouncementPassengerResponseAnonymous
@@ -34,7 +38,7 @@ public class AnnouncementPassengerResponseAnonymous {
                 .fromCity(announcementPassenger.getFromCity())
                 .toCity(announcementPassenger.getToCity())
                 .price(announcementPassenger.getPrice())
-                .timeToTravel(announcementPassenger.getTimeToTravel())
+                .timeToTravel(announcementPassenger.getTimeToTravel().toString())
                 .build();
     }
 }

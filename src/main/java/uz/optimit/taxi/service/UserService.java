@@ -19,6 +19,7 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.*;
+import uz.optimit.taxi.model.response.TokenResponse;
 import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
 import uz.optimit.taxi.repository.RoleRepository;
@@ -60,7 +61,7 @@ public class UserService {
         Integer verificationCode = verificationCodeGenerator();
 //        service.sendSms(SmsModel.builder()
 //                .mobile_phone(userRegisterDto.getPhone())
-//                .message("DexTaxi , Yo'linggiz hayirli bo'lsin. Tasdiqlash kodi: " + verificationCode)
+//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode ., Yo'linggiz behatar  bo'lsin.)
 //                .from(4546)
 //                .callback_url("http://0000.uz/test.php")
 //                .build());

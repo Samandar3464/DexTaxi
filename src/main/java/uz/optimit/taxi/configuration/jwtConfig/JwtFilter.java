@@ -1,7 +1,8 @@
 package uz.optimit.taxi.configuration.jwtConfig;
 
-import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import uz.optimit.taxi.service.AuthService;
+
+import java.io.IOException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -54,7 +57,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
                 filterChain.doFilter(request, response);
             }
-        } catch (Exception e) {
+        } catch (ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
+                 IllegalArgumentException | IOException | ServletException e) {
             resolver.resolveException(request, response, null, e);
         }
     }
