@@ -1,5 +1,9 @@
 package uz.optimit.taxi.model.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +34,7 @@ public class AnnouncementDriverResponse {
     private String color;
     private String carNumber;
     private String autoModel;
-    private LocalDateTime timeToDrive;
+    private String timeToDrive;
     private List<Seat> seatList;
     private List<Familiar> familiars;
 
@@ -76,7 +80,7 @@ public class AnnouncementDriverResponse {
                 .backSeatPrice(announcementDriver.getBackSeatPrice())
                 .info(announcementDriver.getInfo())
                 .baggage(announcementDriver.isBaggage())
-                .timeToDrive(announcementDriver.getTimeToDrive())
+                .timeToDrive(announcementDriver.getTimeToDrive().toString())
                 .carPhotoPath(photos)
                 .color(car.getColor())
                 .seatList(announcementDriver.getCar().getSeatList())
@@ -97,7 +101,7 @@ public class AnnouncementDriverResponse {
                 .backSeatPrice(announcementDriver.getBackSeatPrice())
                 .info(announcementDriver.getInfo())
                 .baggage(announcementDriver.isBaggage())
-                .timeToDrive(announcementDriver.getTimeToDrive())
+                .timeToDrive(announcementDriver.getTimeToDrive().toString())
                 .carPhotoPath(photos)
                 .color(car.getColor())
                 .seatList(announcementDriver.getCar().getSeatList())

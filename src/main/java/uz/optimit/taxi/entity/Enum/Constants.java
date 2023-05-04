@@ -40,6 +40,9 @@ public class Constants {
     public static final String CODE_TIME_OUT="CODE TIME OUT";
     public static final String FAMILIAR_NOT_FOUND="FAMILIAR_NOT_FOUND";
     public static final String SOMETHING_WRONG="SOMETHING_WRONG";
+    public static final String SEND_SMS_FAIL="SEND SMS FAIL";
+    public static final String CAN_NOT_SEND_SMS="CAN NOT SEND SMS";
+    public static final String CAN_NOT_TAKE_SMS_SENDING_SERVICE_TOKEN="CAN NOT TAKE SMS SENDING SERVICE TOKEN";
 
 
 }
