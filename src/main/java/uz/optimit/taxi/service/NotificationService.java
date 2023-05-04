@@ -305,8 +305,7 @@ public class NotificationService {
     private Map<String ,String> getData(UserResponseDto userResponseDto){
         Map<String,String> data= new HashMap<>();
         data.put("id", userResponseDto.getId().toString());
-        data.put("name", userResponseDto.getName());
-        data.put("surname", userResponseDto.getSurname());
+        data.put("fullName", userResponseDto.getFullName());
         data.put("phone", userResponseDto.getPhone());
         data.put("age", String.valueOf(userResponseDto.getAge()));
         data.put("status", String.valueOf(userResponseDto.getStatus()));

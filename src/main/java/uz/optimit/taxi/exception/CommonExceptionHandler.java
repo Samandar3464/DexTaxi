@@ -86,7 +86,7 @@ public class CommonExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse handleAccessTokenTimeExceeded(Exception e) {
         return new ApiResponse(
-                e.getMessage()
+                TOKEN_TIME_OUT
                 , false
                 , null);
     }

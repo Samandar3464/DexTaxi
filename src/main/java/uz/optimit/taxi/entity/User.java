@@ -34,10 +34,7 @@ public class User implements UserDetails {
     private UUID id;
 
     @NotBlank
-    private String name;
-
-    @NotBlank
-    private String surname;
+    private String fullName;
 
     @NotBlank
     @Size(min = 9,max = 9)
@@ -132,8 +129,7 @@ public class User implements UserDetails {
             attachment= attachmentService.saveToSystem(userRegisterDto.getProfilePhoto());
         }
         return User.builder()
-                .name(userRegisterDto.getName())
-                .surname(userRegisterDto.getSurname())
+                .fullName(userRegisterDto.getFullName())
                 .phone(userRegisterDto.getPhone())
                 .birthDate(userRegisterDto.getBirthDate())
                 .gender(userRegisterDto.getGender())
