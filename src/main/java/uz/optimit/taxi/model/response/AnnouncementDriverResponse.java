@@ -21,10 +21,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AnnouncementDriverResponse {
     private UUID id;
-    private RegionResponseDto fromRegion;
-    private RegionResponseDto toRegion;
-    private City fromCity;
-    private City toCity;
+    private String fromRegion;
+    private String toRegion;
+    private String fromCity;
+    private String toCity;
     private UserResponseDto userResponseDto;
     private double frontSeatPrice;
     private double backSeatPrice;
@@ -70,10 +70,10 @@ public class AnnouncementDriverResponse {
         return AnnouncementDriverResponse
                 .builder()
                 .id(announcementDriver.getId())
-                .fromRegion(RegionResponseDto.from(announcementDriver.getFromRegion()))
-                .toRegion(RegionResponseDto.from(announcementDriver.getToRegion()))
-                .fromCity(announcementDriver.getFromCity())
-                .toCity(announcementDriver.getToCity())
+                .fromRegion(announcementDriver.getFromRegion().getName())
+                .toRegion(announcementDriver.getToRegion().getName())
+                .fromCity(announcementDriver.getFromCity().getName())
+                .toCity(announcementDriver.getToCity().getName())
                 .familiars(familiars)
                 .userResponseDto(UserResponseDto.fromDriver(announcementDriver.getUser(), downloadUrl))
                 .frontSeatPrice(announcementDriver.getFrontSeatPrice())
@@ -93,8 +93,8 @@ public class AnnouncementDriverResponse {
         return AnnouncementDriverResponse
                 .builder()
                 .id(announcementDriver.getId())
-                .fromRegion(RegionResponseDto.from(announcementDriver.getFromRegion()))
-                .toRegion(RegionResponseDto.from(announcementDriver.getToRegion()))
+                .fromRegion(announcementDriver.getFromRegion().getName())
+                .toRegion(announcementDriver.getToRegion().getName())
                 .familiars(familiars)
                 .userResponseDto(UserResponseDto.fromDriver(announcementDriver.getUser(), downloadUrl))
                 .frontSeatPrice(announcementDriver.getFrontSeatPrice())

@@ -71,6 +71,19 @@ public class AnnouncementDriverService {
      }
 
     @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getDriverById(UUID id) {
+        AnnouncementDriver announcementDriver = repository.findByIdAndActive(id,true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(() ->
+                new CarNotFound(CAR_NOT_FOUND));
+        List<Notification> notifications = notificationRepository.findByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
+        List<Familiar> familiars = new ArrayList<>();
+        notifications.forEach(obj ->
+                familiars.addAll(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), false)
+                        .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND)).getPassengersList()));
+        AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(announcementDriver, car, familiars, attachmentService.attachDownloadUrl);
+        return new ApiResponse(announcementDriverResponse, true);
+    }
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse getById(UUID id) {
         AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(() ->

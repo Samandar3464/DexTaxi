@@ -68,10 +68,16 @@ public class NotificationController {
     public ApiResponse joinPassengerRequest(@PathVariable UUID id){
         return notificationService.acceptPassengerRequest(id);
     }
-    @GetMapping("/getAcceptedNotifications/")
+    @GetMapping("/getAcceptedNotificationsForDriver")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-    public ApiResponse getAcceptedNotifications(){
-        return notificationService.getAcceptedNotification();
+    public ApiResponse getAcceptedNotificationForDriver(){
+        return notificationService.getAcceptedNotificationForDriver();
+    }
+
+    @GetMapping("/getAcceptedNotificationsForPassenger")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse getAcceptedNotificationForPassenger(){
+        return notificationService.getAcceptedNotificationForPassenger();
     }
 
 

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -13,6 +12,7 @@ import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
+import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
 import uz.optimit.taxi.repository.CityRepository;
 import uz.optimit.taxi.repository.FamiliarRepository;
@@ -37,7 +37,7 @@ public class AnnouncementPassengerService {
     private final UserService userService;
     private final AttachmentService attachmentService;
     private final FamiliarRepository familiarRepository;
-
+    private final AnnouncementPassengerRepository announcementPassengerRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
@@ -62,11 +62,23 @@ public class AnnouncementPassengerService {
         return new ApiResponse(passengerResponses, true);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse getAnnouncementById(UUID id) {
         AnnouncementPassenger active = repository.findByIdAndActive(id, true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        User user = userService.checkUserExistById(active.getUser().getId());
+        UserResponseDto userResponseDto = UserResponseDto.from(user, attachmentService.attachDownloadUrl, announcementPassengerRepository);
         AnnouncementPassengerResponse passengerResponse =
-                AnnouncementPassengerResponse.from(active);
+                AnnouncementPassengerResponse.from(active, userResponseDto);
+        return new ApiResponse(passengerResponse, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getById(UUID id) {
+        AnnouncementPassenger active = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        User user = userService.checkUserExistById(active.getUser().getId());
+        UserResponseDto userResponseDto = UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl);
+        AnnouncementPassengerResponse passengerResponse =
+                AnnouncementPassengerResponse.from(active, userResponseDto);
         return new ApiResponse(passengerResponse, true);
     }
 
@@ -74,9 +86,9 @@ public class AnnouncementPassengerService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerAnnouncements() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActive(user.getId(),true);
+        List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActive(user.getId(), true);
         List<AnnouncementPassengerResponseAnonymous> anonymousList = new ArrayList<>();
-        announcementPassengers.forEach(obj->
+        announcementPassengers.forEach(obj ->
                 anonymousList.add(AnnouncementPassengerResponseAnonymous.from(obj)));
         return new ApiResponse(anonymousList, true);
     }
@@ -89,7 +101,7 @@ public class AnnouncementPassengerService {
         return new ApiResponse(DELETED, true);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse findFilter(
             Integer fromRegion,
             Integer toRegion,
@@ -106,18 +118,22 @@ public class AnnouncementPassengerService {
 
     private List<AnnouncementPassenger> getAnnouncementPassengers(Integer fromRegion, Integer toRegion, String timeToTravel, String toTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime timeToTravel1 = LocalDateTime.parse(timeToTravel,formatter);
-        LocalDateTime toTime1 = LocalDateTime.parse(toTime,formatter);
-        return  repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc
-            (true, fromRegion, toRegion, timeToTravel1, toTime1);
+        LocalDateTime timeToTravel1 = LocalDateTime.parse(timeToTravel, formatter);
+        LocalDateTime toTime1 = LocalDateTime.parse(toTime, formatter);
+        return repository.findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc
+                (true, fromRegion, toRegion, timeToTravel1, toTime1);
     }
 
     public ApiResponse getHistory() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
+        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(), false);
         List<AnnouncementPassengerResponse> response = new ArrayList<>();
-        allByActive.forEach((announcementPassenger)-> response.add(AnnouncementPassengerResponse
-            .from(announcementPassenger)));
-        return new ApiResponse(response,true);
+
+        UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(user.getId()),
+                attachmentService.attachDownloadUrl, announcementPassengerRepository);
+
+        allByActive.forEach((announcementPassenger) -> response.add(AnnouncementPassengerResponse
+                .from(announcementPassenger,userResponseDto )));
+        return new ApiResponse(response, true);
     }
 }

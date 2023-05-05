@@ -72,7 +72,7 @@ public class JwtGenerate {
             return Jwts.parser().setSigningKey(JWT_ACCESS_KEY).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
                  IllegalArgumentException e) {
-            throw new TimeExceededException(TOKEN_TIME_OUT);
+            throw new TimeExceededException(REFRESH_TOKEN_TIME_OUT);
         }
     }
 
@@ -93,7 +93,7 @@ public class JwtGenerate {
             return Jwts.parser().setSigningKey(JWT_REFRESH_KEY).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
                  IllegalArgumentException e) {
-            throw e;
+            throw new TimeExceededException(REFRESH_TOKEN_TIME_OUT);
         }
     }
 }

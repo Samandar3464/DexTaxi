@@ -1,9 +1,5 @@
 package uz.optimit.taxi.model.response;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +8,6 @@ import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.City;
 import uz.optimit.taxi.entity.Familiar;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,30 +17,29 @@ import java.util.UUID;
 @Builder
 public class AnnouncementPassengerResponse {
     private UUID id;
-    private City toCity;
-    private UUID userId;
+    private String toCity;
     private String info;
     private double price;
-    private City fromCity;
+    private String fromCity;
     private boolean baggage;
     private double toLatitude;
     private double toLongitude;
     private double fromLatitude;
     private double fromLongitude;
     private String announcementOwnerPhone;
-    private RegionResponseDto toRegion;
-    private RegionResponseDto fromRegion;
+    private String toRegion;
+    private String fromRegion;
     private List<Familiar> passengersList;
     private String timeToTravel;
+    private UserResponseDto userResponseDto;
 
-    public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger) {
+    public static AnnouncementPassengerResponse from(AnnouncementPassenger announcementPassenger, UserResponseDto userResponseDto) {
         return AnnouncementPassengerResponse.builder()
                 .id(announcementPassenger.getId())
-                .userId(announcementPassenger.getUser().getId())
-                .fromRegion(RegionResponseDto.from(announcementPassenger.getFromRegion()))
-                .toRegion(RegionResponseDto.from(announcementPassenger.getToRegion()))
-                .fromCity(announcementPassenger.getFromCity())
-                .toCity(announcementPassenger.getToCity())
+                .fromRegion(announcementPassenger.getFromRegion().getName())
+                .toRegion(announcementPassenger.getToRegion().getName())
+                .fromCity(announcementPassenger.getFromCity().getName())
+                .toCity(announcementPassenger.getToCity().getName())
                 .price(announcementPassenger.getPrice())
                 .fromLatitude(announcementPassenger.getFromLatitude())
                 .fromLongitude(announcementPassenger.getFromLongitude())
@@ -56,6 +50,7 @@ public class AnnouncementPassengerResponse {
                 .info(announcementPassenger.getInfo())
                 .announcementOwnerPhone(announcementPassenger.getUser().getPhone())
                 .timeToTravel(announcementPassenger.getTimeToTravel().toString())
+                .userResponseDto(userResponseDto)
                 .build();
     }
 }
