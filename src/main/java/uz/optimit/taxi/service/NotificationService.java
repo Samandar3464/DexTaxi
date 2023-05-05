@@ -65,6 +65,9 @@ public class NotificationService {
         announcementPassengerRepository.findByIdAndActive(notificationRequestDto.getAnnouncementPassengerId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         List<AnnouncementDriver> byUserIdAndActive = announcementDriverRepository.findAllByUserIdAndActive(user.getId(), true);
+        if (byUserIdAndActive.isEmpty()){
+            throw new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND);
+        }
         AnnouncementDriver announcementDriver = byUserIdAndActive.get(0);
         notificationRequestDto.setAnnouncementDriverId(announcementDriver.getId());
 
@@ -75,7 +78,6 @@ public class NotificationService {
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_DRIVER);
 
         Notification notification = from(notificationRequestDto, user);
-//        UserResponseDto userResponseDto = UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl,notification.getId());
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForPassenger(notificationRequestDto, notification.getReceiverToken());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 

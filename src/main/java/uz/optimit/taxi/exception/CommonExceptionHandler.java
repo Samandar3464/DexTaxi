@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.optimit.taxi.entity.api.ApiResponse;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.stream.Stream;

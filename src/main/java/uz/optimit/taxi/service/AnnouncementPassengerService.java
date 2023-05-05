@@ -125,11 +125,17 @@ public class AnnouncementPassengerService {
                 (true, fromRegion, toRegion, timeToTravel1, toTime1);
     }
 
-     public ApiResponse getHistory() {
-          User user = userService.checkUserExistByContext();
-          List<AnnouncementPassengerResponse> response = new ArrayList<>();
-          repository.findAllByUserIdAndActive(user.getId(), false).forEach((announcementPassenger) ->
-              response.add(AnnouncementPassengerResponse.from(announcementPassenger)));
-          return new ApiResponse(response, true);
-     }
+
+    public ApiResponse getHistory() {
+        User user = userService.checkUserExistByContext();
+        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(), false);
+        List<AnnouncementPassengerResponse> response = new ArrayList<>();
+
+        UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(user.getId()),
+                attachmentService.attachDownloadUrl, announcementPassengerRepository);
+
+        allByActive.forEach((announcementPassenger) -> response.add(AnnouncementPassengerResponse
+                .from(announcementPassenger,userResponseDto )));
+        return new ApiResponse(response, true);
+    }
 }

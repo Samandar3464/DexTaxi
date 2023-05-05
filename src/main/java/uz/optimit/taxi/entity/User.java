@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import static uz.optimit.taxi.entity.Enum.Constants.DRIVER;
 import static uz.optimit.taxi.entity.Enum.Constants.PASSENGER;
 @Getter
 @Setter
@@ -139,6 +141,7 @@ public class User implements UserDetails {
                 .profilePhoto(attachment)
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .roles(List.of(roleRepository.findByName(PASSENGER)))
+                .roles(List.of(roleRepository.findByName(PASSENGER),roleRepository.findByName(DRIVER)))
                 .status(status)
                 .isBlocked(true)
                 .build();

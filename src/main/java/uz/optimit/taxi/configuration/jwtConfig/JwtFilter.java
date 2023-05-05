@@ -15,11 +15,13 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import uz.optimit.taxi.exception.CarNotAllowed;
 import uz.optimit.taxi.exception.FileInputException;
 import uz.optimit.taxi.exception.InputException;
 import uz.optimit.taxi.service.AuthService;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -63,14 +65,9 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch(ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
                  IllegalArgumentException e) {
             resolver.resolveException(request, response, null, e);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        catch (IOException e){
-//            throw new InputException(INPUT_EXCEPTION);
-//        }
-//        catch ( ServletException e){
-//            throw new FileInputException(SOMETHING_WRONG);
-//        }
     }
 }
