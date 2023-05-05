@@ -27,6 +27,11 @@ public class AnnouncementPassengerController {
      public ApiResponse getPassengerById(@PathVariable("id") UUID id) {
           return announcementPassengerService.getAnnouncementById(id);
      }
+     @GetMapping("/byId/{id}")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     public ApiResponse getById(@PathVariable("id") UUID id) {
+          return announcementPassengerService.getById(id);
+     }
 
      @GetMapping("/getListForAnonymousUser")
      public ApiResponse getPassengerListForAnonymousUser() {

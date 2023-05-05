@@ -30,7 +30,6 @@ public class AnnouncementDriverService {
 
     private final AnnouncementDriverRepository repository;
     private final CarRepository carRepository;
-    private final SeatRepository seatRepository;
     private final RegionRepository regionRepository;
     private final UserService userService;
     private final AttachmentService attachmentService;
@@ -45,9 +44,9 @@ public class AnnouncementDriverService {
           if (user.getCars().isEmpty()) {
                throw new CarNotFound(CAR_NOT_FOUND);
           }
-          if (announcementPassengerRepository.findByUserIdAndActive(user.getId(),true).isPresent()) {
-               throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
-          }
+         if (announcementPassengerRepository.findByUserIdAndActive(user.getId(),true).isPresent()) {
+             throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
+         }
           Optional<AnnouncementDriver> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
           if (byUserIdAndActive.isPresent()) {
                throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
@@ -76,6 +75,19 @@ public class AnnouncementDriverService {
           return new ApiResponse(driverResponses, true);
      }
 
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getDriverById(UUID id) {
+        AnnouncementDriver announcementDriver = repository.findByIdAndActive(id,true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(() ->
+                new CarNotFound(CAR_NOT_FOUND));
+        List<Notification> notifications = notificationRepository.findByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
+        List<Familiar> familiars = new ArrayList<>();
+        notifications.forEach(obj ->
+                familiars.addAll(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), false)
+                        .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND)).getPassengersList()));
+        AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(announcementDriver, car, familiars, attachmentService.attachDownloadUrl);
+        return new ApiResponse(announcementDriverResponse, true);
+    }
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getById(UUID id) {
         AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));

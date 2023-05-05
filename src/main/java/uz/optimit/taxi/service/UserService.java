@@ -62,7 +62,7 @@ public class UserService {
 //        service.sendSms(SmsModel.builder()
 //                .mobile_phone(userRegisterDto.getPhone())
 //                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode ., Yo'linggiz behatar  bo'lsin.)
-//                .from(4546)
+//                .fromForDriver(4546)
 //                .callback_url("http://0000.uz/test.php")
 //                .build());
 //        countMassage();
@@ -152,7 +152,7 @@ public class UserService {
     public ApiResponse setStatus(StatusDto statusDto) {
         User user = userRepository.findById(statusDto.getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 //        Optional<Status> statusOld = statusRepository.findByUserId(user.getId());
-//        Status status = Status.from(statusDto,statusOld.get());
+//        Status status = Status.fromForDriver(statusDto,statusOld.get());
         Status status = Status.from(statusDto, user.getStatus());
         Status save = statusRepository.save(status);
         user.setStatus(save);

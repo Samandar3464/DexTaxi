@@ -10,13 +10,13 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.*;
 import uz.optimit.taxi.model.request.AcceptDriverRequestDto;
 import uz.optimit.taxi.model.request.NotificationRequestDto;
-import uz.optimit.taxi.model.response.AnnouncementDriverResponseAnonymous;
-import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
-import uz.optimit.taxi.model.response.NotificationMessageResponse;
-import uz.optimit.taxi.model.response.UserResponseDto;
+import uz.optimit.taxi.model.response.*;
 import uz.optimit.taxi.repository.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
 
@@ -31,9 +31,10 @@ public class NotificationService {
     private final UserService userService;
     private final CarRepository carRepository;
     private final SeatRepository seatRepository;
-    private final AttachmentService attachmentService;
     private final FireBaseMessagingService fireBaseMessagingService;
+
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional(rollbackFor = {Exception.class})
     public ApiResponse createNotificationForDriver(NotificationRequestDto notificationRequestDto) {
         User user = userService.checkUserExistByContext();
         announcementDriverRepository.findByIdAndActive(notificationRequestDto.getAnnouncementDriverId(), true)
@@ -43,13 +44,14 @@ public class NotificationService {
             throw new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND);
         }
         AnnouncementPassenger announcementPassenger = allByUserIdAndActive.get(0);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("announcementId", announcementPassenger.getId().toString());
+        notificationRequestDto.setDate(data);
         notificationRequestDto.setAnnouncementPassengerId(announcementPassenger.getId());
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_PASSENGER);
-
         Notification notification = from(notificationRequestDto, user);
-        UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository);
+//        UserResponseDto userResponseDto = UserResponseDto.fromForDriver(user, attachmentService.attachDownloadUrl, announcementPassengerRepository,notification.getId());
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto, notification.getReceiverToken());
-        notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
         return new ApiResponse(SUCCESSFULLY, true);
@@ -57,6 +59,7 @@ public class NotificationService {
 
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional(rollbackFor = {Exception.class})
     public ApiResponse createNotificationForPassenger(NotificationRequestDto notificationRequestDto) {
         User user = userService.checkUserExistByContext();
         announcementPassengerRepository.findByIdAndActive(notificationRequestDto.getAnnouncementPassengerId(), true)
@@ -64,12 +67,16 @@ public class NotificationService {
         List<AnnouncementDriver> byUserIdAndActive = announcementDriverRepository.findAllByUserIdAndActive(user.getId(), true);
         AnnouncementDriver announcementDriver = byUserIdAndActive.get(0);
         notificationRequestDto.setAnnouncementDriverId(announcementDriver.getId());
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("announcementId", announcementDriver.getId().toString());
+        notificationRequestDto.setDate(data);
+
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_DRIVER);
 
         Notification notification = from(notificationRequestDto, user);
-        UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
+//        UserResponseDto userResponseDto = UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl,notification.getId());
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForPassenger(notificationRequestDto, notification.getReceiverToken());
-        notificationMessageResponse.setData(getData(userResponseDto));
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
         return new ApiResponse(SUCCESSFULLY, true);
@@ -113,13 +120,14 @@ public class NotificationService {
         List<Notification> notifications = notificationRepository
                 .findAllByReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(user.getId(), true, false);
 
-        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
-        notifications.forEach(obj -> userResponseDtoList.add(
-                UserResponseDto.
-                        from(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl, announcementPassengerRepository)));
+        List<AnnouncementResponseForList> announcementResponseForLists = new ArrayList<>();
+        notifications.forEach(obj -> announcementResponseForLists.add(
+                AnnouncementResponseForList.
+                        from(userService.checkUserExistById(obj.getSenderId()),  obj.getId(),obj.getAnnouncementPassengerId())));
 
-        return new ApiResponse(userResponseDtoList, true);
+        return new ApiResponse(announcementResponseForLists, true);
     }
+
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse seeNotificationForPassenger() {
         User user = userService.checkUserExistByContext();
@@ -127,12 +135,12 @@ public class NotificationService {
         List<Notification> notifications = notificationRepository
                 .findAllByReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(user.getId(), true, false);
 
-        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
-        notifications.forEach(obj -> userResponseDtoList.add(
-                UserResponseDto.
-                        fromDriver(userService.checkUserExistById(obj.getSenderId()), attachmentService.attachDownloadUrl)));
+        List<AnnouncementResponseForList> announcementResponseForLists = new ArrayList<>();
+        notifications.forEach(obj -> announcementResponseForLists.add(
+                AnnouncementResponseForList.
+                        from(userService.checkUserExistById(obj.getSenderId()), obj.getId(),obj.getAnnouncementDriverId())));
 
-        return new ApiResponse(userResponseDtoList, true);
+        return new ApiResponse(announcementResponseForLists, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -168,6 +176,7 @@ public class NotificationService {
                 seat.setActive(false);
                 seatRepository.save(seat);
                 countActiveSeat--;
+                break;
             }
         }
         if (countActiveSeat == 0) {
@@ -208,12 +217,13 @@ public class NotificationService {
                 countActiveSeat--;
             } else {
                 List<Seat> activeSeats = seatRepository.findAllByCarIdAndActive(car.getId(), true);
-                Notification notification = reCreateNotification(passenger.getId(), announcementDriver.getId(), driver.getId(), announcementPassenger.getId(), activeSeats,passenger.getFireBaseToken());
+                Notification notification = reCreateNotification(passenger.getId(), announcementDriver.getId(), driver.getId(), announcementPassenger.getId(), activeSeats, passenger.getFireBaseToken());
                 notificationRepository.save(notification);
 
-                UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl);
-                NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.reCreate(passenger.getFireBaseToken());
-                notificationMessageResponse.setData(getData(userResponseDto));
+//                UserResponseDto userResponseDto = UserResponseDto.fromDriver(userService.checkUserExistById(notification.getSenderId()), attachmentService.attachDownloadUrl,save.getId());
+                HashMap<String, String> data = new HashMap<>();
+                data.put("announcementId", announcementDriver.getId().toString());
+                NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.reCreate(passenger.getFireBaseToken(), data);
                 fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
                 return new ApiResponse(HttpStatus.CREATED, true);
@@ -233,26 +243,40 @@ public class NotificationService {
 
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse getAcceptedNotification() {
+    public ApiResponse getAcceptedNotificationForDriver() {
         User receiver = userService.checkUserExistByContext();
 
         Notification notification = notificationRepository.findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(receiver.getId())
                 .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
 
         User sender = userService.checkUserExistById(notification.getSenderId());
-        return new ApiResponse(UserResponseDto.from(sender, attachmentService.attachDownloadUrl, announcementPassengerRepository), true);
+        AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findById(notification.getAnnouncementPassengerId()).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        AllowedAnnouncementResponseForDriver from = AllowedAnnouncementResponseForDriver.fromForDriver(sender, notification, announcementPassenger);
+        return new ApiResponse(from, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse changeToRead(UUID notificationId){
+    public ApiResponse getAcceptedNotificationForPassenger() {
+        User receiver = userService.checkUserExistByContext();
+
+        Notification notification = notificationRepository.findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(receiver.getId())
+                .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+
+        User sender = userService.checkUserExistById(notification.getSenderId());
+        AllowedAnnouncementResponsePassenger allowedAnnouncementResponsePassenger = AllowedAnnouncementResponsePassenger.fromForPassenger(sender, notification);
+        return new ApiResponse(allowedAnnouncementResponsePassenger, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse changeToRead(UUID notificationId) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_NOT_FOUND));
         notification.setRead(true);
         notificationRepository.save(notification);
-        return new ApiResponse(SUCCESSFULLY,true);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 
     private Notification getNotification(User user1, User user2) {
-        return notificationRepository.findBySenderIdAndReceiverIdAndActiveAndReceived(user2.getId(), user1.getId(), true, false)
+        return notificationRepository.findFirstBySenderIdAndReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(user2.getId(), user1.getId(), true, false)
                 .orElseThrow(() -> new RecordNotFoundException(NOTIFICATION_NOT_FOUND));
     }
 
@@ -269,7 +293,7 @@ public class NotificationService {
 
     private AnnouncementPassenger getAnnouncementPassenger(Notification fromDriverToUser) {
         return announcementPassengerRepository.findByIdAndActive(fromDriverToUser.getAnnouncementPassengerId(), true)
-                .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+                .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
     }
 
     private AnnouncementPassenger getAnnouncementPassenger(User passenger) {
@@ -300,21 +324,6 @@ public class NotificationService {
                 .announcementPassengerId(announcementPassengerId)
                 .carSeats(seatList)
                 .build();
-    }
-
-    private Map<String ,String> getData(UserResponseDto userResponseDto){
-        Map<String,String> data= new HashMap<>();
-        data.put("id", userResponseDto.getId().toString());
-        data.put("fullName", userResponseDto.getFullName());
-        data.put("phone", userResponseDto.getPhone());
-        data.put("age", String.valueOf(userResponseDto.getAge()));
-        data.put("status", String.valueOf(userResponseDto.getStatus()));
-        data.put("gender", String.valueOf(userResponseDto.getGender()));
-        data.put("profilePhotoUrl", userResponseDto.getProfilePhotoUrl());
-        if (userResponseDto.getPassengersList()!=null){
-            data.put("passengersList", userResponseDto.getPassengersList().toString());
-        }
-        return data;
     }
 
 }

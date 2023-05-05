@@ -16,6 +16,7 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     List<Notification> findAllByReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(UUID receiverId, boolean active, boolean received);
 
     Optional<Notification> findBySenderIdAndReceiverIdAndActiveAndReceived(UUID senderId, UUID receiverId, boolean active, boolean received);
+    Optional<Notification> findFirstBySenderIdAndReceiverIdAndActiveAndReceivedOrderByCreatedTimeDesc(UUID senderId, UUID receiverId, boolean active, boolean received);
 
     Optional<Notification> findFirstByReceiverIdAndReceivedTrueOrderByCreatedTimeDesc(UUID receiverId);
 

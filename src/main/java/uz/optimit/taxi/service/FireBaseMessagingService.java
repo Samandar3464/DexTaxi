@@ -1,12 +1,17 @@
 package uz.optimit.taxi.service;
 
+import com.google.firebase.FirebaseException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uz.optimit.taxi.exception.FirebaseConnectionException;
 import uz.optimit.taxi.model.response.NotificationMessageResponse;
+
+import static uz.optimit.taxi.entity.Enum.Constants.FIREBASE_EXCEPTION;
+import static uz.optimit.taxi.entity.Enum.Constants.SUCCESSFULLY;
 
 
 @Service
@@ -28,10 +33,10 @@ public class FireBaseMessagingService {
                 .build();
         try {
             firebaseMessaging.send(message);
-            return "Successfully";
+            return SUCCESSFULLY;
         } catch (FirebaseMessagingException e) {
             e.printStackTrace();
-            return "error sending notification";
+            throw new FirebaseConnectionException(FIREBASE_EXCEPTION);
         }
     }
 }

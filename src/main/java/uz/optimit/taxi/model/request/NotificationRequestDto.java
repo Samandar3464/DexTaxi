@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.mapping.Map;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,4 +27,6 @@ public class NotificationRequestDto {
     private UUID announcementPassengerId;
 
     private List<UUID> seatIdList;
+
+    private HashMap<String, String> date;
 }

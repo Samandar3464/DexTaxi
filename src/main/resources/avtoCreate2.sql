@@ -1,22 +1,22 @@
 insert into auto_category(name) values ('GM');
 
-insert into auto_model(name ,count_seat,auto_category_id) values ('Damas' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Cobalt' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Lacetti-Gentra' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Lacetti' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Nexia 1' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Nexia 2' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Nexia 3' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Spark' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Matiz' ,5,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Damas' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Cobalt' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Lacetti-Gentra' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Lacetti' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Nexia 1' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Nexia 2' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Nexia 3' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Spark' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Matiz' ,4,1);
 insert into auto_model(name ,count_seat,auto_category_id) values ('Captiva' ,7,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Epica' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Malibu 1' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Malibu 2' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Orlando' ,7,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Tracker' ,5,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('TrailBlazer' ,7,1);
-insert into auto_model(name ,count_seat,auto_category_id) values ('Equinox' ,5,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Epica' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Malibu 1' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Malibu 2' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Orlando' ,6,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Tracker' ,4,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('TrailBlazer' ,6,1);
+insert into auto_model(name ,count_seat,auto_category_id) values ('Equinox' ,4,1);
 
 insert into auto_category(name) values ('BMW');
 insert into auto_category(name) values ('Toyota');
