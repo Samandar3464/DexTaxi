@@ -31,7 +31,6 @@ public class NotificationService {
     private final UserService userService;
     private final CarRepository carRepository;
     private final SeatRepository seatRepository;
-    private final AttachmentService attachmentService;
     private final FireBaseMessagingService fireBaseMessagingService;
 
     @ResponseStatus(HttpStatus.CREATED)
