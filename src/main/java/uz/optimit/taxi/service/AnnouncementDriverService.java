@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
+import uz.optimit.taxi.exception.AnnouncementAvailable;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
@@ -29,7 +30,6 @@ public class AnnouncementDriverService {
 
     private final AnnouncementDriverRepository repository;
     private final CarRepository carRepository;
-    private final SeatRepository seatRepository;
     private final RegionRepository regionRepository;
     private final UserService userService;
     private final AttachmentService attachmentService;
@@ -43,6 +43,9 @@ public class AnnouncementDriverService {
           if (user.getCars().isEmpty()) {
                throw new CarNotFound(CAR_NOT_FOUND);
           }
+         if (announcementPassengerRepository.findByUserIdAndActive(user.getId(),true).isPresent()) {
+             throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
+         }
           Optional<AnnouncementDriver> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
           if (byUserIdAndActive.isPresent()) {
                throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);

@@ -177,5 +177,12 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
-
+    @ExceptionHandler(AnnouncementAvailable.class)
+    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
+    public ApiResponse announcementAvailable(AnnouncementAvailable e) {
+        return new ApiResponse(
+                e.getMessage()
+                , false
+                , null);
+    }
 }

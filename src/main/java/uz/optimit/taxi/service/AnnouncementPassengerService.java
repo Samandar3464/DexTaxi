@@ -8,15 +8,14 @@ import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
+import uz.optimit.taxi.exception.AnnouncementAvailable;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
+import uz.optimit.taxi.model.response.AnnouncementDriverResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
 import uz.optimit.taxi.model.response.UserResponseDto;
-import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
-import uz.optimit.taxi.repository.CityRepository;
-import uz.optimit.taxi.repository.FamiliarRepository;
-import uz.optimit.taxi.repository.RegionRepository;
+import uz.optimit.taxi.repository.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,10 +37,14 @@ public class AnnouncementPassengerService {
     private final AttachmentService attachmentService;
     private final FamiliarRepository familiarRepository;
     private final AnnouncementPassengerRepository announcementPassengerRepository;
+    private final AnnouncementDriverRepository announcementDriverRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse add(AnnouncementPassengerRegisterRequestDto announcementPassengerRegisterRequestDto) {
         User user = userService.checkUserExistByContext();
+        if (announcementDriverRepository.findByUserIdAndActive(user.getId(), true).isPresent()) {
+            throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
+        }
         Optional<AnnouncementPassenger> byUserIdAndActive = repository.findByUserIdAndActive(user.getId(), true);
         if (byUserIdAndActive.isPresent()) {
             throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
