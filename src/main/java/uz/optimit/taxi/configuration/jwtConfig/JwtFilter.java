@@ -15,9 +15,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import uz.optimit.taxi.exception.CarNotAllowed;
-import uz.optimit.taxi.exception.FileInputException;
-import uz.optimit.taxi.exception.InputException;
 import uz.optimit.taxi.service.AuthService;
 
 import java.io.IOException;
