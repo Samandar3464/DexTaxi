@@ -65,7 +65,7 @@ public class UserService {
 //                .fromForDriver(4546)
 //                .callback_url("http://0000.uz/test.php")
 //                .build());
-//        countMassage();
+        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(),1,LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
@@ -186,16 +186,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private void countMassage() {
-        List<CountMassage> all = countMassageRepository.findAll();
-        if (all.isEmpty()) {
-            countMassageRepository.save(CountMassage.builder().count(1L).build());
-        } else {
-            CountMassage countMassage = all.get(0);
-            countMassage.setCount(countMassage.getCount() + 1);
-            countMassageRepository.save(countMassage);
-        }
-    }
+//    private void countMassage() {
+//        List<CountMassage> all = countMassageRepository.findAll();
+//        if (all.isEmpty()) {
+//            countMassageRepository.save(CountMassage.builder().count(1L).build());
+//        } else {
+//            CountMassage countMassage = all.get(0);
+//            countMassage.setCount(countMassage.getCount() + 1);
+//            countMassageRepository.save(countMassage);
+//        }
+//    }
 }
 
 

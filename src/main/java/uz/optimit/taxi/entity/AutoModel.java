@@ -28,4 +28,10 @@ public class AutoModel {
     @JsonIgnore
     @OneToMany(mappedBy = "autoModel")
     private List<Car> car;
+
+    public AutoModel(String name, byte countSeat,AutoCategory autoCategory) {
+        this.name = name;
+        this.countSeat = countSeat;
+        this.autoCategory = autoCategory;
+    }
 }

@@ -38,4 +38,9 @@ public class City {
      @JsonIgnore
      @OneToMany(mappedBy = "toCity")
      private List<AnnouncementPassenger> toAnnouncementUser;
+
+     public City(String name, Region region) {
+          this.name = name;
+          this.region = region;
+     }
 }

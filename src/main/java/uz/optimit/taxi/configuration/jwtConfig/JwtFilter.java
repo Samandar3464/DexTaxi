@@ -18,10 +18,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import uz.optimit.taxi.service.AuthService;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static uz.optimit.taxi.entity.Enum.Constants.*;
 
 @Component
 @RequiredArgsConstructor

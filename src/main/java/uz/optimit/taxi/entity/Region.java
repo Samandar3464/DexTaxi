@@ -31,4 +31,8 @@ public class Region {
     @OneToMany(mappedBy = "toRegion")
     private List<AnnouncementPassenger> toAnnouncementUser;
 
+    public Region(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

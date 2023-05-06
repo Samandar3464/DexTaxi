@@ -20,4 +20,9 @@ public class AutoCategory {
 
     @OneToMany(mappedBy = "autoCategory" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<AutoModel> autoModel;
+
+    public AutoCategory(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

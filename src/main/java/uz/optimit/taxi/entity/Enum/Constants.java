@@ -36,6 +36,7 @@ public class Constants {
     public static final String AUTHORITIES="authorities";
     public static final String AUTHORIZATION="Authorization";
     public static final String DRIVER="HAYDOVCHI";
+    public static final String ADMIN="ADMIN";
     public static final String PASSENGER="YOLOVCHI";
     public static final String CODE_TIME_OUT="CODE TIME OUT";
     public static final String FAMILIAR_NOT_FOUND="FAMILIAR_NOT_FOUND";

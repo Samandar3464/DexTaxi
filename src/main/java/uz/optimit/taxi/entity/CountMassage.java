@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -21,8 +22,13 @@ public class CountMassage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    private String phone;
+    private int count;
+    private LocalDateTime  sandedTime;
 
-    private Long count;
-
-
+    public CountMassage(String phone, int count,LocalDateTime sandedTime) {
+        this.phone = phone;
+        this.count = count;
+        this.sandedTime=sandedTime;
+    }
 }

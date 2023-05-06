@@ -11,6 +11,7 @@ import uz.optimit.taxi.exception.AnnouncementAvailable;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.AnnouncementDriverRegisterRequestDto;
+import uz.optimit.taxi.model.response.AnnouncementDriverActiveResponse;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponse;
 import uz.optimit.taxi.model.response.AnnouncementDriverResponseAnonymous;
 import uz.optimit.taxi.repository.*;
@@ -106,15 +107,9 @@ public class AnnouncementDriverService {
     public ApiResponse getDriverAnnouncements() {
         User user = userService.checkUserExistByContext();
         List<AnnouncementDriver> announcementDrivers = repository.findAllByUserIdAndActive(user.getId(), true);
-        List<AnnouncementDriverResponse> announcementDriverResponses = new ArrayList<>();
-
-        List<Notification> notifications = notificationRepository.findByAnnouncementDriverIdAndActiveAndReceived(announcementDrivers.get(0).getId(), false, true);
-        List<Familiar> familiars = new ArrayList<>();
-        notifications.forEach(obj ->
-                familiars.addAll(announcementPassengerRepository.findByUserIdAndActive(obj.getAnnouncementPassengerId(), true).get().getPassengersList()));
-
+        List<AnnouncementDriverActiveResponse> announcementDriverResponses = new ArrayList<>();
         for (AnnouncementDriver announcementDriver : announcementDrivers) {
-            announcementDriverResponses.add(AnnouncementDriverResponse.from(announcementDriver, announcementDriver.getCar(), familiars, attachmentService.attachDownloadUrl));
+            announcementDriverResponses.add(AnnouncementDriverActiveResponse.from(announcementDriver));
         }
         return new ApiResponse(announcementDriverResponses, true);
     }
