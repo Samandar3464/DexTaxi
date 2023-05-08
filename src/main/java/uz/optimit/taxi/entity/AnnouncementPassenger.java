@@ -72,7 +72,7 @@ public class AnnouncementPassenger {
                 .fromLongitude(announcementRequestDto.getFromLongitude())
                 .toLatitude(announcementRequestDto.getToLatitude())
                 .toLongitude(announcementRequestDto.getToLongitude())
-                .passengersList(familiarRepository.findByIdInAndActive(announcementRequestDto.getPassengersList(),true))
+                .passengersList(familiarRepository.findAllByIdInAndActive(announcementRequestDto.getPassengersList(),true))
                 .timeToTravel(announcementRequestDto.getTimeToTravel())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())

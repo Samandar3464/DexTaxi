@@ -13,7 +13,6 @@ import uz.optimit.taxi.model.request.FamiliarRegisterRequestDto;
 import uz.optimit.taxi.repository.FamiliarRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -41,14 +40,12 @@ public class AnnouncementFamiliarService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUser() {
           User user = userService.checkUserExistByContext();
-          List<Familiar> familiarList = familiarRepository.findAllByUserIdAndActive(user.getId(), true);
-          return new ApiResponse(SUCCESSFULLY, true, familiarList);
+          return new ApiResponse(SUCCESSFULLY, true, familiarRepository.findAllByUserIdAndActive(user.getId(), true));
      }
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUserId(List<UUID> uuidList) {
-          List<Familiar> familiarList = familiarRepository.findByIdInAndActive(uuidList, true);
-          return new ApiResponse(SUCCESSFULLY, true, familiarList);
+          return new ApiResponse(SUCCESSFULLY, true, familiarRepository.findAllByIdInAndActive(uuidList, true));
      }
 
      @ResponseStatus(HttpStatus.OK)
