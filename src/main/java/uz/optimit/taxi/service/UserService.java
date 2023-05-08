@@ -201,11 +201,11 @@ public class UserService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse updateUser(UserRegisterDto userRegisterDto){
         User user = checkUserExistByContext();
-        user.setPassword(userRegisterDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         user.setFullName(userRegisterDto.getFullName());
         user.setPhone(userRegisterDto.getPhone());
         user.setGender(userRegisterDto.getGender());
-//        attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
+        attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
         user.setBirthDate(userRegisterDto.getBirthDate());
         userRepository.save(user);
         return new ApiResponse(SUCCESSFULLY,true);

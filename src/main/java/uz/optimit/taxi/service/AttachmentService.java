@@ -77,6 +77,34 @@ public class AttachmentService {
 
     }
 
+    public Attachment saveToSystem(MultipartFile file,UUID id) {
+        try {
+            String pathFolder = getYearMonthDay();
+            File folder = new File(attachUploadFolder + pathFolder);
+            if (!folder.exists()) folder.mkdirs();
+            String fileName = UUID.randomUUID().toString();
+            String extension = getExtension(file.getOriginalFilename());
+
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
+            Files.write(path, bytes).toFile();
+
+            Attachment entity = new Attachment();
+            entity.setId(id);
+            entity.setNewName(fileName);
+            entity.setOriginName(file.getOriginalFilename());
+            entity.setType(extension);
+            entity.setPath(pathFolder);
+            entity.setSize(file.getSize());
+            entity.setContentType(file.getContentType());
+
+            return attachmentRepository.save(entity);
+        } catch (IOException e) {
+            throw new FileUploadException(FILE_COULD_NOT_UPLOADED);
+        }
+
+    }
+
     //    Ko'plab filelar kelsa saqlab beradi
     public List<Attachment> saveToSystemListFile(List<MultipartFile> fileList) {
         List<Attachment> attachments = new ArrayList<>();
