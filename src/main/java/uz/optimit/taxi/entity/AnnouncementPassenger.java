@@ -1,9 +1,5 @@
 package uz.optimit.taxi.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
@@ -72,7 +68,7 @@ public class AnnouncementPassenger {
                 .fromLongitude(announcementRequestDto.getFromLongitude())
                 .toLatitude(announcementRequestDto.getToLatitude())
                 .toLongitude(announcementRequestDto.getToLongitude())
-                .passengersList(familiarRepository.findAllByIdInAndActive(announcementRequestDto.getPassengersList(),true))
+                .passengersList(familiarRepository.findByIdInAndActive(announcementRequestDto.getPassengersList(),true))
                 .timeToTravel(announcementRequestDto.getTimeToTravel())
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())

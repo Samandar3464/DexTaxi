@@ -45,7 +45,7 @@ public class AnnouncementFamiliarService {
 
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getFamiliarListByUserId(List<UUID> uuidList) {
-          return new ApiResponse(SUCCESSFULLY, true, familiarRepository.findAllByIdInAndActive(uuidList, true));
+          return new ApiResponse(SUCCESSFULLY, true, familiarRepository.findByIdInAndActive(uuidList, true));
      }
 
      @ResponseStatus(HttpStatus.OK)
