@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 import uz.optimit.taxi.configuration.jwtConfig.JwtGenerate;
 import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -54,8 +55,7 @@ public class UserService {
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional(rollbackFor = {Exception.class})
     public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
-        boolean byPhone = userRepository.existsByPhone(userRegisterDto.getPhone());
-        if (byPhone) {
+        if (userRepository.existsByPhone(userRegisterDto.getPhone())) {
             throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
@@ -196,6 +196,20 @@ public class UserService {
 //            countMassageRepository.save(countMassage);
 //        }
 //    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse updateUser(UserRegisterDto userRegisterDto){
+        User user = checkUserExistByContext();
+        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+        user.setFullName(userRegisterDto.getFullName());
+        user.setPhone(userRegisterDto.getPhone());
+        user.setGender(userRegisterDto.getGender());
+        attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
+        user.setBirthDate(userRegisterDto.getBirthDate());
+        userRepository.save(user);
+        return new ApiResponse(SUCCESSFULLY,true);
+    }
 }
 
 
