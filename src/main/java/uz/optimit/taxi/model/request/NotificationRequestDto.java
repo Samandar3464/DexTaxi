@@ -1,10 +1,12 @@
 package uz.optimit.taxi.model.request;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.mapping.Map;
+import uz.optimit.taxi.entity.Enum.NotificationType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,4 +31,7 @@ public class NotificationRequestDto {
     private List<UUID> seatIdList;
 
     private HashMap<String, String> date;
+
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
 }

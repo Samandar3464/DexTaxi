@@ -34,8 +34,8 @@ public class DataLoader implements CommandLineRunner {
         if (initMode.equals("always")) {
             if (roleRepository.findAll().isEmpty()) {
                 Role admim = new Role(1, ADMIN);
-                Role yolovchi = new Role(1, PASSENGER);
-                Role haydovchi = new Role(1, DRIVER);
+                Role yolovchi = new Role(2, PASSENGER);
+                Role haydovchi = new Role(3, DRIVER);
                 roleRepository.saveAll(List.of(admim, yolovchi, haydovchi));
             }
 

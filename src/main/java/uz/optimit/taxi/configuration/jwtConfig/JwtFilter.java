@@ -57,11 +57,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             }
         } catch(ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
-                 IllegalArgumentException e) {
+                 IllegalArgumentException | IOException e) {
             resolver.resolveException(request, response, null, e);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

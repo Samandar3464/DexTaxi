@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class AllowedAnnouncementResponsePassenger {
+
     private UUID userId;
 
     private String fullName;

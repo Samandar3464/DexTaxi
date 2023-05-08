@@ -3,6 +3,7 @@ package uz.optimit.taxi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import uz.optimit.taxi.entity.Enum.NotificationType;
 import uz.optimit.taxi.model.request.NotificationRequestDto;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,8 @@ public class Notification {
 
     private String receiverToken;
 
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
     @ManyToMany
     private List<Seat> carSeats;
 
@@ -46,12 +49,13 @@ public class Notification {
     @JsonIgnore
     private User user;
 
-    public static Notification from(NotificationRequestDto notificationRequestDto ){
+    public static Notification from(NotificationRequestDto notificationRequestDto){
         return Notification.builder()
                 .receiverId(notificationRequestDto.getReceiverId())
                 .announcementDriverId(notificationRequestDto.getAnnouncementDriverId())
                 .announcementPassengerId(notificationRequestDto.getAnnouncementPassengerId())
                 .createdTime(LocalDateTime.now())
+                .notificationType(notificationRequestDto.getNotificationType())
                 .received(false)
                 .read(false)
                 .active(true)
