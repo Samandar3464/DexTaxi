@@ -255,8 +255,8 @@ public class NotificationService {
     public ApiResponse getAcceptedNotificationForDriver() {
         User receiver = userService.checkUserExistByContext();
 
-        List<Notification> passengerAccepted = notificationRepository.findAllBySenderIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(),NotificationType.PASSENGER);
-        List<Notification> driverAccepted = notificationRepository.findAllByReceiverIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(),NotificationType.DRIVER);
+        List<Notification> passengerAccepted = notificationRepository.findAllBySenderIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(), NotificationType.PASSENGER);
+        List<Notification> driverAccepted = notificationRepository.findAllByReceiverIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(), NotificationType.DRIVER);
         List<AllowedAnnouncementResponseForDriver> allowedAnnouncementResponseForDrivers = new ArrayList<>();
 
         passengerAccepted.forEach(obj ->
@@ -272,12 +272,6 @@ public class NotificationService {
                                 userService.checkUserExistById(obj.getSenderId()), obj,
                                 announcementPassengerRepository.findById(obj.getAnnouncementPassengerId())
                                         .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND)))));
-
-//        List<AnnouncementPassenger> announcementPassengers = new ArrayList<>();
-//        User sender = userService.checkUserExistById(notification.getSenderId());
-//        AnnouncementPassenger announcementPassenger = announcementPassengerRepository.findById(notification.getAnnouncementPassengerId())
-//                .orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
-//        AllowedAnnouncementResponseForDriver from = AllowedAnnouncementResponseForDriver.fromForDriver(sender, notification, announcementPassenger);
         return new ApiResponse(allowedAnnouncementResponseForDrivers, true);
     }
 
@@ -285,8 +279,8 @@ public class NotificationService {
     public ApiResponse getAcceptedNotificationForPassenger() {
         User receiver = userService.checkUserExistByContext();
         List<AllowedAnnouncementResponsePassenger> allowedAnnouncementResponsePassengers = new ArrayList<>();
-        List<Notification> driverAccepted = notificationRepository.findAllBySenderIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(),NotificationType.DRIVER);
-        List<Notification> passengerAccepted = notificationRepository.findAllByReceiverIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(),NotificationType.PASSENGER);
+        List<Notification> driverAccepted = notificationRepository.findAllBySenderIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(), NotificationType.DRIVER);
+        List<Notification> passengerAccepted = notificationRepository.findAllByReceiverIdAndReceivedTrueAndNotificationTypeOrderByCreatedTimeDesc(receiver.getId(), NotificationType.PASSENGER);
 
         driverAccepted.forEach(obj ->
                 allowedAnnouncementResponsePassengers.add(
