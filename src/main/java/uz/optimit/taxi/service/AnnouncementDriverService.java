@@ -81,7 +81,7 @@ public class AnnouncementDriverService {
         AnnouncementDriver announcementDriver = repository.findByIdAndActive(id,true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(() ->
                 new CarNotFound(CAR_NOT_FOUND));
-        List<Notification> notifications = notificationRepository.findByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
+        List<Notification> notifications = notificationRepository.findAllByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
         List<Familiar> familiars = new ArrayList<>();
         notifications.forEach(obj ->
                 familiars.addAll(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), false)
@@ -94,7 +94,7 @@ public class AnnouncementDriverService {
         AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(() ->
                 new CarNotFound(CAR_NOT_FOUND));
-        List<Notification> notifications = notificationRepository.findByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
+        List<Notification> notifications = notificationRepository.findAllByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
         List<Familiar> familiars = new ArrayList<>();
         notifications.forEach(obj ->
                 familiars.addAll(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), false)
@@ -126,7 +126,7 @@ public class AnnouncementDriverService {
         User user = userService.checkUserExistByContext();
         List<AnnouncementDriver> allByActive = repository.findAllByUserIdAndActive(user.getId(), false);
 
-        List<Notification> notifications = notificationRepository.findByAnnouncementDriverIdAndActiveAndReceived(allByActive.get(0).getId(), false, true);
+        List<Notification> notifications = notificationRepository.findAllByAnnouncementDriverIdAndActiveAndReceived(allByActive.get(0).getId(), false, true);
         List<Familiar> familiars = new ArrayList<>();
         notifications.forEach(obj ->
                 familiars.addAll(announcementPassengerRepository.findByUserIdAndActive(obj.getAnnouncementPassengerId(), true).get().getPassengersList()));
