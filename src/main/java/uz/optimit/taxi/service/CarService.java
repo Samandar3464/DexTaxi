@@ -3,6 +3,7 @@ package uz.optimit.taxi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AutoModel;
 import uz.optimit.taxi.entity.Car;
@@ -11,6 +12,7 @@ import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
+import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.response.CarResponseDto;
 import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.AutoModelRepository;
@@ -28,13 +30,9 @@ import static uz.optimit.taxi.entity.Enum.Constants.*;
 public class CarService {
 
     private final CarRepository carRepository;
-
     private final AttachmentService attachmentService;
-
     private final AutoModelRepository autoModelRepository;
-
     private final UserService userService;
-
     private final SeatService seatService;
 
     @ResponseStatus(HttpStatus.OK)
@@ -47,9 +45,8 @@ public class CarService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse disActiveCarList() {
-        List<Car> allByActive = carRepository.findAllByActive(false);
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
-        allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
+        carRepository.findAllByActive(false).forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(carResponseDtoList, true);
     }
 
@@ -112,4 +109,5 @@ public class CarService {
         carRepository.save(byId);
         return new ApiResponse(DELETED, true);
     }
+
 }
