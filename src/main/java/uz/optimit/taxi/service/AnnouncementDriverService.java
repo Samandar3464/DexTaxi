@@ -124,7 +124,7 @@ public class AnnouncementDriverService {
         List<Notification> notifications = notificationRepository.findAllByAnnouncementDriverIdAndActiveAndReceived(allByActive.get(0).getId(), false, true);
         List<Familiar> familiars = new ArrayList<>();
         notifications.forEach(obj ->
-                familiars.addAll(announcementPassengerRepository.findByUserIdAndActive(obj.getAnnouncementPassengerId(), true).get().getPassengersList()));
+                familiars.addAll(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), false).get().getPassengersList()));
 
 
         List<AnnouncementDriverResponse> response = new ArrayList<>();
