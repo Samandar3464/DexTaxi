@@ -27,8 +27,8 @@ public class CountMassageController {
         return countMassageService.getAllMassagesCountByDate(countMassageRequest);
     }
 
-    @GetMapping("/getByPhone")
-    public ApiResponse getByPhone(){
-        return countMassageService.getAllMassagesCountByPhoneNumbers();
-    }
+//    @GetMapping("/getByPhone")
+//    public ApiResponse getByPhone(){
+//        return countMassageService.getAllMassagesCountByPhoneNumbers();
+//    }
 }

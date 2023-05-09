@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.service.AuthService;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             }
         } catch(ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException |
-                 IllegalArgumentException | IOException e) {
+                IllegalArgumentException | IOException | UserNotFoundException e) {
             resolver.resolveException(request, response, null, e);
         }
     }
