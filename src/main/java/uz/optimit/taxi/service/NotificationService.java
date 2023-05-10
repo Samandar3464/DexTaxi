@@ -245,7 +245,7 @@ public class NotificationService {
         announcementDriverRepository.save(announcementDriver);
         announcementPassengerRepository.save(announcementPassenger);
 
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.afterAgreeRequestForPassenger(driver.getFireBaseToken());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.afterAgreeRequestForPassenger(passenger.getFireBaseToken());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(YOU_ACCEPTED_REQUEST, true);
     }
