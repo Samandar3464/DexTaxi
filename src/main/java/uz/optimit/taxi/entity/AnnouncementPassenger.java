@@ -73,6 +73,7 @@ public class AnnouncementPassenger {
                 .info(announcementRequestDto.getInfo())
                 .createdTime(LocalDateTime.now())
                 .price(announcementRequestDto.getPrice())
+                .baggage(announcementRequestDto.isBaggage())
                 .active(true)
                 .build();
     }
