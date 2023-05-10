@@ -51,7 +51,8 @@ public class UserController {
      }
 
      @PutMapping("/block/{id}")
-     public ApiResponse blockRegionById(@PathVariable UUID id) {
+     @PreAuthorize("hasAnyRole('ADMIN')")
+     public ApiResponse blockUserById(@PathVariable UUID id) {
           return userService.deleteUserByID(id);
      }
 
@@ -61,6 +62,7 @@ public class UserController {
      }
 
      @PutMapping("/update")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
      public ApiResponse update(@ModelAttribute  UserRegisterDto userRegisterDto){
           return userService.updateUser(userRegisterDto);
      }

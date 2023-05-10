@@ -19,11 +19,12 @@ import uz.optimit.taxi.configuration.jwtConfig.JwtFilter;
 public class SecurityConfiguration {
 
     private final String[] WHITE_LINE = new String[]{
-            "/**",
-//            "/api/v1/driver/**",
-//            "/api/v1/passenger/**",
+//            "/**",
+            "/api/v1/city/**",
+            "/api/v1/region/**",
+            "/api/v1/driver/**",
+            "/api/v1/passenger/**",
             "/api/v1/user/**",
-            "/static/image/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
     };
