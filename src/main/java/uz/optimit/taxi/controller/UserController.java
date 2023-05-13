@@ -67,6 +67,18 @@ public class UserController {
           return userService.updateUser(userRegisterDto);
      }
 
+     @PostMapping("/changePassword")
+     public ApiResponse changePassword(
+         @RequestParam String number,
+         @RequestParam String password
+     ) {
+          return userService.changePassword(number,password);
+     }
+
+     @PostMapping("/forgetPassword")
+     public ApiResponse forgetPassword(@RequestBody String number) {
+          return userService.forgetPassword(number);
+     }
 
 
 }
