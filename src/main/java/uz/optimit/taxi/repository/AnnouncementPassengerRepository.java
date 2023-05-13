@@ -10,12 +10,19 @@ import java.util.UUID;
 
 public interface AnnouncementPassengerRepository extends JpaRepository<AnnouncementPassenger, UUID> {
 
-//     List<AnnouncementPassenger> findAllByFromRegionIdAndToRegionIdAndTimeToTravelDayOfMonthAndActive(Integer fromRegion_id, Integer toRegion_id, int timeToTravel_dayOfMonth, boolean active);
-     List<AnnouncementPassenger> findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc(boolean active, Integer fromRegion_id, Integer toRegion_id, LocalDateTime timeToTravel, LocalDateTime timeToTravel2);
-     Optional<AnnouncementPassenger> findByIdAndActive(UUID id,boolean Active);
+    List<AnnouncementPassenger> findAllByUserIdAndActiveAndTimeToTravelAfter(UUID user_id, boolean active, LocalDateTime timeToTravel);
 
-     Optional<AnnouncementPassenger> findByUserIdAndActive(UUID user_id, boolean active);
-     List<AnnouncementPassenger> findAllByActive(boolean Active);
+    List<AnnouncementPassenger> findAllByActiveTrueAndTimeToTravelAfterOrderByCreatedTimeDesc(LocalDateTime timeToTravel);
+
+    List<AnnouncementPassenger> findAllByActiveTrueAndFromRegionIdAndToRegionIdAndTimeToTravelAfterAndTimeToTravelBetweenOrderByCreatedTimeDesc(Integer fromRegion_id, Integer toRegion_id, LocalDateTime timeToTravel, LocalDateTime timeToTravel2, LocalDateTime timeToTravel3);
+
+    List<AnnouncementPassenger> findAllByActiveAndFromRegionIdAndToRegionIdAndTimeToTravelBetweenOrderByCreatedTimeDesc(boolean active, Integer fromRegion_id, Integer toRegion_id, LocalDateTime timeToTravel, LocalDateTime timeToTravel2);
+
+    Optional<AnnouncementPassenger> findByIdAndActive(UUID id, boolean Active);
+
+    Optional<AnnouncementPassenger> findByUserIdAndActive(UUID user_id, boolean active);
+
+//    List<AnnouncementPassenger> findAllByActive(boolean Active);
 
     List<AnnouncementPassenger> findAllByUserIdAndActive(UUID id, boolean active);
 }

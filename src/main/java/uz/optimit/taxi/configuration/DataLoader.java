@@ -6,8 +6,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import uz.optimit.taxi.entity.*;
+import uz.optimit.taxi.entity.Enum.Gender;
 import uz.optimit.taxi.repository.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -32,35 +35,30 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         if (initMode.equals("always")) {
-            if (roleRepository.findAll().isEmpty()) {
-                Role admim = new Role(1, ADMIN);
-                Role yolovchi = new Role(2, PASSENGER);
-                Role haydovchi = new Role(3, DRIVER);
-                roleRepository.saveAll(List.of(admim, yolovchi, haydovchi));
-            }
+            Role admim = new Role(1, ADMIN);
+            Role save15 = roleRepository.save(admim);
+            Role yolovchi = new Role(2, PASSENGER);
+            Role save16 = roleRepository.save(yolovchi);
+            Role haydovchi = new Role(3, DRIVER);
+            Role save17 = roleRepository.save(haydovchi);
 
-//            if (!userRepository.existsByPhone("906163464")) {
-//                User admin = User.builder()
-//                        .fullName("ADMIN")
-//                        .phone("906163464")
-//                        .birthDate(LocalDate.parse("1998-05-13"))
-//                        .gender(Gender.ERKAK)
-//                        .registeredDate(LocalDateTime.now())
-//                        .verificationCode(0)
-//                        .verificationCodeLiveTime(null)
-//                        .password(passwordEncoder.encode("111111"))
-//                        .roles(List.of(roleRepository.getById(1), roleRepository.getById(2), roleRepository.getById(3)))
-//                        .status(statusRepository.save(new Status(5,1)))
-//                        .isBlocked(true)
-//                        .build();
-//                userRepository.save(admin);
-//            }
+            User admin = User.builder()
+                    .fullName("ADMIN")
+                    .phone("111111111")
+                    .birthDate(LocalDate.parse("1998-05-13"))
+                    .gender(Gender.ERKAK)
+                    .registeredDate(LocalDateTime.now())
+                    .verificationCode(0)
+                    .verificationCodeLiveTime(null)
+                    .password(passwordEncoder.encode("111111"))
+                    .isBlocked(true)
+                    .build();
+            User save = userRepository.save(admin);
+            statusRepository.save(Status.builder().user(save).stars(5L).count(1L).build());
+            save.setRoles(List.of(save15, save16, save17));
+            userRepository.save(save);
 
 
-            if (!regionRepository.existsByNameIn(List.of(
-                    "Toshkent shahri", "Toshkent viloyati", "Andijon", "Buxoro"
-                    , "Farg`ona", "Qoraqalpog‘iston", "Jizzax", "Navoiy", "Namangan"
-                    , "Samarqand", "Surxondaryo", "Sirdaryo", "Xorazm"))) {
                 List<Region> regions = List.of(
                         new Region(1, "Toshkent shahri")
                         , new Region(2, "Toshkent viloyati")
@@ -380,4 +378,3 @@ public class DataLoader implements CommandLineRunner {
             autoModelRepository.saveAll(List.of(autoModel18, autoModel19));
         }
     }
-}

@@ -52,7 +52,6 @@ public class NotificationService {
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_PASSENGER);
         notificationRequestDto.setNotificationType(NotificationType.DRIVER);
         Notification notification = from(notificationRequestDto, user);
-//        UserResponseDto userResponseDto = UserResponseDto.fromForDriver(user, attachmentService.attachDownloadUrl, announcementPassengerRepository,notification.getId());
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto, notification.getReceiverToken());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
@@ -89,7 +88,7 @@ public class NotificationService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerPostedNotification() {
         User user = userService.checkUserExistByContext();
-        List<Notification> notifications = notificationRepository.findAllBySenderIdAndActiveAndReceived(user.getId(), true, false);
+        List<Notification> notifications = notificationRepository.findAllBySenderIdAndActiveAndReceivedAndNotificationType(user.getId(), true, false,NotificationType.DRIVER);
 
         List<AnnouncementDriver> announcementDrivers = new ArrayList<>();
         notifications.forEach(obj -> announcementDrivers.add(announcementDriverRepository.findByIdAndActive(obj.getAnnouncementDriverId(), true)
@@ -105,7 +104,7 @@ public class NotificationService {
         User user = userService.checkUserExistByContext();
 
         List<Notification> notification = notificationRepository
-                .findAllBySenderIdAndActiveAndReceived(user.getId(), true, false);
+                .findAllBySenderIdAndActiveAndReceivedAndNotificationType(user.getId(), true, false,NotificationType.PASSENGER);
 
         List<AnnouncementPassenger> announcementPassengers = new ArrayList<>();
         notification.forEach(obj -> announcementPassengers.add(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), true)

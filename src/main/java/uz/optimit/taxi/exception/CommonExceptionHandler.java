@@ -146,9 +146,9 @@ public class CommonExceptionHandler {
                 , null);
     }
 
-    @ExceptionHandler(FirebaseMessagingException.class)
+    @ExceptionHandler(FirebaseConnectionException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponse notEnoughNotException(FirebaseMessagingException e) {
+    public ApiResponse notEnoughNotException(FirebaseConnectionException e) {
         return new ApiResponse(
                 FIREBASE_EXCEPTION
                 , false
