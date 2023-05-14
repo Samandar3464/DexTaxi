@@ -29,10 +29,9 @@ public class SmsService {
 
 
     private final TokenRepository tokenRepository;
-
     private final RestTemplate restTemplate;
-
     private final ObjectMapper objectMapper;
+
     private static final String userEmail = "samandarshodmonov1998@gmail.com";
     private final static String userSecret = "TaEotaLMYaUqqGTgTrzjGnmIFo7whQfaf82vMU8o";
 
@@ -41,6 +40,7 @@ public class SmsService {
     private static final String SMS_SEND = "https://notify.eskiz.uz/api/message/sms/send";
 
     public String getToken() {
+
         try {
             Map<String, String> requestBody = new HashMap<>();
             requestBody.put("email", userEmail);
@@ -55,7 +55,7 @@ public class SmsService {
             if (all.isEmpty()) {
                 token = tokenRepository.save(build);
             } else {
-                token.setId( all.get(0).getId());
+                token.setId(all.get(0).getId());
                 token.setToken(build.getToken());
                 token = tokenRepository.save(token);
             }
@@ -94,6 +94,7 @@ public class SmsService {
                 HttpHeaders headers1 = request.getHeaders();
                 headers1.setBearerAuth(token);
                 ResponseEntity<String> response = restTemplate.postForEntity(SMS_SEND, request, String.class);
+//                return objectMapper.readValue(response.getBody(), SmsResponse.class);
             } catch (Exception e1) {
                 throw new SmsSendingFailException(CAN_NOT_SEND_SMS);
             }
