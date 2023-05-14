@@ -43,6 +43,11 @@ public class UserController {
      public ApiResponse getUserById(@PathVariable UUID id){
          return userService.getByUserId(id);
      }
+     @GetMapping("/getByToken")
+     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+     public ApiResponse checkUserResponseExistById(){
+         return userService.checkUserResponseExistById();
+     }
 
      @PostMapping("/setStatus")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
@@ -63,8 +68,8 @@ public class UserController {
 
      @PutMapping("/update")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse update(@ModelAttribute  UserRegisterDto userRegisterDto){
-          return userService.updateUser(userRegisterDto);
+     public ApiResponse update(@ModelAttribute  UserUpdateDto userUpdateDto){
+          return userService.updateUser(userUpdateDto);
      }
 
      @PostMapping("/changePassword")

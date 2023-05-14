@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
 import uz.optimit.taxi.configuration.jwtConfig.JwtGenerate;
 import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -22,12 +21,9 @@ import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.model.response.TokenResponse;
 import uz.optimit.taxi.model.response.UserResponseDto;
-import uz.optimit.taxi.repository.FamiliarRepository;
-import uz.optimit.taxi.repository.RoleRepository;
-import uz.optimit.taxi.repository.StatusRepository;
-import uz.optimit.taxi.repository.UserRepository;
+import uz.optimit.taxi.model.response.UserUpdateResponse;
+import uz.optimit.taxi.repository.*;
 import uz.optimit.taxi.entity.CountMassage;
-import uz.optimit.taxi.repository.CountMassageRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +38,7 @@ import static uz.optimit.taxi.entity.Enum.Constants.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AnnouncementPassengerRepository announcementPassengerRepository;
     private final AttachmentService attachmentService;
     private final JwtGenerate jwtGenerate;
     private final PasswordEncoder passwordEncoder;
@@ -118,6 +115,16 @@ public class UserService {
         }
         User user = (User) authentication.getPrincipal();
         return userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse checkUserResponseExistById() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            throw new UserNotFoundException(USER_NOT_FOUND);
+        }
+        User user = (User) authentication.getPrincipal();
+        User user1 = userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        return new ApiResponse(UserUpdateResponse.fromDriver(user1,attachmentService.attachDownloadUrl),true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -199,14 +206,14 @@ public class UserService {
 
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateUser(UserRegisterDto userRegisterDto){
+    public ApiResponse updateUser(UserUpdateDto userRegisterDto){
         User user = checkUserExistByContext();
-        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+//        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         user.setFullName(userRegisterDto.getFullName());
         user.setPhone(userRegisterDto.getPhone());
         user.setGender(userRegisterDto.getGender());
         attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
-        user.setBirthDate(userRegisterDto.getBirthDate());
+        user.setBirthDate(userRegisterDto.getBrithDay());
         userRepository.save(user);
         return new ApiResponse(SUCCESSFULLY,true);
     }
