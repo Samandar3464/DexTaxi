@@ -21,6 +21,7 @@ import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.model.response.TokenResponse;
 import uz.optimit.taxi.model.response.UserResponseDto;
+import uz.optimit.taxi.model.response.UserUpdateResponse;
 import uz.optimit.taxi.repository.*;
 import uz.optimit.taxi.entity.CountMassage;
 
@@ -123,7 +124,7 @@ public class UserService {
         }
         User user = (User) authentication.getPrincipal();
         User user1 = userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        return new ApiResponse(UserResponseDto.from(user1,attachmentService.attachDownloadUrl,announcementPassengerRepository),true);
+        return new ApiResponse(UserUpdateResponse.fromDriver(user1,attachmentService.attachDownloadUrl),true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -205,14 +206,14 @@ public class UserService {
 
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateUser(UserRegisterDto userRegisterDto){
+    public ApiResponse updateUser(UserUpdateDto userRegisterDto){
         User user = checkUserExistByContext();
-        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+//        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         user.setFullName(userRegisterDto.getFullName());
         user.setPhone(userRegisterDto.getPhone());
         user.setGender(userRegisterDto.getGender());
         attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
-        user.setBirthDate(userRegisterDto.getBirthDate());
+        user.setBirthDate(userRegisterDto.getBrithDay());
         userRepository.save(user);
         return new ApiResponse(SUCCESSFULLY,true);
     }

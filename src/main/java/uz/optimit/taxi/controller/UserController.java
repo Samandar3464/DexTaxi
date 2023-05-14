@@ -68,8 +68,8 @@ public class UserController {
 
      @PutMapping("/update")
      @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
-     public ApiResponse update(@ModelAttribute  UserRegisterDto userRegisterDto){
-          return userService.updateUser(userRegisterDto);
+     public ApiResponse update(@ModelAttribute  UserUpdateDto userUpdateDto){
+          return userService.updateUser(userUpdateDto);
      }
 
      @PostMapping("/changePassword")
