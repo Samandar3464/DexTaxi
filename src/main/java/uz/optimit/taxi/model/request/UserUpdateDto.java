@@ -21,10 +21,6 @@ public class UserUpdateDto {
 
      private String fullName;
 
-     @NotBlank
-     @Size(min = 9, max = 9)
-     private String phone;
-
      private LocalDate brithDay;
 
      @Enumerated(EnumType.STRING)

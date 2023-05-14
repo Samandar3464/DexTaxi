@@ -23,7 +23,6 @@ import uz.optimit.taxi.model.response.TokenResponse;
 import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.model.response.UserUpdateResponse;
 import uz.optimit.taxi.repository.*;
-import uz.optimit.taxi.entity.CountMassage;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,7 +61,7 @@ public class UserService {
 //                .fromForDriver(4546)
 //                .callback_url("http://0000.uz/test.php")
 //                .build());
-        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(),1,LocalDateTime.now()));
+        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
@@ -116,6 +115,7 @@ public class UserService {
         User user = (User) authentication.getPrincipal();
         return userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
+
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse checkUserResponseExistById() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -124,7 +124,7 @@ public class UserService {
         }
         User user = (User) authentication.getPrincipal();
         User user1 = userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        return new ApiResponse(UserUpdateResponse.fromDriver(user1,attachmentService.attachDownloadUrl),true);
+        return new ApiResponse(UserUpdateResponse.fromDriver(user1, attachmentService.attachDownloadUrl), true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -206,40 +206,44 @@ public class UserService {
 
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateUser(UserUpdateDto userRegisterDto){
+    public ApiResponse updateUser(UserUpdateDto userRegisterDto) {
         User user = checkUserExistByContext();
-//        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         user.setFullName(userRegisterDto.getFullName());
-        user.setPhone(userRegisterDto.getPhone());
         user.setGender(userRegisterDto.getGender());
-        attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
+        if (userRegisterDto.getProfilePhoto() != null) {
+            Attachment attachment = attachmentService.saveToSystem(userRegisterDto.getProfilePhoto());
+            if (user.getProfilePhoto() != null) {
+                attachmentService.deleteNewNameId(user.getProfilePhoto().getNewName()+"."+user.getProfilePhoto().getType());
+            }
+            user.setProfilePhoto(attachment);
+        }
         user.setBirthDate(userRegisterDto.getBrithDay());
         userRepository.save(user);
-        return new ApiResponse(SUCCESSFULLY,true);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse forgetPassword(String number){
+    public ApiResponse forgetPassword(String number) {
         User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         Integer verificationCode = verificationCodeGenerator();
-        System.out.println("Verification code: "+verificationCode);
+        System.out.println("Verification code: " + verificationCode);
         service.sendSms(SmsModel.builder()
                 .mobile_phone(user.getPhone())
-                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode +"Yo'lingiz bexatar  bo'lsin")
+                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + "Yo'lingiz bexatar  bo'lsin")
                 .from(4546)
                 .callback_url("http://0000.uz/test.php")
                 .build());
-        countMassageRepository.save(new CountMassage(user.getPhone(),1,LocalDateTime.now()));
-        return new ApiResponse("Verification code: "+verificationCode,true,user);
+        countMassageRepository.save(new CountMassage(user.getPhone(), 1, LocalDateTime.now()));
+        return new ApiResponse("Verification code: " + verificationCode, true, user);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse changePassword(String number,String password){
+    public ApiResponse changePassword(String number, String password) {
         User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        return new ApiResponse(user,true);
+        return new ApiResponse(user, true);
     }
 }
 

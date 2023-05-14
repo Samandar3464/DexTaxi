@@ -17,7 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
 
@@ -77,33 +79,6 @@ public class AttachmentService {
 
     }
 
-    public Attachment saveToSystem(MultipartFile file,UUID id) {
-        try {
-            String pathFolder = getYearMonthDay();
-            File folder = new File(attachUploadFolder + pathFolder);
-            if (!folder.exists()) folder.mkdirs();
-            String fileName = UUID.randomUUID().toString();
-            String extension = getExtension(file.getOriginalFilename());
-
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
-            Files.write(path, bytes).toFile();
-
-            Attachment entity = new Attachment();
-            entity.setId(id);
-            entity.setNewName(fileName);
-            entity.setOriginName(file.getOriginalFilename());
-            entity.setType(extension);
-            entity.setPath(pathFolder);
-            entity.setSize(file.getSize());
-            entity.setContentType(file.getContentType());
-
-            return attachmentRepository.save(entity);
-        } catch (IOException e) {
-            throw new FileUploadException(FILE_COULD_NOT_UPLOADED);
-        }
-
-    }
 
     //    Ko'plab filelar kelsa saqlab beradi
     public List<Attachment> saveToSystemListFile(List<MultipartFile> fileList) {
@@ -121,10 +96,10 @@ public class AttachmentService {
     }
 
     public String getUrl(Attachment attachment) {
-        if (attachment!=null){
+        if (attachment != null) {
             return attachDownloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
-        }else {
-            return attachDownloadUrl+"avatar.png";
+        } else {
+            return attachDownloadUrl + "avatar.png";
         }
     }
 
@@ -144,7 +119,7 @@ public class AttachmentService {
         return attachmentRepository.findByNewName(newName).orElseThrow(() -> new RecordNotFoundException(FILE_NOT_FOUND));
     }
 
-//    File systendan ochirib tashlaydi
+    //    File systendan ochirib tashlaydi
     public ApiResponse deleteNewNameId(String fileName) {
         try {
             Attachment entity = getAttachment(fileName);
@@ -152,9 +127,8 @@ public class AttachmentService {
             Files.delete(file);
             attachmentRepository.deleteById(entity.getId());
             return new ApiResponse(DELETED, true);
-        } catch (
-                IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RecordNotFoundException(FILE_NOT_FOUND);
         }
     }
 }

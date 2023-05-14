@@ -1,5 +1,9 @@
 package uz.optimit.taxi.model.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +24,7 @@ public class UserUpdateResponse {
     private UUID id;
     private String fullName;
     private String phone;
-    private LocalDate brithDay;
+    private String brithDay;
     private Gender gender;
     private String profilePhotoUrl;
 
@@ -38,7 +42,7 @@ public class UserUpdateResponse {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .phone(user.getPhone())
-                .brithDay(user.getBirthDate())
+                .brithDay(user.getBirthDate().toString())
                 .gender(user.getGender())
                 .profilePhotoUrl(photoLink)
                 .build();
