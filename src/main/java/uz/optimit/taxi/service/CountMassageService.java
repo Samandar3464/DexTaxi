@@ -10,6 +10,7 @@ import uz.optimit.taxi.model.request.CountMassageRequest;
 import uz.optimit.taxi.model.response.CountResponse;
 import uz.optimit.taxi.repository.CountMassageRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,8 +29,4 @@ public class CountMassageService {
         Integer counted = countMassageRepository.countAllBySandedTimeBetween(countMassageRequest.getTime1(), countMassageRequest.getTime2());
         return new ApiResponse(counted,true);
     }
-//    public ApiResponse getAllMassagesCountByPhoneNumbers(){
-//        List<CountResponse> countMassages = countMassageRepository.countCountMassage();
-//        return new ApiResponse(countMassages,true);
-//    }
 }

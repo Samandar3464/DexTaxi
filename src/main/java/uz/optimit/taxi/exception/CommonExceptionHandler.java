@@ -93,14 +93,14 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
-    @ExceptionHandler(value = {FirebaseConnectionException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiResponse handleFireBaseConnectionException(FirebaseConnectionException e) {
-        return new ApiResponse(
-                e.getMessage()
-                , false
-                , null);
-    }
+//    @ExceptionHandler(value = {FirebaseConnectionException.class})
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    public ApiResponse handleFireBaseConnectionException(FirebaseConnectionException e) {
+//        return new ApiResponse(
+//                e.getMessage()
+//                , false
+//                , null);
+//    }
     @ExceptionHandler(value = {InputException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse handleInputException(InputException e) {
