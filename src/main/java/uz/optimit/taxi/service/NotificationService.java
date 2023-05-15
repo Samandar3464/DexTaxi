@@ -14,10 +14,7 @@ import uz.optimit.taxi.model.request.NotificationRequestDto;
 import uz.optimit.taxi.model.response.*;
 import uz.optimit.taxi.repository.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
 
@@ -297,6 +294,20 @@ public class NotificationService {
         notification.setRead(true);
         notificationRepository.save(notification);
         return new ApiResponse(SUCCESSFULLY, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse checkUserHaveAnnouncement(){
+        User user = userService.checkUserExistByContext();
+        Optional<AnnouncementPassenger> byUserIdAndActive = announcementPassengerRepository.findByUserIdAndActive(user.getId(), true);
+        if (byUserIdAndActive.isPresent()){
+            return new ApiResponse("PASSENGER_ANNOUNCEMENT",true);
+        }
+        Optional<AnnouncementDriver> byUserIdAndActive1 = announcementDriverRepository.findByUserIdAndActive(user.getId(), true);
+        if (byUserIdAndActive1.isPresent()){
+            return new ApiResponse("DRIVER_ANNOUNCEMENT",true);
+        }
+        return new ApiResponse(ANNOUNCEMENT_NOT_FOUND,false);
     }
 
     private Notification getNotification(User user1, User user2) {

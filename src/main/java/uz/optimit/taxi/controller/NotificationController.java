@@ -81,9 +81,15 @@ public class NotificationController {
     }
 
 
-    @GetMapping("changeToRead/{id}")
+    @GetMapping("/changeToRead/{id}")
     @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
     public ApiResponse changeToRead(@PathVariable UUID id){
        return notificationService.changeToRead(id);
+    }
+
+    @GetMapping("/existAnnouncement")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse existAnnouncement(){
+        return notificationService.checkUserHaveAnnouncement();
     }
 }

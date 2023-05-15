@@ -2,6 +2,9 @@ package uz.optimit.taxi.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +28,7 @@ import uz.optimit.taxi.model.response.UserUpdateResponse;
 import uz.optimit.taxi.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +41,6 @@ import static uz.optimit.taxi.entity.Enum.Constants.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AnnouncementPassengerRepository announcementPassengerRepository;
     private final AttachmentService attachmentService;
     private final JwtGenerate jwtGenerate;
     private final PasswordEncoder passwordEncoder;
@@ -55,13 +58,13 @@ public class UserService {
             throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
-        service.sendSms(SmsModel.builder()
-                .mobile_phone(userRegisterDto.getPhone())
-                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + ". Yo'linggiz bexatar  bo'lsin.")
-                .from(4546)
-                .callback_url("http://0000.uz/test.php")
-                .build());
-        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
+//        service.sendSms(SmsModel.builder()
+//                .mobile_phone(userRegisterDto.getPhone())
+//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + ". Yo'linggiz bexatar  bo'lsin.")
+//                .from(4546)
+//                .callback_url("http://0000.uz/test.php")
+//                .build());
+//        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
@@ -232,6 +235,15 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         return new ApiResponse(user, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getUserList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> all = userRepository.findAll(pageable);
+        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
+        all.forEach(obj -> userResponseDtoList.add(UserResponseDto.fromDriver(obj, attachmentService.attachDownloadUrl)));
+        return new ApiResponse(userResponseDtoList, true);
     }
 }
 

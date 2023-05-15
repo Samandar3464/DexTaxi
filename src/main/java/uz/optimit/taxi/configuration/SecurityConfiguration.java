@@ -10,7 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import uz.optimit.taxi.configuration.jwtConfig.JwtFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -19,7 +22,7 @@ import uz.optimit.taxi.configuration.jwtConfig.JwtFilter;
 public class SecurityConfiguration {
 
     private final String[] WHITE_LINE = new String[]{
-//            "/**",
+            "/**",
             "/api/v1/city/**",
             "/api/v1/region/**",
             "/api/v1/driver/**",
@@ -34,6 +37,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOriginPatterns(List.of("*"));
+                    configuration.setAllowedMethods(List.of("GET", "POST",  "PUT", "DELETE", "PATCH"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setAllowCredentials(true);
+                    return configuration;
+                })
+                .and()
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
