@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AutoModel;
 import uz.optimit.taxi.entity.Car;
@@ -14,7 +13,6 @@ import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
-import uz.optimit.taxi.model.request.UserRegisterDto;
 import uz.optimit.taxi.model.response.CarResponseDto;
 import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.AutoModelRepository;
@@ -22,7 +20,6 @@ import uz.optimit.taxi.repository.CarRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
