@@ -68,7 +68,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
     public ApiResponse handleUserNotFoundException(UserAlreadyExistException e) {
         return new ApiResponse(
                 USER_ALREADY_EXIST
@@ -93,14 +93,14 @@ public class CommonExceptionHandler {
                 , false
                 , null);
     }
-    @ExceptionHandler(value = {FirebaseConnectionException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiResponse handleFireBaseConnectionException(FirebaseConnectionException e) {
-        return new ApiResponse(
-                e.getMessage()
-                , false
-                , null);
-    }
+//    @ExceptionHandler(value = {FirebaseConnectionException.class})
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    public ApiResponse handleFireBaseConnectionException(FirebaseConnectionException e) {
+//        return new ApiResponse(
+//                e.getMessage()
+//                , false
+//                , null);
+//    }
     @ExceptionHandler(value = {InputException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse handleInputException(InputException e) {
@@ -146,9 +146,9 @@ public class CommonExceptionHandler {
                 , null);
     }
 
-    @ExceptionHandler(FirebaseMessagingException.class)
+    @ExceptionHandler(FirebaseConnectionException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponse notEnoughNotException(FirebaseMessagingException e) {
+    public ApiResponse notEnoughNotException(FirebaseConnectionException e) {
         return new ApiResponse(
                 FIREBASE_EXCEPTION
                 , false

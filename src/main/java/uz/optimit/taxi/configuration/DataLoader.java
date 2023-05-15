@@ -35,14 +35,12 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         if (initMode.equals("always")) {
-            
             Role admim = new Role(1, ADMIN);
             Role save15 = roleRepository.save(admim);
             Role yolovchi = new Role(2, PASSENGER);
             Role save16 = roleRepository.save(yolovchi);
             Role haydovchi = new Role(3, DRIVER);
             Role save17 = roleRepository.save(haydovchi);
-
 
             User admin = User.builder()
                     .fullName("ADMIN")
@@ -61,10 +59,6 @@ public class DataLoader implements CommandLineRunner {
             userRepository.save(save);
 
 
-            if (!regionRepository.existsByNameIn(List.of(
-                    "Toshkent shahri", "Toshkent viloyati", "Andijon", "Buxoro"
-                    , "Farg`ona", "Qoraqalpog‘iston", "Jizzax", "Navoiy", "Namangan"
-                    , "Samarqand", "Surxondaryo", "Sirdaryo", "Xorazm"))) {
                 List<Region> regions = List.of(
                         new Region(1, "Toshkent shahri")
                         , new Region(2, "Toshkent viloyati")
@@ -384,4 +378,3 @@ public class DataLoader implements CommandLineRunner {
             autoModelRepository.saveAll(List.of(autoModel18, autoModel19));
         }
     }
-}

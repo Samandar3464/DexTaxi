@@ -2,6 +2,9 @@ package uz.optimit.taxi.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
 import uz.optimit.taxi.configuration.jwtConfig.JwtGenerate;
 import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
@@ -22,14 +24,11 @@ import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.model.response.TokenResponse;
 import uz.optimit.taxi.model.response.UserResponseDto;
-import uz.optimit.taxi.repository.FamiliarRepository;
-import uz.optimit.taxi.repository.RoleRepository;
-import uz.optimit.taxi.repository.StatusRepository;
-import uz.optimit.taxi.repository.UserRepository;
-import uz.optimit.taxi.entity.CountMassage;
-import uz.optimit.taxi.repository.CountMassageRepository;
+import uz.optimit.taxi.model.response.UserUpdateResponse;
+import uz.optimit.taxi.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,11 +60,11 @@ public class UserService {
         Integer verificationCode = verificationCodeGenerator();
 //        service.sendSms(SmsModel.builder()
 //                .mobile_phone(userRegisterDto.getPhone())
-//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode ., Yo'linggiz behatar  bo'lsin.)
-//                .fromForDriver(4546)
+//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + ". Yo'linggiz bexatar  bo'lsin.")
+//                .from(4546)
 //                .callback_url("http://0000.uz/test.php")
 //                .build());
-        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(),1,LocalDateTime.now()));
+//        countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
@@ -118,6 +117,17 @@ public class UserService {
         }
         User user = (User) authentication.getPrincipal();
         return userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse checkUserResponseExistById() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            throw new UserNotFoundException(USER_NOT_FOUND);
+        }
+        User user = (User) authentication.getPrincipal();
+        User user1 = userRepository.findByPhone(user.getPhone()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        return new ApiResponse(UserUpdateResponse.fromDriver(user1, attachmentService.attachDownloadUrl), true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -186,29 +196,54 @@ public class UserService {
         userRepository.save(user);
     }
 
-//    private void countMassage() {
-//        List<CountMassage> all = countMassageRepository.findAll();
-//        if (all.isEmpty()) {
-//            countMassageRepository.save(CountMassage.builder().count(1L).build());
-//        } else {
-//            CountMassage countMassage = all.get(0);
-//            countMassage.setCount(countMassage.getCount() + 1);
-//            countMassageRepository.save(countMassage);
-//        }
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse updateUser(UserUpdateDto userRegisterDto) {
+        User user = checkUserExistByContext();
+        user.setFullName(userRegisterDto.getFullName());
+        user.setGender(userRegisterDto.getGender());
+        if (userRegisterDto.getProfilePhoto() != null) {
+            Attachment attachment = attachmentService.saveToSystem(userRegisterDto.getProfilePhoto());
+            if (user.getProfilePhoto() != null) {
+                attachmentService.deleteNewNameId(user.getProfilePhoto().getNewName() + "." + user.getProfilePhoto().getType());
+            }
+            user.setProfilePhoto(attachment);
+        }
+        user.setBirthDate(userRegisterDto.getBrithDay());
+        userRepository.save(user);
+        return new ApiResponse(SUCCESSFULLY, true);
+    }
 
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateUser(UserRegisterDto userRegisterDto){
-        User user = checkUserExistByContext();
-        user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
-        user.setFullName(userRegisterDto.getFullName());
-        user.setPhone(userRegisterDto.getPhone());
-        user.setGender(userRegisterDto.getGender());
-        attachmentService.saveToSystem(userRegisterDto.getProfilePhoto(),user.getProfilePhoto().getId());
-        user.setBirthDate(userRegisterDto.getBirthDate());
+    public ApiResponse forgetPassword(String number) {
+        User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        Integer verificationCode = verificationCodeGenerator();
+        System.out.println("Verification code: " + verificationCode);
+        service.sendSms(SmsModel.builder()
+                .mobile_phone(user.getPhone())
+                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + "Yo'lingiz bexatar  bo'lsin")
+                .from(4546)
+                .callback_url("http://0000.uz/test.php")
+                .build());
+        countMassageRepository.save(new CountMassage(user.getPhone(), 1, LocalDateTime.now()));
+        return new ApiResponse("Verification code: " + verificationCode, true, user);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse changePassword(String number, String password) {
+        User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        return new ApiResponse(SUCCESSFULLY,true);
+        return new ApiResponse(user, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getUserList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> all = userRepository.findAll(pageable);
+        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
+        all.forEach(obj -> userResponseDtoList.add(UserResponseDto.fromDriver(obj, attachmentService.attachDownloadUrl)));
+        return new ApiResponse(userResponseDtoList, true);
     }
 }
 

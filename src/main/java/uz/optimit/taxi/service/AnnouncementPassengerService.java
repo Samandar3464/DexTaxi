@@ -58,7 +58,7 @@ public class AnnouncementPassengerService {
      @ResponseStatus(HttpStatus.OK)
      public ApiResponse getPassengerListForAnonymousUser() {
           List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-          repository.findAllByActive(true).forEach(a -> {
+          repository.findAllByActiveTrueAndTimeToTravelAfterOrderByCreatedTimeDesc(LocalDateTime.now().minusDays(1)).forEach(a -> {
                passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
           });
           return new ApiResponse(passengerResponses, true);
@@ -88,7 +88,7 @@ public class AnnouncementPassengerService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerAnnouncements() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActive(user.getId(), true);
+        List<AnnouncementPassenger> announcementPassengers = repository.findAllByUserIdAndActiveAndTimeToTravelAfter(user.getId(), true,LocalDateTime.now().minusDays(1));
         List<AnnouncementPassengerResponseAnonymous> anonymousList = new ArrayList<>();
         announcementPassengers.forEach(obj ->
                 anonymousList.add(AnnouncementPassengerResponseAnonymous.from(obj)));
@@ -128,7 +128,7 @@ public class AnnouncementPassengerService {
 
     public ApiResponse getHistory() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(), false);
+        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
         List<AnnouncementPassengerResponse> response = new ArrayList<>();
 
         UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(user.getId()),

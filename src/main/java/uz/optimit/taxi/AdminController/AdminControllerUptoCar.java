@@ -2,10 +2,7 @@ package uz.optimit.taxi.AdminController;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.service.CarService;
 
@@ -20,8 +17,9 @@ public class AdminControllerUptoCar {
 
     @GetMapping("/dicActiveCars")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse disActiveCarsList() {
-        return carService.disActiveCarList();
+    public ApiResponse disActiveCarsList(@RequestParam(name = "page", defaultValue = "0") int page,
+                                         @RequestParam(name = "size", defaultValue = "5") int size) {
+        return carService.disActiveCarList(page,size);
     }
 
 

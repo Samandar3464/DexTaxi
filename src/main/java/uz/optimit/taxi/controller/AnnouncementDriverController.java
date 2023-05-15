@@ -21,7 +21,7 @@ public class AnnouncementDriverController {
     private final AnnouncementDriverService announcementDriverService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse addDriverAnnouncement(@RequestBody AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto){
         return announcementDriverService.add(announcementDriverRegisterRequestDto);
     }
@@ -44,13 +44,13 @@ public class AnnouncementDriverController {
     }
 
     @GetMapping("/getDriverAnnouncements")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse getDriverAnnouncements(){
         return announcementDriverService.getDriverAnnouncements();
     }
 
     @DeleteMapping("/deleteDriverAnnouncements/{id}")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse deleteDriverAnnouncement(@PathVariable UUID id){
         return announcementDriverService.deleteDriverAnnouncement(id);
     }
@@ -75,7 +75,7 @@ public class AnnouncementDriverController {
         return announcementDriverService.getByFilter(from,to ,fromTime+" 00:01",fromTime+" 23:59");
     }
     @GetMapping("/getDriverAnnouncementHistory")
-    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','ADMIN')")
     public ApiResponse getDriverAnnouncementHistory(){
         return announcementDriverService.getHistory();
     }

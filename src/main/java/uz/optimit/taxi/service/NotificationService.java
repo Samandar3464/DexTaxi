@@ -14,10 +14,7 @@ import uz.optimit.taxi.model.request.NotificationRequestDto;
 import uz.optimit.taxi.model.response.*;
 import uz.optimit.taxi.repository.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
 
@@ -52,7 +49,6 @@ public class NotificationService {
         notificationRequestDto.setTitle(YOU_COME_TO_MESSAGE_FROM_PASSENGER);
         notificationRequestDto.setNotificationType(NotificationType.DRIVER);
         Notification notification = from(notificationRequestDto, user);
-//        UserResponseDto userResponseDto = UserResponseDto.fromForDriver(user, attachmentService.attachDownloadUrl, announcementPassengerRepository,notification.getId());
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.fromForDriver(notificationRequestDto, notification.getReceiverToken());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
 
@@ -89,7 +85,7 @@ public class NotificationService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getPassengerPostedNotification() {
         User user = userService.checkUserExistByContext();
-        List<Notification> notifications = notificationRepository.findAllBySenderIdAndActiveAndReceived(user.getId(), true, false);
+        List<Notification> notifications = notificationRepository.findAllBySenderIdAndActiveAndReceivedAndNotificationType(user.getId(), true, false,NotificationType.DRIVER);
 
         List<AnnouncementDriver> announcementDrivers = new ArrayList<>();
         notifications.forEach(obj -> announcementDrivers.add(announcementDriverRepository.findByIdAndActive(obj.getAnnouncementDriverId(), true)
@@ -105,7 +101,7 @@ public class NotificationService {
         User user = userService.checkUserExistByContext();
 
         List<Notification> notification = notificationRepository
-                .findAllBySenderIdAndActiveAndReceived(user.getId(), true, false);
+                .findAllBySenderIdAndActiveAndReceivedAndNotificationType(user.getId(), true, false,NotificationType.PASSENGER);
 
         List<AnnouncementPassenger> announcementPassengers = new ArrayList<>();
         notification.forEach(obj -> announcementPassengers.add(announcementPassengerRepository.findByIdAndActive(obj.getAnnouncementPassengerId(), true)
@@ -193,7 +189,7 @@ public class NotificationService {
         notificationRepository.save(fromDriverToUser);
         announcementPassengerRepository.save(announcementPassenger);
 
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.afterAgreeRequestForDriver(fromDriverToUser.getReceiverToken());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.afterAgreeRequestForDriver(driver.getFireBaseToken());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(YOU_ACCEPTED_REQUEST, true);
     }
@@ -245,7 +241,7 @@ public class NotificationService {
         announcementDriverRepository.save(announcementDriver);
         announcementPassengerRepository.save(announcementPassenger);
 
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.afterAgreeRequestForPassenger(fromUserToDriver.getReceiverToken());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.afterAgreeRequestForPassenger(passenger.getFireBaseToken());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(YOU_ACCEPTED_REQUEST, true);
     }
@@ -298,6 +294,20 @@ public class NotificationService {
         notification.setRead(true);
         notificationRepository.save(notification);
         return new ApiResponse(SUCCESSFULLY, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse checkUserHaveAnnouncement(){
+        User user = userService.checkUserExistByContext();
+        Optional<AnnouncementPassenger> byUserIdAndActive = announcementPassengerRepository.findByUserIdAndActive(user.getId(), true);
+        if (byUserIdAndActive.isPresent()){
+            return new ApiResponse("PASSENGER_ANNOUNCEMENT",true);
+        }
+        Optional<AnnouncementDriver> byUserIdAndActive1 = announcementDriverRepository.findByUserIdAndActive(user.getId(), true);
+        if (byUserIdAndActive1.isPresent()){
+            return new ApiResponse("DRIVER_ANNOUNCEMENT",true);
+        }
+        return new ApiResponse(ANNOUNCEMENT_NOT_FOUND,false);
     }
 
     private Notification getNotification(User user1, User user2) {

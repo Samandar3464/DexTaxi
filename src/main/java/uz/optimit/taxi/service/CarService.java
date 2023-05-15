@@ -1,6 +1,8 @@
 package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,9 +46,10 @@ public class CarService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse disActiveCarList() {
+    public ApiResponse disActiveCarList(int page, int size) {
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
-        carRepository.findAllByActive(false).forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
+        Pageable pageable = PageRequest.of(page, size);
+        carRepository.findAllByActive(false,pageable).forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(carResponseDtoList, true);
     }
 
