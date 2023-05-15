@@ -55,12 +55,12 @@ public class UserService {
             throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
-//        service.sendSms(SmsModel.builder()
-//                .mobile_phone(userRegisterDto.getPhone())
-//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode ., Yo'linggiz behatar  bo'lsin.)
-//                .fromForDriver(4546)
-//                .callback_url("http://0000.uz/test.php")
-//                .build());
+        service.sendSms(SmsModel.builder()
+                .mobile_phone(userRegisterDto.getPhone())
+                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + ". Yo'linggiz bexatar  bo'lsin.")
+                .from(4546)
+                .callback_url("http://0000.uz/test.php")
+                .build());
         countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
@@ -193,18 +193,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-//    private void countMassage() {
-//        List<CountMassage> all = countMassageRepository.findAll();
-//        if (all.isEmpty()) {
-//            countMassageRepository.save(CountMassage.builder().count(1L).build());
-//        } else {
-//            CountMassage countMassage = all.get(0);
-//            countMassage.setCount(countMassage.getCount() + 1);
-//            countMassageRepository.save(countMassage);
-//        }
-//    }
-
-
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse updateUser(UserUpdateDto userRegisterDto) {
         User user = checkUserExistByContext();
@@ -213,7 +201,7 @@ public class UserService {
         if (userRegisterDto.getProfilePhoto() != null) {
             Attachment attachment = attachmentService.saveToSystem(userRegisterDto.getProfilePhoto());
             if (user.getProfilePhoto() != null) {
-                attachmentService.deleteNewNameId(user.getProfilePhoto().getNewName()+"."+user.getProfilePhoto().getType());
+                attachmentService.deleteNewNameId(user.getProfilePhoto().getNewName() + "." + user.getProfilePhoto().getType());
             }
             user.setProfilePhoto(attachment);
         }

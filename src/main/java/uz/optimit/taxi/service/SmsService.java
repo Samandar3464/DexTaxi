@@ -32,8 +32,8 @@ public class SmsService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    private static final String userEmail = "samandarshodmonov1998@gmail.com";
-    private final static String userSecret = "TaEotaLMYaUqqGTgTrzjGnmIFo7whQfaf82vMU8o";
+    private  final String userEmail = "samandarshodmonov1998@gmail.com";
+    private final  String userSecret = "TaEotaLMYaUqqGTgTrzjGnmIFo7whQfaf82vMU8o";
 
     private static final String GET_TOKEN = "https://notify.eskiz.uz/api/auth/login";
     private static final String RELOAD_TOKEN = "https://notify.eskiz.uz/api/auth/refresh";
