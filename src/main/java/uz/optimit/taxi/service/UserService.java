@@ -22,16 +22,11 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.*;
-import uz.optimit.taxi.model.response.TokenResponse;
-import uz.optimit.taxi.model.response.UserResponseDto;
-import uz.optimit.taxi.model.response.UserUpdateResponse;
+import uz.optimit.taxi.model.response.*;
 import uz.optimit.taxi.repository.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.random.RandomGenerator;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -50,7 +45,7 @@ public class UserService {
     private final StatusRepository statusRepository;
     private final SmsService service;
     private final CountMassageRepository countMassageRepository;
-
+private final FireBaseMessagingService fireBaseMessagingService;
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional(rollbackFor = {Exception.class})
     public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
@@ -171,10 +166,25 @@ public class UserService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse deleteUserByID(UUID id) {
+    @Transactional(rollbackFor = {Exception.class})
+    public ApiResponse addBlockUserByID(UUID id) {
+        User user = checkUserExistById(id);
+        Optional<User> byId = userRepository.findById(id);
+        byId.get().setBlocked(false);
+        userRepository.save(byId.get());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(),BLOCKED,new HashMap<>());
+        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
+        return new ApiResponse(DELETED, true);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    @Transactional(rollbackFor = {Exception.class})
+    public ApiResponse openToBlockUserByID(UUID id) {
+        User user = checkUserExistById(id);
         Optional<User> byId = userRepository.findById(id);
         byId.get().setBlocked(true);
         userRepository.save(byId.get());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(),OPEN, new HashMap<>());
+        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(DELETED, true);
     }
 
@@ -197,18 +207,18 @@ public class UserService {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateUser(UserUpdateDto userRegisterDto) {
+    public ApiResponse updateUser(UserUpdateDto userUpdateDto) {
         User user = checkUserExistByContext();
-        user.setFullName(userRegisterDto.getFullName());
-        user.setGender(userRegisterDto.getGender());
-        if (userRegisterDto.getProfilePhoto() != null) {
-            Attachment attachment = attachmentService.saveToSystem(userRegisterDto.getProfilePhoto());
+        user.setFullName(userUpdateDto.getFullName());
+        user.setGender(userUpdateDto.getGender());
+        if (userUpdateDto.getProfilePhoto() != null) {
+            Attachment attachment = attachmentService.saveToSystem(userUpdateDto.getProfilePhoto());
             if (user.getProfilePhoto() != null) {
                 attachmentService.deleteNewNameId(user.getProfilePhoto().getNewName() + "." + user.getProfilePhoto().getType());
             }
             user.setProfilePhoto(attachment);
         }
-        user.setBirthDate(userRegisterDto.getBrithDay());
+        user.setBirthDate(userUpdateDto.getBrithDay());
         userRepository.save(user);
         return new ApiResponse(SUCCESSFULLY, true);
     }
@@ -243,7 +253,11 @@ public class UserService {
         Page<User> all = userRepository.findAll(pageable);
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         all.forEach(obj -> userResponseDtoList.add(UserResponseDto.fromDriver(obj, attachmentService.attachDownloadUrl)));
-        return new ApiResponse(userResponseDtoList, true);
+        return new ApiResponse(new UserResponseListForAdmin(userResponseDtoList,all.getTotalElements(),all.getTotalPages(),all.getNumber()), true);
+    }
+
+    public User getUserByCar(Car car){
+        return userRepository.findByCarsIn(List.of(car)).orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND));
     }
 }
 

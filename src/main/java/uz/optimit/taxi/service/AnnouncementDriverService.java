@@ -38,44 +38,44 @@ public class AnnouncementDriverService {
     private final AnnouncementPassengerRepository announcementPassengerRepository;
     private final CityRepository cityRepository;
 
-     @ResponseStatus(HttpStatus.CREATED)
-     public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
-          User user = userService.checkUserExistByContext();
-          if (user.getCars().isEmpty()) {
-               throw new CarNotFound(CAR_NOT_FOUND);
-          }
-          if (announcementPassengerRepository.findByUserIdAndActive(user.getId(),true).isPresent()) {
-               throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
-          }
-          if (repository.findByUserIdAndActive(user.getId(), true).isPresent()) {
-               throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
-          }
-          Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
-          AnnouncementDriver announcementDriver = null;
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse add(AnnouncementDriverRegisterRequestDto announcementDriverRegisterRequestDto) {
+        User user = userService.checkUserExistByContext();
+        if (user.getCars().isEmpty()) {
+            throw new CarNotFound(CAR_NOT_FOUND);
+        }
+        if (announcementPassengerRepository.findByUserIdAndActive(user.getId(), true).isPresent()) {
+            throw new AnnouncementAvailable(ANNOUNCEMENT_AVAILABLE);
+        }
+        if (repository.findByUserIdAndActive(user.getId(), true).isPresent()) {
+            throw new AnnouncementAlreadyExistException(YOU_ALREADY_HAVE_ACTIVE_ANNOUNCEMENT);
+        }
+        Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        AnnouncementDriver announcementDriver = null;
 
-          if (announcementDriverRegisterRequestDto.getFromCityId()==null){
-                announcementDriver = AnnouncementDriver.from1(announcementDriverRegisterRequestDto, user, regionRepository,cityRepository, car);
-          }else {
-               announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository,cityRepository, car);
-          }
-          seatService.onActive(announcementDriverRegisterRequestDto.getSeatIdList());
-          repository.save(announcementDriver);
-          return new ApiResponse(SUCCESSFULLY, true);
-     }
+        if (announcementDriverRegisterRequestDto.getFromCityId() == null) {
+            announcementDriver = AnnouncementDriver.from1(announcementDriverRegisterRequestDto, user, regionRepository, cityRepository, car);
+        } else {
+            announcementDriver = AnnouncementDriver.from(announcementDriverRegisterRequestDto, user, regionRepository, cityRepository, car);
+        }
+        seatService.onActive(announcementDriverRegisterRequestDto.getSeatIdList());
+        repository.save(announcementDriver);
+        return new ApiResponse(SUCCESSFULLY, true);
+    }
 
 
-     @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getDriverListForAnonymousUser() {
-          List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
-          repository.findAllByActiveTrueAndTimeToDriveAfterOrderByCreatedTimeDesc(LocalDateTime.now().minusDays(1)).forEach(announcementDriver -> {
-               driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
-          });
-          return new ApiResponse(driverResponses, true);
-     }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getDriverListForAnonymousUser() {
+        List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
+        repository.findAllByActiveTrueAndTimeToDriveAfterOrderByCreatedTimeDesc(LocalDateTime.now().minusDays(1)).forEach(announcementDriver -> {
+            driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
+        });
+        return new ApiResponse(driverResponses, true);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getDriverById(UUID id) {
-        AnnouncementDriver announcementDriver = repository.findByIdAndActive(id,true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        AnnouncementDriver announcementDriver = repository.findByIdAndActive(id, true).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         Car car = carRepository.findByUserIdAndActive(announcementDriver.getUser().getId(), true).orElseThrow(() ->
                 new CarNotFound(CAR_NOT_FOUND));
         List<Notification> notifications = notificationRepository.findAllByAnnouncementDriverIdAndActiveAndReceived(announcementDriver.getId(), false, true);
@@ -86,6 +86,7 @@ public class AnnouncementDriverService {
         AnnouncementDriverResponse announcementDriverResponse = AnnouncementDriverResponse.from(announcementDriver, car, familiars, attachmentService.attachDownloadUrl);
         return new ApiResponse(announcementDriverResponse, true);
     }
+
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getById(UUID id) {
         AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
@@ -111,6 +112,16 @@ public class AnnouncementDriverService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteDriverAnnouncement(UUID id) {
+        User user = userService.checkUserExistByContext();
+        for (Car car : user.getCars()) {
+            if (car.isActive()) {
+                List<UUID> seatList = new ArrayList<>();
+                for (Seat seat : car.getSeatList()) {
+                    seatList.add(seat.getId());
+                }
+                seatService.ofActive(seatList);
+            }
+        }
         AnnouncementDriver announcementDriver = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
         announcementDriver.setActive(false);
         repository.save(announcementDriver);
@@ -135,35 +146,35 @@ public class AnnouncementDriverService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByFilter(Integer from, Integer to, String fromTime, String toTime) {
         List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
-         getAnnouncementDrivers(from, to, fromTime, toTime).forEach(announcementDriver -> {
+        getAnnouncementDrivers(from, to, fromTime, toTime).forEach(announcementDriver -> {
             driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
         });
         return new ApiResponse(driverResponses, true);
     }
 
 
-     private List<AnnouncementDriver> getAnnouncementDrivers(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, String  from, String  to) {
-          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-          LocalDateTime fromTime1 = LocalDateTime.parse(from, formatter);
-          LocalDateTime toTime1 = LocalDateTime.parse(to, formatter);
-          return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(fromRegion_id, toRegion_id,fromCity_id, toCity_id,LocalDateTime.now().minusDays(1), fromTime1, toTime1);
-     }
+    private List<AnnouncementDriver> getAnnouncementDrivers(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, String from, String to) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime fromTime1 = LocalDateTime.parse(from, formatter);
+        LocalDateTime toTime1 = LocalDateTime.parse(to, formatter);
+        return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(fromRegion_id, toRegion_id, fromCity_id, toCity_id, LocalDateTime.now().minusDays(1), fromTime1, toTime1);
+    }
 
-     private List<AnnouncementDriver> getAnnouncementDrivers(Integer from, Integer to, String fromTime, String toTime) {
-          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-          LocalDateTime fromTime1 = LocalDateTime.parse(fromTime, formatter);
-          LocalDateTime toTime1 = LocalDateTime.parse(toTime, formatter);
-          return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(from, to, LocalDateTime.now().minusDays(1),fromTime1, toTime1);
-     }
+    private List<AnnouncementDriver> getAnnouncementDrivers(Integer from, Integer to, String fromTime, String toTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime fromTime1 = LocalDateTime.parse(fromTime, formatter);
+        LocalDateTime toTime1 = LocalDateTime.parse(toTime, formatter);
+        return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(from, to, LocalDateTime.now().minusDays(1), fromTime1, toTime1);
+    }
 
 
-     @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getByFilter(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, String  timeToDrive, String timeToDrive2){
-          List<AnnouncementDriver> driverList = getAnnouncementDrivers(fromRegion_id, toRegion_id, fromCity_id, toCity_id, timeToDrive, timeToDrive2);
-          List<AnnouncementDriverResponse> announcementDrivers = new ArrayList<>();
-          driverList.forEach(announcementDriver -> {
-               announcementDrivers.add(AnnouncementDriverResponse.fromDriver(announcementDriver,announcementDriver.getCar(), attachmentService.attachDownloadUrl));
-          });
-          return new ApiResponse(announcementDrivers,true);
-     }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getByFilter(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, String timeToDrive, String timeToDrive2) {
+        List<AnnouncementDriver> driverList = getAnnouncementDrivers(fromRegion_id, toRegion_id, fromCity_id, toCity_id, timeToDrive, timeToDrive2);
+        List<AnnouncementDriverResponse> announcementDrivers = new ArrayList<>();
+        driverList.forEach(announcementDriver -> {
+            announcementDrivers.add(AnnouncementDriverResponse.fromDriver(announcementDriver, announcementDriver.getCar(), attachmentService.attachDownloadUrl));
+        });
+        return new ApiResponse(announcementDrivers, true);
+    }
 }

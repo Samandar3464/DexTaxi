@@ -19,6 +19,7 @@ public class Constants {
     public static final String CAR_NOT_FOUND="CAR NOT FOUND";
     public static final String NOTIFICATION_NOT_FOUND="NOTIFICATION NOT FOUND";
     public static final String CAR_ACTIVATED="CAR ACTIVATED";
+    public static final String CAR_DEACTIVATED="CAR DEACTIVATED";
     public static final String USER_VERIFIED_SUCCESSFULLY="USER VERIFIED SUCCESSFULLY";
     public static final String YOU_ACCEPTED_REQUEST ="YOU ACCEPTED REQUEST";
     public static final String NOT_ENOUGH_SEAT="NOT ENOUGH SEAT";
@@ -30,6 +31,8 @@ public class Constants {
     public static final String YOU_COME_TO_MESSAGE_FROM_DRIVER="SIZGA HAYDOVCHIDAN HABAR KELDI";
     public static final String DRIVER_AGREE="Haydovchi sizni olib ketishga rozi bo'ldi.";
     public static final String PASSENGER_AGREE="Yo'lovchi siz bilan ketishga rozi bo'ldi.";
+    public static final String BLOCKED="Sizni DexTaxi accountinggiz blocklandi .";
+    public static final String OPEN="Sizni DexTaxi accountinggiz blockdan ochildi.";
     public static final String CAR_HAS_ENOUGH_SEAT_BUT_NOT_SUIT_YOUR_CHOOSE="Siz habar jo'natgan haydovchining mashinasida yetarli joy bor lekin siz belgilangan joylar band qilindi , Agar maqul bolsa boshqa joy tanlang";
     public static final String FIREBASE_EXCEPTION="FIREBASE EXCEPTION";
     public static final String REFRESH_TOKEN_NOT_FOUND="FIREBASE EXCEPTION";

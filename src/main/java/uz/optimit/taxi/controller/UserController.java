@@ -59,7 +59,13 @@ public class UserController {
     @PutMapping("/block/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ApiResponse blockUserById(@PathVariable UUID id) {
-        return userService.deleteUserByID(id);
+        return userService.addBlockUserByID(id);
+    }
+
+    @PutMapping("/openBlock/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ApiResponse openBlockUserById(@PathVariable UUID id) {
+        return userService.openToBlockUserByID(id);
     }
 
     @PostMapping("/setFireBaseToken")

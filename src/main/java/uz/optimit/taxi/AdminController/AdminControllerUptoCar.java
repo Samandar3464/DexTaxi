@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.model.request.DenyCar;
 import uz.optimit.taxi.service.CarService;
 
 import java.util.UUID;
@@ -33,5 +34,16 @@ public class AdminControllerUptoCar {
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse activateCar(@PathVariable("id") UUID id) {
         return carService.activateCar(id);
+    }
+    @GetMapping("/deactivateCar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse deactivateCar(@PathVariable("id") UUID id) {
+        return carService.deactivateCar(id);
+    }
+
+    @PostMapping("/denyCar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse denyCar(@RequestBody DenyCar denyCar) {
+        return carService.denyCar(denyCar);
     }
 }

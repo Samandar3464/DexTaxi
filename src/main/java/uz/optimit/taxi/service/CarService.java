@@ -1,11 +1,11 @@
 package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.entity.AutoModel;
 import uz.optimit.taxi.entity.Car;
@@ -14,15 +14,17 @@ import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
-import uz.optimit.taxi.model.request.UserRegisterDto;
+import uz.optimit.taxi.model.request.DenyCar;
 import uz.optimit.taxi.model.response.CarResponseDto;
+import uz.optimit.taxi.model.response.CarResponseListForAdmin;
+import uz.optimit.taxi.model.response.NotificationMessageResponse;
 import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.AutoModelRepository;
 import uz.optimit.taxi.repository.CarRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static uz.optimit.taxi.entity.Enum.Constants.*;
@@ -36,6 +38,7 @@ public class CarService {
     private final AutoModelRepository autoModelRepository;
     private final UserService userService;
     private final SeatService seatService;
+    private final FireBaseMessagingService fireBaseMessagingService;
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse addCar(CarRegisterRequestDto carRegisterRequestDto) {
@@ -49,8 +52,9 @@ public class CarService {
     public ApiResponse disActiveCarList(int page, int size) {
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
         Pageable pageable = PageRequest.of(page, size);
-        carRepository.findAllByActive(false,pageable).forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
-        return new ApiResponse(carResponseDtoList, true);
+        Page<Car> allByActive = carRepository.findAllByActive(false, pageable);
+        allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
+        return new ApiResponse(new CarResponseListForAdmin(carResponseDtoList, allByActive.getTotalElements(), allByActive.getTotalPages(), allByActive.getNumber()), true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -63,7 +67,7 @@ public class CarService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getCar() {
         User user = userService.checkUserExistByContext();
-        Car car = carRepository.findByUserIdAndActive(user.getId(),true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         CarResponseDto carResponseDto = CarResponseDto.from(car, attachmentService.attachDownloadUrl);
         return new ApiResponse(carResponseDto, true);
     }
@@ -77,9 +81,18 @@ public class CarService {
         return new ApiResponse(CAR_ACTIVATED, true);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse deactivateCar(UUID carId) {
+        Car car = carRepository.findById(carId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        car.setActive(false);
+        carRepository.save(car);
+        userService.addRoleDriver(List.of(car));
+        return new ApiResponse(CAR_DEACTIVATED, true);
+    }
+
     public ApiResponse getCarSeat() {
         User user = userService.checkUserExistByContext();
-        Car car = carRepository.findByUserIdAndActive(user.getId(),true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        Car car = carRepository.findByUserIdAndActive(user.getId(), true).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         List<SeatResponse> seatResponses = new ArrayList<>();
         car.getSeatList().forEach(seat -> seatResponses.add(SeatResponse.from(seat)));
         return new ApiResponse(seatResponses, true);
@@ -107,10 +120,18 @@ public class CarService {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteCarByID(UUID id) {
-        Car byId = carRepository.findById(id).orElseThrow(()->new CarNotFound(CAR_NOT_FOUND));
+        Car byId = carRepository.findById(id).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         byId.setActive(false);
         carRepository.save(byId);
         return new ApiResponse(DELETED, true);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse denyCar(DenyCar denyCar) {
+        Car car = carRepository.findById(denyCar.getCarId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        User userByCar = userService.getUserByCar(car);
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(userByCar.getFireBaseToken(),denyCar.getMassage(), new HashMap<>());
+        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
+        return  new ApiResponse(SUCCESSFULLY, true);
+    }
 }

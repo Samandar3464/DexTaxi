@@ -31,6 +31,7 @@ public class UserResponseDto {
     private Gender gender;
     private String profilePhotoUrl;
     private List<Familiar> passengersList;
+    private boolean isBlock;
 
     public static UserResponseDto from(User user, String downloadUrl, AnnouncementPassengerRepository announcementPassengerRepository) {
         String photoLink = null;
@@ -50,6 +51,7 @@ public class UserResponseDto {
                 .age(LocalDate.now().getYear() - user.getBirthDate().getYear())
                 .gender(user.getGender())
                 .profilePhotoUrl(photoLink)
+                .isBlock(user.isBlocked())
                 .build();
     }
 
@@ -62,7 +64,6 @@ public class UserResponseDto {
 //            photoLink = downloadUrl + "avatar.png";
             photoLink = "https://sb.kaleidousercontent.com/67418/992x558/7632960ff9/people.png";
         }
-
         return UserResponseDto.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
@@ -70,6 +71,7 @@ public class UserResponseDto {
                 .age(LocalDate.now().getYear() - user.getBirthDate().getYear())
                 .gender(user.getGender())
                 .profilePhotoUrl(photoLink)
+                .isBlock(user.isBlocked())
                 .build();
     }
 }
