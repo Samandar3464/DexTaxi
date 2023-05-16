@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
-     Page<Car> findAllByActive(boolean Active, Pageable page);
+     Page<Car> findAllByActiveAndDeny(boolean Active,boolean deny, Pageable page);
 
      Optional<Car> findByUserIdAndActive(UUID user_id,boolean active);
      Optional<Car> findByUserId(UUID userId);

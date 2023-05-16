@@ -52,7 +52,7 @@ public class CarService {
     public ApiResponse disActiveCarList(int page, int size) {
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
         Pageable pageable = PageRequest.of(page, size);
-        Page<Car> allByActive = carRepository.findAllByActive(false, pageable);
+        Page<Car> allByActive = carRepository.findAllByActiveAndDeny(false,false, pageable);
         allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(new CarResponseListForAdmin(carResponseDtoList, allByActive.getTotalElements(), allByActive.getTotalPages(), allByActive.getNumber()), true);
     }
@@ -130,8 +130,18 @@ public class CarService {
     public ApiResponse denyCar(DenyCar denyCar) {
         Car car = carRepository.findById(denyCar.getCarId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         User userByCar = userService.getUserByCar(car);
+        car.setDeny(true);
+        carRepository.save(car);
         NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(userByCar.getFireBaseToken(),denyCar.getMassage(), new HashMap<>());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return  new ApiResponse(SUCCESSFULLY, true);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse updateCar(UUID carId, CarRegisterRequestDto carRegisterRequestDto) {
+        User user = userService.checkUserExistByContext();
+        Car car = from(carRegisterRequestDto, user);
+        car.setId(carId);
+        carRepository.save(car);
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 }

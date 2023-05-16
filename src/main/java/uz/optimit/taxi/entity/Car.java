@@ -49,6 +49,7 @@ public class Car {
     private List<Seat> seatList;
 
     private boolean active;
+    private boolean deny;
 
     public static Car from(CarRegisterRequestDto carRegisterRequestDto) {
         return Car.builder()
@@ -56,6 +57,7 @@ public class Car {
                 .texPassport(carRegisterRequestDto.getTexPassport())
                 .carNumber(carRegisterRequestDto.getCarNumber())
                 .active(true)
+                .deny(false)
                 .build();
     }
 

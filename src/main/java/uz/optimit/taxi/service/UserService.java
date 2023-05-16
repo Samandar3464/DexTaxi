@@ -248,6 +248,29 @@ private final FireBaseMessagingService fireBaseMessagingService;
     }
 
     @ResponseStatus(HttpStatus.OK)
+    public ApiResponse reSendSms(String number) {
+        Integer integer = verificationCodeGenerator();
+        System.out.println(integer);
+        service.sendSms(SmsModel.builder()
+                .mobile_phone(number)
+                .message("DexTaxi. Tasdiqlash kodi: " + integer + ". Yo'linggiz bexatar  bo'lsin.")
+                .from(4546)
+                .callback_url("http://0000.uz/test.php")
+                .build());
+        countMassageRepository.save(new CountMassage(number, 1, LocalDateTime.now()));
+        return new ApiResponse(SUCCESSFULLY, true);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse removeUserFromContext() {
+        User user = checkUserExistByContext();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getName().equals(user.getPhone())) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
+        return new ApiResponse(SUCCESSFULLY, true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse getUserList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> all = userRepository.findAll(pageable);

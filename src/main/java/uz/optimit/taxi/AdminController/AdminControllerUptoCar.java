@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.model.request.DenyCar;
 import uz.optimit.taxi.service.CarService;
 
@@ -20,9 +21,8 @@ public class AdminControllerUptoCar {
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse disActiveCarsList(@RequestParam(name = "page", defaultValue = "0") int page,
                                          @RequestParam(name = "size", defaultValue = "5") int size) {
-        return carService.disActiveCarList(page,size);
+        return carService.disActiveCarList(page, size);
     }
-
 
     @GetMapping("/getCar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -35,6 +35,7 @@ public class AdminControllerUptoCar {
     public ApiResponse activateCar(@PathVariable("id") UUID id) {
         return carService.activateCar(id);
     }
+
     @GetMapping("/deactivateCar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse deactivateCar(@PathVariable("id") UUID id) {
@@ -45,5 +46,11 @@ public class AdminControllerUptoCar {
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse denyCar(@RequestBody DenyCar denyCar) {
         return carService.denyCar(denyCar);
+    }
+
+    @PostMapping("/updateCar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse updateCar(@RequestParam("id") UUID id, @RequestBody CarRegisterRequestDto carRegisterRequestDto) {
+        return carService.updateCar(id, carRegisterRequestDto);
     }
 }

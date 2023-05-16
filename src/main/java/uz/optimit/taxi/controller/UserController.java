@@ -98,4 +98,13 @@ public class UserController {
                                    @RequestParam(name = "size", defaultValue = "5") int size) {
         return userService.getUserList(page, size);
     }
+    @GetMapping("/reSendSms/{phone}")
+    public ApiResponse reSendSms(@PathVariable String phone) {
+        return userService.reSendSms(phone);
+    }
+    @GetMapping("/logout")
+    public ApiResponse deleteUserFromContext() {
+        return userService.removeUserFromContext();
+    }
+
 }
