@@ -8,6 +8,7 @@ import org.webjars.NotFoundException;
 import uz.optimit.taxi.entity.AutoCategory;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordAlreadyExistException;
+import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.model.request.AutoCategoryRegisterRequestDto;
 import uz.optimit.taxi.repository.AutoCategoryRepository;
 
@@ -32,7 +33,7 @@ public class AutoCategoryService {
      }
 
      public ApiResponse getCategoryById(int id) {
-          return new ApiResponse(autoCategoryRepository.findById(id).orElseThrow(()-> new NotFoundException(AUTO_CATEGORY_NOT_FOUND)), true);
+          return new ApiResponse(autoCategoryRepository.findById(id).orElseThrow(()-> new RecordNotFoundException(AUTO_CATEGORY_NOT_FOUND)), true);
      }
 
      public ApiResponse getCategoryList() {

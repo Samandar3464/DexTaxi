@@ -48,9 +48,5 @@ public class AdminControllerUptoCar {
         return carService.denyCar(denyCar);
     }
 
-    @PutMapping("/updateCar")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse updateCar(@RequestParam("id") UUID id, @RequestBody CarRegisterRequestDto carRegisterRequestDto) {
-        return carService.updateCar(id, carRegisterRequestDto);
-    }
+
 }

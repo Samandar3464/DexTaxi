@@ -34,4 +34,12 @@ public class CityController {
      public ApiResponse deleteCityById(@PathVariable Integer id) {
           return cityService.deleteCityById(id);
      }
+
+     @GetMapping("/getList")
+     @PreAuthorize("hasAnyRole('ADMIN')")
+     public ApiResponse getList(@RequestParam(name = "page", defaultValue = "0") int page,
+                                @RequestParam(name = "size", defaultValue = "5") int size,
+                                @RequestParam(name = "id" ,defaultValue = "0") int id){
+          return cityService.getList(page, size, id);
+     }
 }

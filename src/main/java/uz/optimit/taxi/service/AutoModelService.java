@@ -1,6 +1,9 @@
 package uz.optimit.taxi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,6 +12,7 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.RecordAlreadyExistException;
 import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.model.request.AutoModelRegisterRequestDto;
+import uz.optimit.taxi.model.response.AutoModelResponseList;
 import uz.optimit.taxi.repository.AutoCategoryRepository;
 import uz.optimit.taxi.repository.AutoModelRepository;
 
@@ -39,16 +43,32 @@ public class AutoModelService {
     }
 
     public ApiResponse getModelById(int id) {
-        return new ApiResponse(autoModelRepository.findById(id).orElseThrow(()->new RecordNotFoundException(AUTO_MODEL_NOT_FOUND)), true);
+        return new ApiResponse(autoModelRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(AUTO_MODEL_NOT_FOUND)), true);
     }
 
     public ApiResponse getModelList(int categoryId) {
         List<AutoModel> allByAutoCategoryId = autoModelRepository.findAllByAutoCategoryId(categoryId);
         return new ApiResponse(allByAutoCategoryId, true);
     }
+
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteModelById(int id) {
         autoModelRepository.deleteById(id);
-        return new ApiResponse(DELETED,true);
+        return new ApiResponse(DELETED, true);
+    }
+
+    public ApiResponse getList(int page, int size, int id) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<AutoModel> content;
+        if (id == 0) {
+            Page<AutoModel> all = autoModelRepository.findAll(pageable);
+            content = all.getContent();
+            return new ApiResponse(new AutoModelResponseList(content, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
+        } else {
+            Page<AutoModel> all = autoModelRepository.findAllByAutoCategoryId(id, pageable);
+            content = all.getContent();
+            return new ApiResponse(new AutoModelResponseList(content, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
+        }
+
     }
 }

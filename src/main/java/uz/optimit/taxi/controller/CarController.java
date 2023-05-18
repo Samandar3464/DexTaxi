@@ -39,4 +39,10 @@ public class CarController {
     public ApiResponse deleteCarByID(@PathVariable UUID id) {
         return carService.deleteCarByID(id);
     }
+
+    @PutMapping("/updateCar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse updateCar(@RequestParam("id") UUID id, @RequestBody CarRegisterRequestDto carRegisterRequestDto) {
+        return carService.updateCar(id, carRegisterRequestDto);
+    }
 }

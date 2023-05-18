@@ -250,7 +250,7 @@ private final FireBaseMessagingService fireBaseMessagingService;
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse reSendSms(String number) {
         Integer integer = verificationCodeGenerator();
-        System.out.println(integer);
+//        System.out.println(integer);
         service.sendSms(SmsModel.builder()
                 .mobile_phone(number)
                 .message("DexTaxi. Tasdiqlash kodi: " + integer + ". Yo'linggiz bexatar  bo'lsin.")
