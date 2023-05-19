@@ -55,7 +55,7 @@ public class Car {
                 .color(carRegisterRequestDto.getColor())
                 .texPassport(carRegisterRequestDto.getTexPassport())
                 .carNumber(carRegisterRequestDto.getCarNumber())
-                .active(true)
+                .active(false)
                 .build();
     }
 

@@ -53,12 +53,12 @@ private final FireBaseMessagingService fireBaseMessagingService;
             throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
-        service.sendSms(SmsModel.builder()
-                .mobile_phone(userRegisterDto.getPhone())
-                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + ". Yo'linggiz bexatar  bo'lsin.")
-                .from(4546)
-                .callback_url("http://0000.uz/test.php")
-                .build());
+//        service.sendSms(SmsModel.builder()
+//                .mobile_phone(userRegisterDto.getPhone())
+//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + ". Yo'linggiz bexatar  bo'lsin.")
+//                .from(4546)
+//                .callback_url("http://0000.uz/test.php")
+//                .build());
         countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
