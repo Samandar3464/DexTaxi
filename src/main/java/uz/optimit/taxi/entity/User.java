@@ -140,8 +140,8 @@ public class User implements UserDetails {
                 .verificationCodeLiveTime(LocalDateTime.now())
                 .profilePhoto(attachment)
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
-//                .roles(List.of(roleRepository.findByName(PASSENGER)))
-                .roles(List.of(roleRepository.findByName(PASSENGER),roleRepository.findByName(DRIVER)))
+                .roles(List.of(roleRepository.findByName(PASSENGER)))
+//                .roles(List.of(roleRepository.findByName(PASSENGER),roleRepository.findByName(DRIVER)))
                 .status(status)
                 .isBlocked(true)
                 .build();

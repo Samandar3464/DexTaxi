@@ -40,9 +40,9 @@ public class CarController {
         return carService.deleteCarByID(id);
     }
 
-    @PutMapping("/updateCar")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse updateCar(@RequestParam("id") UUID id, @RequestBody CarRegisterRequestDto carRegisterRequestDto) {
-        return carService.updateCar(id, carRegisterRequestDto);
-    }
+//    @PutMapping("/updateCar")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ApiResponse updateCar(@RequestParam("id") UUID id, @RequestBody CarRegisterRequestDto carRegisterRequestDto) {
+//        return carService.updateCar(id, carRegisterRequestDto);
+//    }
 }
