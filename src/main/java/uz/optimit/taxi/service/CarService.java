@@ -15,15 +15,14 @@ import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.exception.CarNotFound;
 import uz.optimit.taxi.model.request.CarRegisterRequestDto;
 import uz.optimit.taxi.model.request.DenyCar;
+import uz.optimit.taxi.model.request.SmsModel;
 import uz.optimit.taxi.model.response.CarResponseDto;
 import uz.optimit.taxi.model.response.CarResponseListForAdmin;
-import uz.optimit.taxi.model.response.NotificationMessageResponse;
 import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.AutoModelRepository;
 import uz.optimit.taxi.repository.CarRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +38,7 @@ public class CarService {
     private final UserService userService;
     private final SeatService seatService;
     private final FireBaseMessagingService fireBaseMessagingService;
+    private final SmsService service;
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse addCar(CarRegisterRequestDto carRegisterRequestDto) {
@@ -52,7 +52,7 @@ public class CarService {
     public ApiResponse disActiveCarList(int page, int size) {
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
         Pageable pageable = PageRequest.of(page, size);
-        Page<Car> allByActive = carRepository.findAllByActiveAndDeny(false,false, pageable);
+        Page<Car> allByActive = carRepository.findAllByActiveAndDeny(false, false, pageable);
         allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(new CarResponseListForAdmin(carResponseDtoList, allByActive.getTotalElements(), allByActive.getTotalPages(), allByActive.getNumber()), true);
     }
@@ -130,18 +130,30 @@ public class CarService {
     public ApiResponse denyCar(DenyCar denyCar) {
         Car car = carRepository.findById(denyCar.getCarId()).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         User userByCar = userService.getUserByCar(car);
-        car.setDeny(true);
-        carRepository.save(car);
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(userByCar.getFireBaseToken(),denyCar.getMassage(), new HashMap<>());
-        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
-        return  new ApiResponse(SUCCESSFULLY, true);
-    }
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse updateCar(UUID carId, CarRegisterRequestDto carRegisterRequestDto) {
-        User user = userService.checkUserExistByContext();
-        Car car = from(carRegisterRequestDto, user);
-        car.setId(carId);
-        carRepository.save(car);
+
+        car.getAutoPhotos().forEach(obj -> attachmentService.deleteNewNameId(obj.getNewName() + "." + obj.getType()));
+        attachmentService.deleteNewNameId(car.getPhotoDriverLicense().getNewName() + "." + car.getPhotoDriverLicense().getType());
+        attachmentService.deleteNewNameId(car.getTexPassportPhoto().getNewName() + "." + car.getTexPassportPhoto().getType());
+        carRepository.deleteById(car.getId());
+
+//        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(userByCar.getFireBaseToken(), denyCar.getMassage(), new HashMap<>());
+//        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
+        service.sendSms(SmsModel.builder()
+                .mobile_phone(userByCar.getPhone())
+                .message("DexTaxi. Sizni mashina qo'shish bo'yicha arizangiz bekor qilindi" +
+                        " . Sababi :" + denyCar.getMassage() + ". Qaytadan mashina qo'shing. ")
+                .from(4546)
+                .callback_url("http://0000.uz/test.php")
+                .build());
         return new ApiResponse(SUCCESSFULLY, true);
     }
+
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponse updateCar(UUID carId, CarRegisterRequestDto carRegisterRequestDto) {
+//        User user = userService.checkUserExistByContext();
+//        Car car = from(carRegisterRequestDto, user);
+//        car.setId(carId);
+//        carRepository.save(car);
+//        return new ApiResponse(SUCCESSFULLY, true);
+//    }
 }

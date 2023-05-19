@@ -29,13 +29,13 @@ public class Car {
     @ManyToOne
     private AutoModel autoModel;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Attachment> autoPhotos;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Attachment texPassportPhoto;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Attachment photoDriverLicense;
 
     @JsonIgnore
