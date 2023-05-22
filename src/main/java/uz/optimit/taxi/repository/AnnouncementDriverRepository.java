@@ -13,9 +13,9 @@ public interface AnnouncementDriverRepository extends JpaRepository<Announcement
 
     List<AnnouncementDriver> findAllByActiveTrueAndFromRegionIdAndToRegionIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(Integer fromRegion_id, Integer toRegion_id, LocalDateTime timeToDrive, LocalDateTime timeToDrive2, LocalDateTime timeToDrive3);
 
-    List<AnnouncementDriver> findAllByActiveTrueAndFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id, LocalDateTime timeToDrive, LocalDateTime timeToDrive2, LocalDateTime timeToDrive3);
+    List<AnnouncementDriver> findAllByActiveTrueAndFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToDriveBetweenOrderByCreatedTimeDesc(Integer fromRegion_id, Integer toRegion_id, Integer fromCity_id, Integer toCity_id,  LocalDateTime timeToDrive2, LocalDateTime timeToDrive3);
 
-    List<AnnouncementDriver> findAllByUserIdAndActive(UUID user_id, boolean active);
+    List<AnnouncementDriver> findAllByUserIdAndActiveOrderByCreatedTime(UUID user_id, boolean active);
 
     Optional<AnnouncementDriver> findByUserIdAndActive(UUID user_id, boolean active);
 

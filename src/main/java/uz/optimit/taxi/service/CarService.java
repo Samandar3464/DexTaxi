@@ -52,7 +52,7 @@ public class CarService {
     public ApiResponse disActiveCarList(int page, int size) {
         List<CarResponseDto> carResponseDtoList = new ArrayList<>();
         Pageable pageable = PageRequest.of(page, size);
-        Page<Car> allByActive = carRepository.findAllByActive(false, pageable);
+        Page<Car> allByActive = carRepository.findAllByActiveFalseAndDeletedFalse(pageable);
         allByActive.forEach(car -> carResponseDtoList.add(CarResponseDto.from(car, attachmentService.attachDownloadUrl)));
         return new ApiResponse(new CarResponseListForAdmin(carResponseDtoList, allByActive.getTotalElements(), allByActive.getTotalPages(), allByActive.getNumber()), true);
     }
@@ -120,8 +120,10 @@ public class CarService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse deleteCarByID(UUID id) {
         Car byId = carRepository.findById(id).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
+        byId.setDeleted(true);
         byId.setActive(false);
         carRepository.save(byId);
+        userService.deleteRoleDriver(List.of(byId));
         return new ApiResponse(DELETED, true);
     }
 

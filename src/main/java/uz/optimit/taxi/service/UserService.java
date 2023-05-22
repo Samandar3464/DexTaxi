@@ -25,6 +25,7 @@ import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.model.response.*;
 import uz.optimit.taxi.repository.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.random.RandomGenerator;
@@ -45,7 +46,8 @@ public class UserService {
     private final StatusRepository statusRepository;
     private final SmsService service;
     private final CountMassageRepository countMassageRepository;
-private final FireBaseMessagingService fireBaseMessagingService;
+    private final FireBaseMessagingService fireBaseMessagingService;
+
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional(rollbackFor = {Exception.class})
     public ApiResponse registerUser(UserRegisterDto userRegisterDto) {
@@ -65,9 +67,7 @@ private final FireBaseMessagingService fireBaseMessagingService;
         User user = User.fromPassenger(userRegisterDto, passwordEncoder, attachmentService, verificationCode, roleRepository, status);
         User save = userRepository.save(user);
         familiarRepository.save(Familiar.fromUser(save));
-        String access = jwtGenerate.generateAccessToken(user);
-        String refresh = jwtGenerate.generateRefreshToken(user);
-        return new ApiResponse(SUCCESSFULLY, true, new TokenResponse(access, refresh, UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl)));
+        return new ApiResponse(SUCCESSFULLY, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -95,7 +95,9 @@ private final FireBaseMessagingService fireBaseMessagingService;
         user.setVerificationCode(0);
         user.setBlocked(true);
         userRepository.save(user);
-        return new ApiResponse(USER_VERIFIED_SUCCESSFULLY, true);
+        String access = jwtGenerate.generateAccessToken(user);
+        String refresh = jwtGenerate.generateRefreshToken(user);
+        return new ApiResponse(USER_VERIFIED_SUCCESSFULLY, true, new TokenResponse(access, refresh, UserResponseDto.fromDriver(user, attachmentService.attachDownloadUrl)));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -172,10 +174,11 @@ private final FireBaseMessagingService fireBaseMessagingService;
         Optional<User> byId = userRepository.findById(id);
         byId.get().setBlocked(false);
         userRepository.save(byId.get());
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(),BLOCKED,new HashMap<>());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(), BLOCKED, new HashMap<>());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(DELETED, true);
     }
+
     @ResponseStatus(HttpStatus.OK)
     @Transactional(rollbackFor = {Exception.class})
     public ApiResponse openToBlockUserByID(UUID id) {
@@ -183,7 +186,7 @@ private final FireBaseMessagingService fireBaseMessagingService;
         Optional<User> byId = userRepository.findById(id);
         byId.get().setBlocked(true);
         userRepository.save(byId.get());
-        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(),OPEN, new HashMap<>());
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(), OPEN, new HashMap<>());
         fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(DELETED, true);
     }
@@ -202,6 +205,16 @@ private final FireBaseMessagingService fireBaseMessagingService;
         Role byName = roleRepository.findByName(DRIVER);
         if (!roles.contains(byName)) {
             roles.add((roleRepository.findByName(DRIVER)));
+        }
+        userRepository.save(user);
+    }
+
+    public void deleteRoleDriver(List<Car> carList) {
+        User user = userRepository.findByCarsIn(carList).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        List<Role> roles = user.getRoles();
+        Role byName = roleRepository.findByName(DRIVER);
+        if (roles.contains(byName)) {
+            roles.remove(byName);
         }
         userRepository.save(user);
     }
@@ -260,11 +273,12 @@ private final FireBaseMessagingService fireBaseMessagingService;
         countMassageRepository.save(new CountMassage(number, 1, LocalDateTime.now()));
         return new ApiResponse(SUCCESSFULLY, true);
     }
+
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse removeUserFromContext() {
         User user = checkUserExistByContext();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.getName().equals(user.getPhone())) {
+        if (authentication != null && authentication.getName().equals(user.getPhone())) {
             SecurityContextHolder.getContext().setAuthentication(null);
         }
         return new ApiResponse(SUCCESSFULLY, true);
@@ -276,11 +290,16 @@ private final FireBaseMessagingService fireBaseMessagingService;
         Page<User> all = userRepository.findAll(pageable);
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         all.forEach(obj -> userResponseDtoList.add(UserResponseDto.fromDriver(obj, attachmentService.attachDownloadUrl)));
-        return new ApiResponse(new UserResponseListForAdmin(userResponseDtoList,all.getTotalElements(),all.getTotalPages(),all.getNumber()), true);
+        return new ApiResponse(new UserResponseListForAdmin(userResponseDtoList, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
     }
 
-    public User getUserByCar(Car car){
-        return userRepository.findByCarsIn(List.of(car)).orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND));
+    public User getUserByCar(Car car) {
+        return userRepository.findByCarsIn(List.of(car)).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    }
+
+    public LocalDateTime getTime() {
+        LocalDate now = LocalDate.now();
+        return LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
     }
 }
 

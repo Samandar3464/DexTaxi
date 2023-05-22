@@ -50,12 +50,15 @@ public class Car {
 
     private boolean active;
 
+    private boolean deleted;
+
     public static Car from(CarRegisterRequestDto carRegisterRequestDto) {
         return Car.builder()
                 .color(carRegisterRequestDto.getColor())
                 .texPassport(carRegisterRequestDto.getTexPassport())
                 .carNumber(carRegisterRequestDto.getCarNumber())
                 .active(false)
+                .deleted(false)
                 .build();
     }
 

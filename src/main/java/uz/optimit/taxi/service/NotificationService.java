@@ -62,7 +62,7 @@ public class NotificationService {
         User user = userService.checkUserExistByContext();
         announcementPassengerRepository.findByIdAndActive(notificationRequestDto.getAnnouncementPassengerId(), true)
                 .orElseThrow(() -> new RecordNotFoundException(ANNOUNCEMENT_NOT_FOUND));
-        List<AnnouncementDriver> byUserIdAndActive = announcementDriverRepository.findAllByUserIdAndActive(user.getId(), true);
+        List<AnnouncementDriver> byUserIdAndActive = announcementDriverRepository.findAllByUserIdAndActiveOrderByCreatedTime(user.getId(), true);
         if (byUserIdAndActive.isEmpty()) {
             throw new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND);
         }

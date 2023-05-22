@@ -67,7 +67,7 @@ public class AnnouncementDriverService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getDriverListForAnonymousUser() {
         List<AnnouncementDriverResponseAnonymous> driverResponses = new ArrayList<>();
-        repository.findAllByActiveTrueAndTimeToDriveAfterOrderByCreatedTimeDesc(LocalDateTime.now().minusDays(1)).forEach(announcementDriver -> {
+        repository.findAllByActiveTrueAndTimeToDriveAfterOrderByCreatedTimeDesc(userService.getTime()).forEach(announcementDriver -> {
             driverResponses.add(AnnouncementDriverResponseAnonymous.from(announcementDriver));
         });
         return new ApiResponse(driverResponses, true);
@@ -102,7 +102,7 @@ public class AnnouncementDriverService {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getDriverAnnouncements() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementDriver> announcementDrivers = repository.findAllByUserIdAndActive(user.getId(), true);
+        List<AnnouncementDriver> announcementDrivers = repository.findAllByUserIdAndActiveOrderByCreatedTime(user.getId(), true);
         List<AnnouncementDriverActiveResponse> announcementDriverResponses = new ArrayList<>();
         for (AnnouncementDriver announcementDriver : announcementDrivers) {
             announcementDriverResponses.add(AnnouncementDriverActiveResponse.from(announcementDriver));
@@ -130,7 +130,7 @@ public class AnnouncementDriverService {
 
     public ApiResponse getHistory() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementDriver> allByActive = repository.findAllByUserIdAndActive(user.getId(), false);
+        List<AnnouncementDriver> allByActive = repository.findAllByUserIdAndActiveOrderByCreatedTime(user.getId(), false);
 
         List<Notification> notifications = notificationRepository.findAllByAnnouncementDriverIdAndActiveAndReceived(allByActive.get(0).getId(), false, true);
         List<Familiar> familiars = new ArrayList<>();
@@ -157,14 +157,14 @@ public class AnnouncementDriverService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime fromTime1 = LocalDateTime.parse(from, formatter);
         LocalDateTime toTime1 = LocalDateTime.parse(to, formatter);
-        return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(fromRegion_id, toRegion_id, fromCity_id, toCity_id, LocalDateTime.now().minusDays(1), fromTime1, toTime1);
+        return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndFromCityIdAndToCityIdAndTimeToDriveBetweenOrderByCreatedTimeDesc(fromRegion_id, toRegion_id, fromCity_id, toCity_id, fromTime1, toTime1);
     }
 
     private List<AnnouncementDriver> getAnnouncementDrivers(Integer from, Integer to, String fromTime, String toTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime fromTime1 = LocalDateTime.parse(fromTime, formatter);
         LocalDateTime toTime1 = LocalDateTime.parse(toTime, formatter);
-        return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(from, to, LocalDateTime.now().minusDays(1), fromTime1, toTime1);
+        return repository.findAllByActiveTrueAndFromRegionIdAndToRegionIdAndTimeToDriveAfterAndTimeToDriveBetweenOrderByCreatedTimeDesc(from, to, userService.getTime(), fromTime1, toTime1);
     }
 
 
@@ -177,4 +177,5 @@ public class AnnouncementDriverService {
         });
         return new ApiResponse(announcementDrivers, true);
     }
+
 }

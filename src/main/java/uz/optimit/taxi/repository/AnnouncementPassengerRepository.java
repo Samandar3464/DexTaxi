@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface AnnouncementPassengerRepository extends JpaRepository<AnnouncementPassenger, UUID> {
 
-    List<AnnouncementPassenger> findAllByUserIdAndActiveAndTimeToTravelAfter(UUID user_id, boolean active, LocalDateTime timeToTravel);
+    List<AnnouncementPassenger> findAllByUserIdAndActiveOrderByCreatedTime(UUID user_id, boolean active);
 
     List<AnnouncementPassenger> findAllByActiveTrueAndTimeToTravelAfterOrderByCreatedTimeDesc(LocalDateTime timeToTravel);
 
