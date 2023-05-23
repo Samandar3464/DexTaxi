@@ -348,7 +348,7 @@ public class DataLoader implements CommandLineRunner {
         AutoCategory autoCategory1 = autoCategoryRepository.getById(1);
 
 
-            AutoModel autoModel1 = new AutoModel("Damas", (byte) 4, autoCategory1);
+            AutoModel autoModel1 = new AutoModel("Damas", (byte) 6, autoCategory1);
             AutoModel autoModel2 = new AutoModel("Cobalt", (byte) 4, autoCategory1);
             AutoModel autoModel3 = new AutoModel("Lacetti-Gentra", (byte) 4, autoCategory1);
             AutoModel autoModel4 = new AutoModel("Lacetti", (byte) 4, autoCategory1);

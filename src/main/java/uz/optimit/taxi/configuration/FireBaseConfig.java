@@ -19,7 +19,7 @@ public class FireBaseConfig {
                 .fromStream(new ClassPathResource("firebase-service-account.json").getInputStream());
         FirebaseOptions firebaseOptions = FirebaseOptions.builder()
                 .setCredentials(googleCredentials).build();
-        FirebaseApp firebaseApp = FirebaseApp.initializeApp(firebaseOptions, "my-app");
+        FirebaseApp firebaseApp = FirebaseApp.initializeApp(firebaseOptions, "my-app1");
         return FirebaseMessaging.getInstance(firebaseApp);
     }
 }

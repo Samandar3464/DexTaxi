@@ -1,6 +1,7 @@
 package uz.optimit.taxi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 
 import java.time.LocalDateTime;
@@ -25,4 +26,6 @@ public interface AnnouncementPassengerRepository extends JpaRepository<Announcem
 //    List<AnnouncementPassenger> findAllByActive(boolean Active);
 
     List<AnnouncementPassenger> findAllByUserIdAndActive(UUID id, boolean active);
+
+    List<AnnouncementPassenger> findAllByActiveTrueAndTimeToTravelBefore(LocalDateTime time);
 }

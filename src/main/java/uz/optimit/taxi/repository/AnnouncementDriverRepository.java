@@ -20,4 +20,7 @@ public interface AnnouncementDriverRepository extends JpaRepository<Announcement
     Optional<AnnouncementDriver> findByUserIdAndActive(UUID user_id, boolean active);
 
     Optional<AnnouncementDriver> findByIdAndActive(UUID announcementId, boolean b);
+
+    List<AnnouncementDriver> findAllByActiveTrueAndTimeToDriveBefore(LocalDateTime timeToDrive);
+
 }

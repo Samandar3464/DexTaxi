@@ -1,6 +1,6 @@
 package uz.optimit.taxi.service;
 
-import com.google.firebase.FirebaseException;
+
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;

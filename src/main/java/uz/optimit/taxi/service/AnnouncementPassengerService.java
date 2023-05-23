@@ -11,10 +11,8 @@ import uz.optimit.taxi.exception.AnnouncementAlreadyExistException;
 import uz.optimit.taxi.exception.AnnouncementAvailable;
 import uz.optimit.taxi.exception.AnnouncementNotFoundException;
 import uz.optimit.taxi.model.request.AnnouncementPassengerRegisterRequestDto;
-import uz.optimit.taxi.model.response.AnnouncementDriverResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponse;
 import uz.optimit.taxi.model.response.AnnouncementPassengerResponseAnonymous;
-import uz.optimit.taxi.repository.*;
 import uz.optimit.taxi.model.response.UserResponseDto;
 import uz.optimit.taxi.repository.*;
 
@@ -55,14 +53,14 @@ public class AnnouncementPassengerService {
         return new ApiResponse(SUCCESSFULLY, true);
     }
 
-     @ResponseStatus(HttpStatus.OK)
-     public ApiResponse getPassengerListForAnonymousUser() {
-          List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
-          repository.findAllByActiveTrueAndTimeToTravelAfterOrderByCreatedTimeDesc(userService.getTime()).forEach(a -> {
-               passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
-          });
-          return new ApiResponse(passengerResponses, true);
-     }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getPassengerListForAnonymousUser() {
+        List<AnnouncementPassengerResponseAnonymous> passengerResponses = new ArrayList<>();
+        repository.findAllByActiveTrueAndTimeToTravelAfterOrderByCreatedTimeDesc(userService.getTime()).forEach(a -> {
+            passengerResponses.add(AnnouncementPassengerResponseAnonymous.from(a));
+        });
+        return new ApiResponse(passengerResponses, true);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getAnnouncementById(UUID id) {
@@ -95,13 +93,13 @@ public class AnnouncementPassengerService {
         return new ApiResponse(anonymousList, true);
     }
 
-     @ResponseStatus(HttpStatus.OK)
-     public ApiResponse deletePassengerAnnouncement(UUID id) {
-          AnnouncementPassenger announcementPassenger = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
-          announcementPassenger.setActive(false);
-          repository.save(announcementPassenger);
-          return new ApiResponse(DELETED, true);
-     }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse deletePassengerAnnouncement(UUID id) {
+        AnnouncementPassenger announcementPassenger = repository.findById(id).orElseThrow(() -> new AnnouncementNotFoundException(ANNOUNCEMENT_NOT_FOUND));
+        announcementPassenger.setActive(false);
+        repository.save(announcementPassenger);
+        return new ApiResponse(DELETED, true);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse findFilter(
@@ -128,14 +126,14 @@ public class AnnouncementPassengerService {
 
     public ApiResponse getHistory() {
         User user = userService.checkUserExistByContext();
-        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(),false);
+        List<AnnouncementPassenger> allByActive = repository.findAllByUserIdAndActive(user.getId(), false);
         List<AnnouncementPassengerResponse> response = new ArrayList<>();
 
         UserResponseDto userResponseDto = UserResponseDto.from(userService.checkUserExistById(user.getId()),
                 attachmentService.attachDownloadUrl, announcementPassengerRepository);
 
         allByActive.forEach((announcementPassenger) -> response.add(AnnouncementPassengerResponse
-                .from(announcementPassenger,userResponseDto )));
+                .from(announcementPassenger, userResponseDto)));
         return new ApiResponse(response, true);
     }
 }

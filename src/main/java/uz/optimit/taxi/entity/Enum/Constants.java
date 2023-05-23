@@ -18,7 +18,7 @@ public class Constants {
     public static final String CITY_ALREADY_EXIST="CITY ALREADY EXIST";
     public static final String CAR_NOT_FOUND="CAR NOT FOUND";
     public static final String NOTIFICATION_NOT_FOUND="NOTIFICATION NOT FOUND";
-    public static final String CAR_ACTIVATED="CAR ACTIVATED";
+    public static final String CAR_ACTIVATED="DexTaxi .Sizni mashinanggiz Admin tomonidan tasdiqlandi ";
     public static final String CAR_DEACTIVATED="CAR DEACTIVATED";
     public static final String USER_VERIFIED_SUCCESSFULLY="USER VERIFIED SUCCESSFULLY";
     public static final String YOU_ACCEPTED_REQUEST ="YOU ACCEPTED REQUEST";

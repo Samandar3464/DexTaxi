@@ -18,11 +18,13 @@ import uz.optimit.taxi.model.request.DenyCar;
 import uz.optimit.taxi.model.request.SmsModel;
 import uz.optimit.taxi.model.response.CarResponseDto;
 import uz.optimit.taxi.model.response.CarResponseListForAdmin;
+import uz.optimit.taxi.model.response.NotificationMessageResponse;
 import uz.optimit.taxi.model.response.SeatResponse;
 import uz.optimit.taxi.repository.AutoModelRepository;
 import uz.optimit.taxi.repository.CarRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,7 +79,9 @@ public class CarService {
         Car car = carRepository.findById(carId).orElseThrow(() -> new CarNotFound(CAR_NOT_FOUND));
         car.setActive(true);
         carRepository.save(car);
-        userService.addRoleDriver(List.of(car));
+        User user = userService.addRoleDriver(List.of(car));
+        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(user.getFireBaseToken(), CAR_ACTIVATED, new HashMap<>());
+        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         return new ApiResponse(CAR_ACTIVATED, true);
     }
 
@@ -137,8 +141,6 @@ public class CarService {
         attachmentService.deleteNewNameId(car.getTexPassportPhoto().getNewName() + "." + car.getTexPassportPhoto().getType());
         carRepository.deleteById(car.getId());
 
-//        NotificationMessageResponse notificationMessageResponse = NotificationMessageResponse.from(userByCar.getFireBaseToken(), denyCar.getMassage(), new HashMap<>());
-//        fireBaseMessagingService.sendNotificationByToken(notificationMessageResponse);
         service.sendSms(SmsModel.builder()
                 .mobile_phone(userByCar.getPhone())
                 .message("DexTaxi. Sizni mashina qo'shish bo'yicha arizangiz bekor qilindi" +
