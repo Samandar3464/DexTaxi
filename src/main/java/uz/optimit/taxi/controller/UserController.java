@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import uz.optimit.taxi.entity.User;
 import uz.optimit.taxi.entity.api.ApiResponse;
 import uz.optimit.taxi.model.request.*;
 import uz.optimit.taxi.service.UserService;
@@ -79,17 +80,25 @@ public class UserController {
         return userService.updateUser(userUpdateDto);
     }
 
-    @PostMapping("/changePassword")
+    @PutMapping("/changePassword")
     public ApiResponse changePassword(
             @RequestParam String number,
             @RequestParam String password
     ) {
         return userService.changePassword(number, password);
     }
+    @PutMapping("/changePasswordFromProfile")
+    @PreAuthorize("hasAnyRole('HAYDOVCHI','YOLOVCHI','ADMIN')")
+    public ApiResponse changePasswordFromProfile(
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword
+    ) {
+        return userService.changePasswordFromProfile(oldPassword, newPassword);
+    }
 
-    @PostMapping("/forgetPassword")
-    public ApiResponse forgetPassword(@RequestBody String number) {
-        return userService.forgetPassword(number);
+    @GetMapping("/forgetPassword/{phone}")
+    public ApiResponse forgetPassword(@PathVariable String phone) {
+        return userService.forgetPassword(phone);
     }
 
     @GetMapping("/getUserList")
@@ -102,6 +111,7 @@ public class UserController {
     public ApiResponse reSendSms(@PathVariable String phone) {
         return userService.reSendSms(phone);
     }
+
     @GetMapping("/logout")
     public ApiResponse deleteUserFromContext() {
         return userService.removeUserFromContext();

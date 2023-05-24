@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.optimit.taxi.configuration.jwtConfig.JwtGenerate;
 import uz.optimit.taxi.entity.*;
 import uz.optimit.taxi.entity.api.ApiResponse;
+import uz.optimit.taxi.exception.RecordNotFoundException;
 import uz.optimit.taxi.exception.UserAlreadyExistException;
 import uz.optimit.taxi.exception.UserNotFoundException;
 import uz.optimit.taxi.model.request.*;
@@ -55,12 +56,12 @@ public class UserService {
             throw new UserAlreadyExistException(USER_ALREADY_EXIST);
         }
         Integer verificationCode = verificationCodeGenerator();
-        service.sendSms(SmsModel.builder()
-                .mobile_phone(userRegisterDto.getPhone())
-                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + " . Yo'linggiz bexatar bo'lsin.")
-                .from(4546)
-                .callback_url("http://0000.uz/test.php")
-                .build());
+//        service.sendSms(SmsModel.builder()
+//                .mobile_phone(userRegisterDto.getPhone())
+//                .message("DexTaxi. Tasdiqlash kodi: " + verificationCode + " . Yo'linggiz bexatar bo'lsin.")
+//                .from(4546)
+//                .callback_url("http://0000.uz/test.php")
+//                .build());
         countMassageRepository.save(new CountMassage(userRegisterDto.getPhone(), 1, LocalDateTime.now()));
         System.out.println("verificationCode = " + verificationCode);
         Status status = statusRepository.save(new Status(0, 0));
@@ -237,11 +238,12 @@ public class UserService {
         return new ApiResponse(SUCCESSFULLY, true);
     }
 
-
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse forgetPassword(String number) {
-        User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        User user =userRepository.findByPhone(number).orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
         Integer verificationCode = verificationCodeGenerator();
+        user.setVerificationCode(verificationCode);
+        userRepository.save(user);
         System.out.println("Verification code: " + verificationCode);
         service.sendSms(SmsModel.builder()
                 .mobile_phone(user.getPhone())
@@ -250,7 +252,7 @@ public class UserService {
                 .callback_url("http://0000.uz/test.php")
                 .build());
         countMassageRepository.save(new CountMassage(user.getPhone(), 1, LocalDateTime.now()));
-        return new ApiResponse("Verification code: " + verificationCode, true, user);
+        return new ApiResponse(SUCCESSFULLY,true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -258,16 +260,27 @@ public class UserService {
         User user = userRepository.findByPhone(number).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        return new ApiResponse(user, true);
+        return new ApiResponse(SUCCESSFULLY ,true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse changePasswordFromProfile(String oldPassword, String newPassword) {
+        User user = checkUserExistByContext();
+        if (!passwordEncoder.matches(oldPassword,user.getPassword())){
+          throw new RecordNotFoundException(OLD_PASSWORD_WRONG);
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return new ApiResponse(SUCCESSFULLY ,true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse reSendSms(String number) {
         Integer integer = verificationCodeGenerator();
-//        System.out.println(integer);
+        System.out.println(integer);
         service.sendSms(SmsModel.builder()
                 .mobile_phone(number)
-                .message("DexTaxi. Tasdiqlash kodi: " + integer + ". Yo'linggiz bexatar  bo'lsin.")
+                .message("DexTaxi. Tasdiqlash kodi: " + integer + " . Yo'linggiz bexatar bo'lsin.")
                 .from(4546)
                 .callback_url("http://0000.uz/test.php")
                 .build());
