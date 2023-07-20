@@ -139,7 +139,7 @@ public class AnnouncementDriverService {
 
 
         List<AnnouncementDriverResponse> response = new ArrayList<>();
-        allByActive.forEach((announcementDriver) -> response.add(AnnouncementDriverResponse.from(announcementDriver, announcementDriver.getCar(), familiars, attachmentService.attachUploadFolder)));
+        allByActive.forEach((announcementDriver) -> response.add(AnnouncementDriverResponse.from(announcementDriver, announcementDriver.getCar(), familiars, attachmentService.attachDownloadUrl)));
         return new ApiResponse(response, true);
     }
 

@@ -55,13 +55,13 @@ public class AttachmentService {
     public Attachment saveToSystem(MultipartFile file) {
         try {
             String pathFolder = getYearMonthDay();
-            File folder = new File(attachUploadFolder + pathFolder);
+            File folder = new File(attachDownloadUrl + pathFolder);
             if (!folder.exists()) folder.mkdirs();
             String fileName = UUID.randomUUID().toString();
             String extension = getExtension(file.getOriginalFilename());
 
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
+            Path path = Paths.get(attachDownloadUrl + pathFolder + "/" + fileName + "." + extension);
             Files.write(path, bytes).toFile();
 
             Attachment entity = new Attachment();
@@ -92,14 +92,14 @@ public class AttachmentService {
     //    Rasmni fileda joylashgan joyini linkini beradi
     public String getUrl(UUID imageId) {
         Attachment attachment = attachmentRepository.findById(imageId).orElseThrow(() -> new RecordNotFoundException(FILE_NOT_FOUND));
-        return attachUploadFolder + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
+        return attachDownloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
     }
 
     public String getUrl(Attachment attachment) {
         if (attachment != null) {
             return attachDownloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType();
         } else {
-            return attachDownloadUrl + "avatar.png";
+            return attachUploadFolder + "avatar.png";
         }
     }
 
@@ -107,7 +107,7 @@ public class AttachmentService {
     public byte[] open(String fileName) {
         try {
             Attachment attachment = getAttachment(fileName);
-            Path file = Paths.get(attachUploadFolder + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType());
+            Path file = Paths.get(attachDownloadUrl + attachment.getPath() + "/" + attachment.getNewName() + "." + attachment.getType());
             return Files.readAllBytes(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -123,7 +123,7 @@ public class AttachmentService {
     public ApiResponse deleteNewNameId(String fileName) {
         try {
             Attachment entity = getAttachment(fileName);
-            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName);
+            Path file = Paths.get(attachDownloadUrl + entity.getPath() + "/" + fileName);
             Files.delete(file);
             attachmentRepository.deleteById(entity.getId());
             return new ApiResponse(DELETED, true);
