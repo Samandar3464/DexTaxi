@@ -3,6 +3,7 @@ package uz.optimit.taxi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import uz.optimit.taxi.entity.AnnouncementDriver;
 import uz.optimit.taxi.entity.AnnouncementPassenger;
 import uz.optimit.taxi.repository.AnnouncementDriverRepository;
@@ -10,7 +11,7 @@ import uz.optimit.taxi.repository.AnnouncementPassengerRepository;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ScheduleService {
 
